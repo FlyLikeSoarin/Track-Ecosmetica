@@ -5,6 +5,8 @@ import * as Permissions from 'expo-permissions';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
+import ResultScreen from './ResultScreen.js';
+
 const URL = '';
 
 export default class BarcodeScannerComponent extends React.Component {
@@ -15,6 +17,7 @@ export default class BarcodeScannerComponent extends React.Component {
     this.state = {
       hasCameraPermission: null,
       scanned: false,
+      data: null,
     };
   }
 
@@ -44,10 +47,7 @@ export default class BarcodeScannerComponent extends React.Component {
           justifyContent: 'flex-start',
         }}>
 
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
-        />
+        <BarCodeScanner onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
 
         <View style={styles.header}>
           <TouchableOpacity onPress={ this.closeScan }>
@@ -58,24 +58,25 @@ export default class BarcodeScannerComponent extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
-          <Image
+          { !scanned && <Image
               style={styles.scan}
               source={require('../assets/scan.png')}
             />
+          }
+
+          { scanned && 
+            <ResultScreen scanAgain={() => this.setState({scanned: false})} data={this.state.data}/>
+          }
+
         </View>
         <View style={styles.footer}>
-          {scanned && (
-          <Button
-            title={'Tap to Scan Again'}
-            onPress={() => this.setState({ scanned: false })}
-          />
-          )}
         </View>
       </View>
     );
   }
 
   handleBarCodeScanned = ({ type, data }) => {
+    this.setState({ data: `Bar code with type ${type} and data ${data} has been scanned!`});
     this.setState({ scanned: true });
 
     /*await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
@@ -83,10 +84,11 @@ export default class BarcodeScannerComponent extends React.Component {
       })
       .then((resp) => resp.json())
       .then((data) => {
+        this.setState({data: data})
         alert(`${data.name}`);
       })*/
 
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
 }
