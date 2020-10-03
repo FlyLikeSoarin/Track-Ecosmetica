@@ -58,7 +58,10 @@ export default class BarcodeScannerComponent extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
-
+          <Image
+              style={styles.scan}
+              source={require('../assets/scan.png')}
+            />
         </View>
         <View style={styles.footer}>
           {scanned && (
@@ -95,6 +98,8 @@ const styles = StyleSheet.create({
   },
   scanArea: {
     flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   footer: {
     flex: 1,
@@ -104,5 +109,9 @@ const styles = StyleSheet.create({
     margin: 20,
     width: 50,
     height: 50,
+  },
+  scan: {
+    width: 150,
+    height: 150,
   }
 });
