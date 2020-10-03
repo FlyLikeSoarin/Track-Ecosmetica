@@ -6,10 +6,18 @@ import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 export default class BarcodeScannerComponent extends React.Component {
-  state = {
+  /*state = {
     hasCameraPermission: null,
     scanned: false,
-  };
+  };*/
+  constructor(props) {
+    super(props);
+    this.closeScan = this.props.closeScan;
+    this.state = {
+      hasCameraPermission: null,
+      scanned: false,
+    };
+  }
 
   async componentDidMount() {
     this.getPermissionsAsync();
@@ -47,6 +55,7 @@ export default class BarcodeScannerComponent extends React.Component {
             onPress={() => this.setState({ scanned: false })}
           />
         )}
+        <Button title='Close' onPress={() => this.closeScan()} />
       </View>
     );
   }

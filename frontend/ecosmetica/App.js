@@ -4,12 +4,14 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
 import BarcodeScannerComponent from './component/Scanner';
+import MainPage from './component/MainPage';
 
 export default class App extends React.Component {
 
   state = {
     openScan: false,
   };
+
 
   render() {
     const { openScan } = this.state;
@@ -21,11 +23,12 @@ export default class App extends React.Component {
           flexDirection: 'column',
           justifyContent: 'flex-end',
         }}>
-        { openScan && <BarcodeScannerComponent />}
-        <Button
-            title={'Scan'}
-            onPress={() => this.setState({ openScan: !openScan })}
+        { openScan && <BarcodeScannerComponent closeScan={() => this.setState({ openScan: !openScan })}/>}
+        { !openScan && <MainPage
+            openScan={() => this.setState({ openScan: !openScan })}
           />
+        }
+
       </View>
     );
   }
