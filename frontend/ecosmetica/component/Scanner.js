@@ -7,7 +7,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import ResultScreen from './ResultScreen.js';
 
-const URL = '';
+const URL = 'http://185.148.82.169:8000';
 
 export default class BarcodeScannerComponent extends React.Component {
 
@@ -75,18 +75,15 @@ export default class BarcodeScannerComponent extends React.Component {
     );
   }
 
-  handleBarCodeScanned = ({ type, data }) => {
-    this.setState({ data: `Bar code with type ${type} and data ${data} has been scanned!`});
-    this.setState({ scanned: true });
-
-    /*await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
+  handleBarCodeScanned = async ({ type, data }) => {
+    await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
         method: 'GET'
       })
       .then((resp) => resp.json())
       .then((data) => {
         this.setState({data: data})
-        alert(`${data.name}`);
-      })*/
+      })
+    this.setState({ scanned: true });
 
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };

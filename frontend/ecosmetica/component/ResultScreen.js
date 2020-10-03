@@ -23,7 +23,7 @@ export default class ResultScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.name}>{data}</Text>
+        <Text style={styles.name}>{data.name}</Text>
         <Button
               title={'Tap to Scan Again'}
               onPress={this.scanAgain}
