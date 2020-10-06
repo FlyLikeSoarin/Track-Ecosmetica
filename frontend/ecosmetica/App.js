@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
-import Constants from 'expo-constants';
-import * as Permissions from 'expo-permissions';
+import { View, AppRegistry } from 'react-native';
 
 import BarcodeScannerComponent from './component/Scanner';
 import MainPage from './component/MainPage';
