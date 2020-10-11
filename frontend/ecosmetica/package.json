@@ -8,11 +8,13 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.1.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
     "expo": "~39.0.2",
     "expo-barcode-scanner": "~9.0.0",
+    "expo-font": "~8.3.0",
     "expo-permissions": "~9.3.0",
     "expo-status-bar": "~1.0.2",
     "react": "16.13.1",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "babel-plugin-inline-import": "^3.0.0",
     "react-native-svg-transformer": "^0.14.3"
   },
   "private": true

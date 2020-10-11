@@ -1,9 +1,17 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import * as Font from 'expo-font';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Image, StatusBar, ActivityIndicator} from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
+
+
+/*Buttons*/
+import HomeButton from './Button/HomeButton'
+import ScanButton from './Button/ScanButton'
+import ProfileButton from './Button/ProfileButton'
+import SearchButton from './Button/SearchButton'
+
 
 const styles = StyleSheet.create({
   header: {
@@ -13,7 +21,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#ffffff',
     fontSize: 40,
-    fontFamily: 'Forum -apple-system',
+    fontFamily: 'Forum',
     textAlign: 'center',
   },
   productImage: {
@@ -25,7 +33,7 @@ const styles = StyleSheet.create({
   productText: {
     color: '#467354',
     fontSize: 40,
-    fontFamily: 'Forum -apple-system',
+    fontFamily: 'Forum',
     textAlign: 'center',
   },
   image: {
@@ -52,6 +60,12 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 10,
+    fontFamily: 'Forum',
+    textAlign: 'center',
+  }
 })
 
 export default class MainPage extends React.Component {
@@ -61,23 +75,43 @@ export default class MainPage extends React.Component {
 
     this.state = {
       navigation: this.props.navigation,
+      assetsLoaded: false,
     };
   } 
 
-  componentDidMount(){
+  async componentDidMount(){
+    /* Кастомизация хедера */
     this.state.navigation.setOptions({ 
       headerTitle: 'Ecosmetica',
       headerStyle: {
         backgroundColor: '#9ae7af',
       },
       headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        fontFamily: 'Forum'
+      },
       headerRight: () => (
-        <Button title='Search' onPress={()=> this.state.navigation.navigate('Search')}/>
+        <TouchableOpacity onPress={()=> this.state.navigation.navigate('Search')}>
+          <SearchButton />
+        </TouchableOpacity>
       ),
     });
+
+    /* Загрузка шрифтов */
+    await Font.loadAsync({
+      'Forum': require('../assets/fonts/Forum.ttf')
+    });
+
+    this.setState({ assetsLoaded: true });
   }
  
   render() {
+    const {assetsLoaded} = this.state;
+
+    if (assetsLoaded) {
+
     return (
       <View style={styles.container}>
         {/* Body */}
@@ -92,19 +126,33 @@ export default class MainPage extends React.Component {
 
         {/* Footer */}
         <View style={styles.buttonMenuContainer}>
-            <Text>Home</Text>
+          <TouchableOpacity>
+          <HomeButton />
+          <Text style={styles.buttonText}>Домой</Text>
+          </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Scanner')}
             >
-              <Text>Scan</Text>
+              <ScanButton />
+              <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Profile')}
             >
-              <Text>Profile</Text>
+              <ProfileButton />
+              <Text style={styles.buttonText}>Профиль</Text>
             </TouchableOpacity> 
         </View>   
       </View>
     );
+    }
+    else {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator />
+          <StatusBar barStyle="default" />
+        </View>
+      );
+    }
   }
 }

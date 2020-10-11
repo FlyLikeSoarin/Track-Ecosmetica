@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import * as Font from 'expo-font';
+import { Text, View, StyleSheet, Button } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 
 import MainPage from './component/MainPage';
 import ProfileScreen from './component/Profile';
@@ -99,22 +101,21 @@ const Stack = createStackNavigator();
 export default class App extends React.Component {
 
   render() {
-
-    return (
-      <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={MainPage}
-        />
-        <Stack.Screen name='Profile' component={Profile} />
-        <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-        <Stack.Screen name='Search' component={Search} />
-        <Stack.Screen name='Result' component={Result} />
-        <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
-        <Stack.Screen name='AddProduct' component={AddProduct} />
-      </Stack.Navigator>
-      </NavigationContainer>
-    );
+      return (
+        <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={MainPage}
+          />
+          <Stack.Screen name='Profile' component={Profile} />
+          <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+          <Stack.Screen name='Search' component={Search} />
+          <Stack.Screen name='Result' component={Result} />
+          <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+          <Stack.Screen name='AddProduct' component={AddProduct} />
+        </Stack.Navigator>
+        </NavigationContainer>
+      );
   }
 }
