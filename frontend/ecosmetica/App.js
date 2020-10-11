@@ -1,22 +1,17 @@
 import * as React from 'react';
-<<<<<<< HEAD
-import { View, AppRegistry } from 'react-native';
-=======
 import { Text, View, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
->>>>>>> origin/masha
 
-import BarcodeScannerComponent from './component/Scanner';
 import MainPage from './component/MainPage';
-import ProfileScreen from './component/Profile'
-import ProductList from './component/ProductList'
+import ProfileScreen from './component/Profile';
+import ProductList from './component/ProductList';
+import BarcodeScannerComponent from './component/Scanner';
 
 import product1img from './static/lRWynXU__sg.jpg';
-
 const styles = StyleSheet.create({
   mainPart: {
     flex: 5,
@@ -29,49 +24,77 @@ const styles = StyleSheet.create({
 });
 
 
-const Scanner = () => {
-  <View
-    style={{
-      flex: 1,
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
-    }}>
-    <BarcodeScannerComponent/>
-  </View>
-};
-
-const Stack = createStackNavigator();
-const HomeScreen = ({ navigation }) => {
-  return (
-    <View>
-      <View style={styles.mainPart}>
-        <Text>This is main</Text>
-      </View>
-      <View style={styles.footer}>
-        <Button
-          title="Go to profile"
-          onPress={() =>
-            navigation.navigate('Profile', { name: 'Jane' })
-          }
-        />
-        <Button
-          title="Go to prosuct list"
-          onPress={() =>
-            navigation.navigate('ProductList')
-          }
-        /> 
-        <TouchableOpacity
-          title={'Scan'}
-          onPress={() =>
-            navigation.navigate('Scanner')}
-        >
-          <img width={70} heigth={70} src={product1img}/>
-        </TouchableOpacity> 
-      </View>
+function Scanner({ navigation }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Scanner Screen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
     </View>
-
   );
 };
+
+function Search({ navigation }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Search Screen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+function Result({ route, navigation }) {
+  const {type, data} = route.params;
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Type:{type} Data:{data}</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+function Profile({ navigation }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Profile</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+function ProductNotFound({ navigation }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>ProductNotFound</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+function AddProduct({ navigation }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>AddProduct</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+
+
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
 
@@ -82,12 +105,14 @@ export default class App extends React.Component {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
-          options={{ title: 'Welcome' }}
+          component={MainPage}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="ProductList" component={ProductList} />
-        <Stack.Screen name="Scanner" component={Scanner} />
+        <Stack.Screen name='Profile' component={Profile} />
+        <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+        <Stack.Screen name='Search' component={Search} />
+        <Stack.Screen name='Result' component={Result} />
+        <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+        <Stack.Screen name='AddProduct' component={AddProduct} />
       </Stack.Navigator>
       </NavigationContainer>
     );

@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
+import { HeaderBackground } from '@react-navigation/stack';
 
 const styles = StyleSheet.create({
   header: {
@@ -39,6 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
     flexGrow: 1,
     backgroundColor: '#9ae7af',
   },
@@ -52,13 +55,32 @@ const styles = StyleSheet.create({
 })
 
 export default class MainPage extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      navigation: this.props.navigation,
+    };
+  } 
+
+  componentDidMount(){
+    this.state.navigation.setOptions({ 
+      headerTitle: 'Ecosmetica',
+      headerStyle: {
+        backgroundColor: '#9ae7af',
+      },
+      headerTintColor: '#fff',
+      headerRight: () => (
+        <Button title='Search' onPress={()=> this.state.navigation.navigate('Search')}/>
+      ),
+    });
+  }
  
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Продукт</Text>
-        </View>
+        {/* Body */}
         <View style={styles.productImage}>
           <ImageBackground source={backgroundImage} style={styles.image}>
           <View></View>
@@ -67,13 +89,20 @@ export default class MainPage extends React.Component {
         <View style={styles.containerProductText}>
           <Text style={styles.productText}>У вас пока нет отсканированных продуктов</Text>
         </View>
+
+        {/* Footer */}
         <View style={styles.buttonMenuContainer}>
+            <Text>Home</Text>
             <TouchableOpacity
-              title={'Scan'}
-              onPress={this.props.openScan}
+              onPress={() => this.props.navigation.navigate('Scanner')}
             >
-              <Image width={70} heigth={70} src={barchartImage}/>
-            </TouchableOpacity>  
+              <Text>Scan</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Profile')}
+            >
+              <Text>Profile</Text>
+            </TouchableOpacity> 
         </View>   
       </View>
     );

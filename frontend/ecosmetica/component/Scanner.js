@@ -13,16 +13,19 @@ export default class BarcodeScannerComponent extends React.Component {
 
   constructor(props) {
     super(props);
-    this.closeScan = this.props.closeScan;
     this.state = {
       hasCameraPermission: null,
+      navigation: this.props.navigation,
       scanned: false,
-      data: null,
     };
   }
 
   async componentDidMount() {
     this.getPermissionsAsync();
+
+    this.state.navigation.setOptions({
+      headerShown: false
+    })
   }
 
   getPermissionsAsync = async () => {
@@ -50,7 +53,7 @@ export default class BarcodeScannerComponent extends React.Component {
         <BarCodeScanner onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
 
         <View style={styles.header}>
-          <TouchableOpacity onPress={ this.closeScan }>
+          <TouchableOpacity onPress={() => this.state.navigation.navigate('Home') }>
             <Image
               style={styles.button}
               source={require('../assets/close.png')}
@@ -58,16 +61,10 @@ export default class BarcodeScannerComponent extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
-          { !scanned && <Image
-              style={styles.scan}
-              source={require('../assets/scan.png')}
-            />
-          }
-
-          { scanned && 
-            <ResultScreen scanAgain={() => this.setState({scanned: false})} data={this.state.data}/>
-          }
-
+          <Image
+            style={styles.scan}
+            source={require('../assets/scan.png')}
+          />
         </View>
         <View style={styles.footer}>
         </View>
@@ -76,15 +73,15 @@ export default class BarcodeScannerComponent extends React.Component {
   }
 
   handleBarCodeScanned = async ({ type, data }) => {
-    await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
+    /* await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
         method: 'GET'
       })
       .then((resp) => resp.json())
       .then((data) => {
         this.setState({data: data})
       })
-    this.setState({ scanned: true });
-
+    this.setState({ scanned: true }); */
+    this.state.navigation.navigate('Result', {type: type, data: data});
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 

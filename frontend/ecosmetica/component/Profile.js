@@ -18,10 +18,13 @@ export default class Profile extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Продукт</Text>
+          <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
           </View>
           <View style={styles.productImage}>
-            <Text>5555</Text>
+            <Text>{this.props.name}</Text>
           </View>
   
         </View>
