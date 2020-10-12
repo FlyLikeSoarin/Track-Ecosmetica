@@ -4,7 +4,6 @@ import { Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 
 import CrossButton from '../Button/CrossButton';
 import Balm from './Balm';
-import HeaderPart from './HeaderPart'
 
 
 const styles = StyleSheet.create({

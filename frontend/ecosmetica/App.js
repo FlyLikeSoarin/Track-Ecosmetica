@@ -13,6 +13,7 @@ import ProfileScreen from './component/Profile';
 import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
+import AddProductPage from './component/AddProduct/AddProductPage'
 
 
 const styles = StyleSheet.create({
@@ -60,28 +61,6 @@ function Profile({ navigation }) {
     </View>
   );
 };
-/*function ProductNotFound({ route, navigation }) {
-  return(
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>ProductNotFound</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};*/
-function AddProduct({ navigation, route }) {
-  return(
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>AddProduct</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
 
 
 const Stack = createStackNavigator();
@@ -101,7 +80,7 @@ export default class App extends React.Component {
           <Stack.Screen name='Search' component={Search} />
           <Stack.Screen name='Result' component={Result} />
           <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
-          <Stack.Screen name='AddProduct' component={AddProduct} />
+          <Stack.Screen name='AddProduct' component={AddProductPage} />
         </Stack.Navigator>
         </NavigationContainer>
       );
