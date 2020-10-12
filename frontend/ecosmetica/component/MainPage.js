@@ -80,6 +80,13 @@ export default class MainPage extends React.Component {
   } 
 
   async componentDidMount(){
+    /* Загрузка шрифтов */
+    await Font.loadAsync({
+      'Forum': require('../assets/fonts/Forum.ttf')
+    });
+
+    this.setState({ assetsLoaded: true });
+
     /* Кастомизация хедера */
     this.state.navigation.setOptions({ 
       headerTitle: 'Ecosmetica',
@@ -89,7 +96,7 @@ export default class MainPage extends React.Component {
       headerTintColor: '#fff',
       headerTitleStyle: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 30,
         fontFamily: 'Forum'
       },
       headerRight: () => (
@@ -98,13 +105,6 @@ export default class MainPage extends React.Component {
         </TouchableOpacity>
       ),
     });
-
-    /* Загрузка шрифтов */
-    await Font.loadAsync({
-      'Forum': require('../assets/fonts/Forum.ttf')
-    });
-
-    this.setState({ assetsLoaded: true });
   }
  
   render() {

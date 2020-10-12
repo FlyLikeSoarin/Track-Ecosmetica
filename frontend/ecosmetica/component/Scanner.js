@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
-import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-import ResultScreen from './ResultScreen.js';
+import BarcodeImage from './Scanner/Barcodeimage'
+import CrossButton from './Button/CrossButton'
 
 const URL = 'http://185.148.82.169:8000';
 
@@ -17,6 +17,7 @@ export default class BarcodeScannerComponent extends React.Component {
       hasCameraPermission: null,
       navigation: this.props.navigation,
       scanned: false,
+      scannedQRCode: false,
     };
   }
 
@@ -34,7 +35,7 @@ export default class BarcodeScannerComponent extends React.Component {
   }
 
   render() {
-    const { hasCameraPermission, scanned } = this.state;
+    const { hasCameraPermission, scanned, scannedQRCode } = this.state;
 
     if (hasCameraPermission === null) {
       return <Text>Requesting for camera permission</Text>;
@@ -54,19 +55,14 @@ export default class BarcodeScannerComponent extends React.Component {
 
         <View style={styles.header}>
           <TouchableOpacity onPress={() => this.state.navigation.navigate('Home') }>
-            <Image
-              style={styles.button}
-              source={require('../assets/close.png')}
-            />
+            <CrossButton />
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
-          <Image
-            style={styles.scan}
-            source={require('../assets/scan.png')}
-          />
+          <BarcodeImage />
         </View>
         <View style={styles.footer}>
+          {scannedQRCode && <Text style={styles.alert}>Данный формат не поддерживается</Text>}
         </View>
       </View>
     );
@@ -81,7 +77,15 @@ export default class BarcodeScannerComponent extends React.Component {
         this.setState({data: data})
       })
     this.setState({ scanned: true }); */
-    this.state.navigation.navigate('Result', {type: type, data: data});
+    if (type !== 'org.iso.QRCode') {
+      this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+    }
+    else {
+      this.setState({
+        scannedQRCode: true
+      })
+      setTimeout(() => this.setState({scannedQRCode: false}), 3000)
+    }
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
   };
 
@@ -99,6 +103,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, .5)',
   },
   button: {
@@ -109,5 +115,11 @@ const styles = StyleSheet.create({
   scan: {
     width: 150,
     height: 150,
+  },
+  alert: {
+    color: "white",
+    fontSize: 30,
+    fontFamily: 'Forum',
+    textAlign: 'center',
   }
 });

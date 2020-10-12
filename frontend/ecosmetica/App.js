@@ -12,8 +12,9 @@ import MainPage from './component/MainPage';
 import ProfileScreen from './component/Profile';
 import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
+import ProductNotFound from './component/ProductNotFound/ProductNotFound'
 
-import product1img from './static/lRWynXU__sg.jpg';
+
 const styles = StyleSheet.create({
   mainPart: {
     flex: 5,
@@ -24,19 +25,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-
-
-function Scanner({ navigation }) {
-  return(
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Scanner Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
 
 function Search({ navigation }) {
   return(
@@ -72,7 +60,7 @@ function Profile({ navigation }) {
     </View>
   );
 };
-function ProductNotFound({ navigation }) {
+/*function ProductNotFound({ route, navigation }) {
   return(
   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>ProductNotFound</Text>
@@ -82,8 +70,8 @@ function ProductNotFound({ navigation }) {
       />
     </View>
   );
-};
-function AddProduct({ navigation }) {
+};*/
+function AddProduct({ navigation, route }) {
   return(
   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>AddProduct</Text>
