@@ -46,7 +46,7 @@ class ProductRetrieveCreateView(APIView):
             product.eco_score = severity_to_score(ewg_product['gauges'][0][1])
             product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
             product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
-            product.ewg_score = str(11 - int(ewg_product['score']))
+            product.total_score = str(11 - int(ewg_product['score']))
             product.save()
 
 
