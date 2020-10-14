@@ -8,16 +8,21 @@ import requests
 import shutil
 
 
+allowed_categories = [
+    '5586', # косметика
+    '241824', # Лекарственные средства
+    '7943', # cosmetic
+    '336078', # Personal Hygiene
+    '1380354' # FACIAL CLEANER, WASH & SCRUB
+]
+
+
 class Command(BaseCommand):
     help = '''Fetches latest release of UHHT barcode database and save all cosmetics related entries'''
     filename = 'uhtt_barcode_ref_all'
-    accept_categories = set((
-        1, 5586, 401, 1412, 1382789, 278498, 1395, 664, 10304,
-        553, 331192, 555, 1438, 1626, 331154, 742, 1682, 417,
-        2642, 4327, 1039, 490, 4004, 181499, 2588, 3855))
 
     def handle(self, *args, **options):
-        if not os.path.exists(f'{self.filename}.7z') and not os.path.exists(f'{self.filename}.csv'):
+        if not os.path.exists(f'{self.filename}.7z'):
             self.download()
         if not os.path.exists(f'{self.filename}.csv'):
             self.unpack()
@@ -28,7 +33,7 @@ class Command(BaseCommand):
         try:
             url = "https://github.com/papyrussolution/UhttBarcodeReference/releases/latest"
             r_url = requests.get(url).url
-            download_url = r_url.replace('tag', 'download') + f'{self.filename}.7z'
+            download_url = r_url.replace('tag', 'download') + f'/{self.filename}.7z'
 
             with requests.get(download_url, stream=True) as r_download:
                 with open(f'{self.filename}.7z', 'wb') as f:
@@ -58,22 +63,22 @@ class Command(BaseCommand):
         with open(f'{self.filename}.csv', 'r') as f:
             reader = csv.reader(f, delimiter='\t')
             for row in reader:
-                if len(row) < 3:
+                if len(row) < 4:
                     continue
+                uhht_id, code, name, category_id = row[:4]
 
-                uhht_id, code, name = row[:3]
+                if category_id in allowed_categories:
+                    brand_id = '' if len(row) < 6 else row[5]
+                    brand_name = '' if len(row) < 7 else row[6]
 
-                brand_id = '' if len(row) < 6 else row[5]
-                brand_name = '' if len(row) < 7 else row[6]
-
-                product = Product.objects.get_or_create(
-                    name=name,
-                    brand_name=brand_name,
-                    defaults={
-                        'universe_htt': uhht_id,
-                        'brand_htt': brand_id
-                    })
-                Barcode.objects.get_or_create(
-                    code=code,
-                    code_format='UPCEAN',
-                    product=product[0])
+                    product = Product.objects.get_or_create(
+                        name=name,
+                        brand_name=brand_name,
+                        defaults={
+                            # 'universe_htt': uhht_id,
+                            # 'brand_htt': brand_id
+                        })
+                    Barcode.objects.get_or_create(
+                        code=code,
+                        code_format='UPCEAN',
+                        product=product[0])

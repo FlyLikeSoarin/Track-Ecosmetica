@@ -21,5 +21,14 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100, primary_key=True, db_index=True)
     brand_name = models.CharField(max_length=100, blank=True)
-    universe_htt = models.CharField(max_length=50, null=True, blank=True)
-    brand_htt = models.CharField(max_length=50, null=True, blank=True)
+    img_url = models.CharField(max_length=250, blank=True)
+    description = models.TextField(blank=True)
+
+    eco_score = models.IntegerField(default=-1)
+    safety_score = models.IntegerField(default=-1)
+    zoo_score = models.IntegerField(default=-1)
+    total_score = models.IntegerField(default=-1)
+
+
+class History(models.Model):
+    product = models.ForeignKey('Users.User', on_delete=models.CASCADE)
