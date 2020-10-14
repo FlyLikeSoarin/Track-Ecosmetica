@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
      nameText: {
          color: '#467354',
          fontFamily: 'Forum',
-         fontSize: 40
+         fontSize: 30
      },
      metrics: {
         flexDirection: 'row',
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 
 
 export default class Product extends React.Component {
-    constructor(props) {
+    /*constructor(props) {
         super(props);
         this.state = {
             navigation: this.props.navigation,
@@ -158,27 +158,25 @@ export default class Product extends React.Component {
             description: '',
             ingredients: ['Ингредиент1', 'Ингредиент2', 'Ингредиент3', 'Ингредиент4', 'Ингредиент5', 'Ингредиент4', 'Ингредиент5'],
         }
-    }
+    }*/
 
-    /*
     constructor(props) {
         super(props);
         this.state = {
             navigation: this.props.navigation,
             type: this.props.route.params.type,
             barcode: this.props.route.params.barcode,
-            name: this.props.route.params.data.name,
+            name: this.props.route.params.data_.name,
             img_url: '',
-            brand: this.props.route.params.data.brand,
-            naturality_score: this.props.route.params.data.naturality_score,
-            risk_score: this.props.route.params.data.risk_score,
-            allergy_score: this.props.route.params.data.allergy_score,
-            ewg_score: this.props.route.params.data.ewg_score,
-            description: this.props.route.params.data.description,
-            ingredients: this.props.route.params.data.ingredients,
+            brand: this.props.route.params.data_.brand_name,
+            //naturality_score: this.props.route.params.data_.naturality_score,
+            risk_score: this.props.route.params.data_.eco_score,
+            allergy_score: this.props.route.params.data_.safety_score,
+            ewg_score: this.props.route.params.data_.total_score,
+            description: this.props.route.params.data_.description,
+            ingredients: this.props.route.params.data_.ingredients,
         }
     }
-    */
 
     async componentDidMount() {
         await Font.loadAsync({
@@ -191,7 +189,8 @@ export default class Product extends React.Component {
     }
 
     render() {
-        const { name, ewg_score, risk_score, allergy_score } = this.state
+        const { name, ewg_score, risk_score, allergy_score, ingredients } = this.state
+        //ingredients.json()
         return(
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -233,7 +232,7 @@ export default class Product extends React.Component {
                                 <Text style={styles.ingredientTitle}>
                                     Ингредиенты:
                                 </Text>
-                                {this.state.ingredients.map(ingredient => {
+                                {ingredients.map(ingredient => {
                                     return (
                                         <View style={styles.ingregientBlock}>
                                             <Text style={styles.ingredientName}>

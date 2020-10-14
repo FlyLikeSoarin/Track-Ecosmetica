@@ -7,7 +7,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import BarcodeImage from './Scanner/Barcodeimage'
 import CrossButton from './Button/CrossButton'
 
-const URL = 'http://185.148.82.169:8000';
+const URL = 'http://185.148.82.169:8005';
 
 export default class BarcodeScannerComponent extends React.Component {
 
@@ -18,6 +18,7 @@ export default class BarcodeScannerComponent extends React.Component {
       navigation: this.props.navigation,
       scanned: false,
       scannedQRCode: false,
+      data: null
     };
   }
 
@@ -69,33 +70,38 @@ export default class BarcodeScannerComponent extends React.Component {
   }
 
   handleBarCodeScanned = async ({ type, data }) => {
-    /* await fetch(`${URL}/product/?code=${data}&code_format=${type}`, {
+    await fetch(`${URL}/product/?code=${data}`, {
         method: 'GET'
       })
-      .then((resp) => resp.json())
-      .then((data) => {
-        this.setState({data: data})
+      .then((resp) => {
+        this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
       })
-    this.setState({ scanned: true }); */
-    const _data = {
+        /*if(resp.status === 200) {
+          return resp.json()
+        }
+        else {
+          this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+        }
+      })
+      .then((ans) => {
+        const _data = ans;
+        if (type !== 'org.iso.QRCode') {
+            this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
+        }
+        else {
+          this.setState({
+            scannedQRCode: true
+        })*/
+        //setTimeout(() => this.setState({scannedQRCode: false}), 3000)
+    
+      }
+    /*this.setState({ scanned: true });
+    /*const _data = {
       product: data,
       code: 200
-    }
-    if (type !== 'org.iso.QRCode') {
-      if (_data.code === 200) {
-        this.state.navigation.navigate('Product', {type: type, data: _data.product, barcode: data});
-      } else {
-        this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
-      }
-    }
-    else {
-      this.setState({
-        scannedQRCode: true
-      })
-      setTimeout(() => this.setState({scannedQRCode: false}), 3000)
-    }
+    }*/
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-  };
+  
 
 }
 
