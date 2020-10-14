@@ -19,7 +19,8 @@ class ProductReadSerializer(serializers.ModelSerializer):
 class ProductWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'brand_name', 'ingredients', 'description']
+        extra_kwargs = { 'name': {'validators': []}, }
+        fields = ['name', 'brand_name', 'ingredients', 'description', 'code', 'code_format']
 
-    barcode = serializers.CharField(max_length=50)
+    code = serializers.CharField(max_length=50)
     code_format = serializers.CharField(max_length=10, default = 'UPCEAN', required=False)

@@ -1,15 +1,28 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import BarcodeSerializer, ProductSerializer
-from .models import Barcode, Product
+from .serializers import BarcodeSerializer, ProductReadSerializer, ProductWriteSerializer
+from .models import Barcode, Product, History
+
+
+class ProductHistoryView(APIView):
+    def get(self, request):
+        products = History.objects.all().order_by('pk').values_list('product', flat=True)
+        result = []
+        for product_id in products:
+            product = get_object_or_404(Product.objects.all(), pk=product_id)
+            product_serializer = ProductReadSerializer(product)
+            result.append(product_serializer.data)
+        return Response(result)
+
 
 
 class ProductRetrieveCreateView(APIView):
     def get(self, request):
-        print(request.query_params)
         serializer = BarcodeSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
 
@@ -20,8 +33,33 @@ class ProductRetrieveCreateView(APIView):
             barcodes = barcodes.filter(code_format=serializer.validated_data['code_format'])
 
         barcode = barcodes.get()
-        product_serializer = ProductSerializer(barcode.product)
+        History.objects.create(product=barcode.product)
+        product_serializer = ProductReadSerializer(barcode.product)
         return Response(product_serializer.data)
 
     def post(self, request):
-        pass
+        serializer = ProductWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        try:
+            barcode = Barcode.objects.get(code=data['code'], code_format=data['code_format'])
+            product = barcode.product
+            product.name = data['name']
+            product.brand_name = data['brand_name']
+            product.description = data['description']
+            product.ingredients = data['ingredients']
+            product.save()
+        except ObjectDoesNotExist:
+            product = Product.objects.create(
+                name = data['name'],
+                brand_name = data['brand_name'],
+                description = data['description'],
+                ingredients = data['ingredients'])
+            barcode = Barcode.objects.create(
+                code=data['code'],
+                code_format=data['code_format'],
+                product=product)
+
+        product_serializer = ProductReadSerializer(product)
+        return Response(product_serializer.data)
