@@ -132,7 +132,8 @@ export default class ProductNotFound extends React.Component {
             name: '',
             brand: '',
             ingredients: '',
-            discription: ''
+            discription: '',
+            submited: false,
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -183,11 +184,12 @@ export default class ProductNotFound extends React.Component {
         body: JSON.stringify({
             barcode: this.state.barcode,
             name: this.state.name,
-            brand: this.state.brand,
+            brand_name: this.state.brand,
             ingredients: this.state.ingredients,
-            discription: this.state.ingredients
+            description: this.state.description
         })
       })*/
+
     }
 
     render() {
