@@ -51,7 +51,9 @@ class ProductRetrieveCreateView(APIView):
 
 
         product_serializer = ProductReadSerializer(barcode.product)
-        return Response(product_serializer.data)
+        data = product_serializer.data
+        data['ingredients'] = json.loads(data['ingredients'])
+        return Response(data)
 
     def post(self, request):
         serializer = ProductWriteSerializer(data=request.data)
