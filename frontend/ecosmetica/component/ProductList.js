@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Font from 'expo-font';
 import { useState } from 'react';
 import { 
     Text, 
@@ -16,6 +17,9 @@ import { svg } from 'react-native-svg';
 import product1img from '../static/lRWynXU__sg.jpg';
 import product2img from '../static/250mlbottle_ricewheatshampoo_lg_1_1_1_1 (1).webp';
 import Product from './Product'
+
+
+
 
 const styles = StyleSheet.create({
     header: {
@@ -172,6 +176,10 @@ export default class ProductList extends React.Component {
     } 
     async componentDidMount(){
     
+      await Font.loadAsync({
+          'Forum': require('../../assets/fonts/Forum.ttf')
+      });
+      
         this.setState({ assetsLoaded: true });
     
         /* Кастомизация хедера */

@@ -145,6 +145,16 @@ export default class Profile extends React.Component {
       ],
     };
   }  
+
+  async componentDidMount() {
+    await Font.loadAsync({
+        'Forum': require('../../assets/fonts/Forum.ttf')
+    });
+
+    this.state.navigation.setOptions({
+      headerShown: false
+    })
+  }
    
       render() {
         return (
