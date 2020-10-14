@@ -23,6 +23,7 @@ class Product(models.Model):
     brand_name = models.CharField(max_length=100, blank=True)
     img_url = models.CharField(max_length=250, blank=True)
     description = models.TextField(blank=True)
+    ingredients = models.TextField(blank=True)
 
     eco_score = models.IntegerField(default=-1)
     safety_score = models.IntegerField(default=-1)

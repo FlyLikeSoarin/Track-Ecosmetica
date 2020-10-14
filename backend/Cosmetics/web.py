@@ -139,5 +139,5 @@ def search_product(query):
         return ews_parser.products, ews_parser.num_found
 
 
-def get_or_fetch_product(product_name, brand_name):
+def get_product_or_fetch(product_name, brand_name):
     pass

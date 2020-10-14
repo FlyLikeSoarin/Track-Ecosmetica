@@ -7,13 +7,19 @@ class BarcodeSerializer(serializers.ModelSerializer):
         model = Barcode
         fields = ['code', 'code_format']
 
-    code_format = serializers.CharField(default = 'UPCEAN', required=False, max_length=50)
+    code_format = serializers.CharField(max_length=10, default = 'UPCEAN', required=False)
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'brand_name', 'universe_htt', 'brand_htt']
+        fields = '__all__'
 
-    # universe_htt_id = serializers.CharField(default = '-', required=False, max_length=50)
-    # brand_htt_id = serializers.CharField(default = '-', required=False, max_length=50)
+
+class ProductWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['name', 'brand_name', 'ingredients', 'description']
+
+    barcode = serializers.CharField(max_length=50)
+    code_format = serializers.CharField(max_length=10, default = 'UPCEAN', required=False)
