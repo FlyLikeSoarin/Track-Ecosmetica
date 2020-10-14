@@ -22,6 +22,7 @@ class Command(BaseCommand):
     filename = 'uhtt_barcode_ref_all'
 
     def handle(self, *args, **options):
+        csv.field_size_limit(10 ** 8)
         if not os.path.exists(f'{self.filename}.7z'):
             self.download()
         if not os.path.exists(f'{self.filename}.csv'):
