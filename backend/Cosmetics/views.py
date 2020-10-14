@@ -65,6 +65,8 @@ class ProductRetrieveCreateView(APIView):
             product.description = data['description']
             product.ingredients = data['ingredients']
             product.save()
+            barcode.product=product
+            barcode.save()
         except ObjectDoesNotExist:
             product = Product.objects.create(
                 name = data['name'],
