@@ -84,6 +84,18 @@ function AddProduct({ navigation, route }) {
     </View>
   );
 };
+
+function AddIngridient({ navigation, route }) {
+  return(
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>AddIngridient</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
 // function ProductInfo({ navigation, route }) {
 //   return(
 //   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -124,6 +136,7 @@ export default class App extends React.Component {
             <Stack.Screen name='Result' component={Result} />
             <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
             <Stack.Screen name='AddProduct' component={AddProduct} />
+            <Stack.Screen name='AddIngridient' component={AddIngridient} />
             <Stack.Screen name='ProductInfo' component={ProductInfo} />
           </Stack.Navigator>
           </NavigationContainer>
@@ -142,6 +155,8 @@ export default class App extends React.Component {
               <Stack.Screen name='Result' component={Result} />
               <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
               <Stack.Screen name='AddProduct' component={AddProduct} />
+              <Stack.Screen name='AddIngridient' component={AddIngridient} />
+              <Stack.Screen name='ProductInfo' component={ProductInfo} />
             </Stack.Navigator>
             </NavigationContainer>
           )

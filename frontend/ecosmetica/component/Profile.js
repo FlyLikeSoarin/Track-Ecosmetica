@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Image, SafeAreaView, FlatList } from 'react-native';
-import { Svg } from 'react-native-svg';
+import { SvgXml } from 'react-native-svg';
 import { Image as Img } from 'react-native-svg';
-  
-import headerTail from '../assets/svg/headerTail.svg';
 import profileImage from '../static/9HL2MCfxlio.jpg';
   
 const styles = StyleSheet.create({
@@ -84,9 +82,8 @@ const styles = StyleSheet.create({
   },
   headerTailBefore: {
       position: 'absolute',
-      right: 0,
+      right: 1,
       top: 0,
-      left: 0,
       height: 200,
       width: 200,
       backgroundColor: 'white',
@@ -137,24 +134,8 @@ export default class Profile extends React.Component {
 
     this.state = {
       navigation: this.props.navigation,
-      ingridients: [
-        {
-          title: 'ingridient1',
-          id: '1',
-        }
-      ],
     };
   }  
-
-  async componentDidMount() {
-    await Font.loadAsync({
-        'Forum': require('../../assets/fonts/Forum.ttf')
-    });
-
-    this.state.navigation.setOptions({
-      headerShown: false
-    })
-  }
    
       render() {
         return (
@@ -162,6 +143,9 @@ export default class Profile extends React.Component {
             <View style={styles.header}>
               <View style={styles.imageArea}>
               <Image style={styles.img} source={profileImage}/>
+              {/* <SvgXml width={80} height={80} xml={headerTail}> */}
+                
+              {/* </SvgXml> */}
               </View>
             </View>
             <View style={styles.body}>
@@ -175,7 +159,7 @@ export default class Profile extends React.Component {
               <Text style={styles.smallText}>Исключенные ингридиенты</Text>
                     <ItemList data={this.state.ingridients}/>
                     <View style={styles.bottom}>
-                      <TouchableOpacity onPress={()=>this.state.ingridients.concat({title:'ig2',id: '2'})}>
+                      <TouchableOpacity onPress={()=>this.state.navigation.navigate('AddIngridient')}>
                         <View style={styles.button}>
                           <Text style={styles.buttonText}>Исключить ингридиент</Text>
                         </View>

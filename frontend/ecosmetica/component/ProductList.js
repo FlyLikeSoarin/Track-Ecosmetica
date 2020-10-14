@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     // },
 });
 
-
+const URL = 'http://185.148.82.169:8005/';
 const productData = {
     productID: 1,
     name: 'Шампунь для объема с экстрактом риса и пшеницы',
@@ -155,6 +155,8 @@ export default class ProductList extends React.Component {
       this.state = {
         navigation: this.props.navigation,  
         assetsLoaded: false,
+        data: {},
+        isGet: false,
         DATA: [
             {
               id: '2',
@@ -174,11 +176,33 @@ export default class ProductList extends React.Component {
           ],
       };
     } 
+
+    handleData = async () => {
+      await fetch(`http://185.148.82.169:8005/product/history`, {
+          method: 'GET',
+          mode: 'no-cors',
+        })
+        .then((resp) => {
+          if (resp.status !== 200) {  
+            console.log('Looks like there was a problem. Status Code: ' +  
+              resp.status);  
+            return;  
+          }
+          else{
+            resp.json();
+            console.log(resp)
+          }
+
+        })
+        .then((data) => {
+          this.setState({data: data});
+          console.log(data);
+        })
+      this.setState({isGet: true});
+    }
+
     async componentDidMount(){
     
-      await Font.loadAsync({
-          'Forum': require('../../assets/fonts/Forum.ttf')
-      });
       
         this.setState({ assetsLoaded: true });
     
@@ -200,13 +224,15 @@ export default class ProductList extends React.Component {
             </TouchableOpacity>
           ),
         });
+        this.handleData();
       }
 
     render() {
     return (
         <View style={styles.container}>
+          <Text>{this.state.isGet}</Text>
             <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'/*this.state.DATA[0].productID*/})}
+                onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'})}
             >
                 <Product 
                 title='Шампунь для объема с экстрактом риса и пшеницы' 
@@ -215,7 +241,7 @@ export default class ProductList extends React.Component {
                 metric1='50%'/>
             </TouchableOpacity>
             <ItemList data={this.state.DATA}/>
-
+            
             {/* Footer */}
             <View style={styles.buttonMenuContainer}>
                 <TouchableOpacity
