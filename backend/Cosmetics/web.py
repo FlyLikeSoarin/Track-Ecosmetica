@@ -1,8 +1,15 @@
+import random
 import re
 import requests
 import time
 
 from html.parser import HTMLParser
+from difflib import SequenceMatcher
+
+
+# Settings
+max_attempts = 10
+attempts_pause_time = 0.500
 
 
 class EWSSearchParser(HTMLParser):
@@ -139,5 +146,29 @@ def search_product(query):
         return ews_parser.products, ews_parser.num_found
 
 
+def is_word_allowed(word):
+    hits = re.findall('[^\w&-]+', word) + re.findall('\d+', word)
+    return len(hits) == 0
+
+
+def severity_to_score(severity):
+    return {'low': 10, 'moderate': 6, 'high': 2}[severity]
+
+
 def get_product_or_fetch(product_name, brand_name):
-    pass
+    pure_brand_name = brand_name.strip()
+    list_product_name = product_name.replace(pure_brand_name, '').split()
+    list_product_name = [word for word in list_product_name if is_word_allowed(word)]
+    pure_product_name = ' '.join(list_product_name)
+
+    print(pure_brand_name, pure_product_name)
+
+    products, _ = search_product(f'{pure_brand_name} {pure_product_name}')
+    products.sort(key=lambda p:\
+        SequenceMatcher(None, p['name'], pure_product_name).ratio()\
+        + SequenceMatcher(None, p['brand'], pure_brand_name).ratio())
+
+    if products:
+        return fetch_product(products[-1])
+    else:
+        return False

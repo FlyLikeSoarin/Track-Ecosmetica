@@ -7,6 +7,9 @@ from rest_framework.response import Response
 
 from .serializers import BarcodeSerializer, ProductReadSerializer, ProductWriteSerializer
 from .models import Barcode, Product, History
+from .web import get_product_or_fetch, severity_to_score
+
+import json
 
 
 class ProductHistoryView(APIView):
@@ -34,6 +37,18 @@ class ProductRetrieveCreateView(APIView):
 
         barcode = barcodes.get()
         History.objects.create(product=barcode.product)
+
+        product = barcode.product
+        ewg_product = get_product_or_fetch(product.name, product.brand_name)
+        if ewg_product != False:
+            product.ingredients = json.dumps(ewg_product['ingredient'])
+            product.ingredients = json.dumps(ewg_product['ingredient'])
+            eco_score = severity_to_score(wg_product['gauges'][0][1])
+            safety_score = severity_to_score(wg_product['gauges'][1][1])
+            zoo_score = severity_to_score(wg_product['gauges'][2][1])
+            product.save()
+
+
         product_serializer = ProductReadSerializer(barcode.product)
         return Response(product_serializer.data)
 
