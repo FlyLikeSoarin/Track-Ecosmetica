@@ -17,14 +17,15 @@ import { svg } from 'react-native-svg';
 import product1img from '../static/lRWynXU__sg.jpg';
 import product2img from '../static/250mlbottle_ricewheatshampoo_lg_1_1_1_1 (1).webp';
 import Product from './Product'
-
-
-
+import ImageProductMock from '../static/EEyMAHcCfnE.jpg'
 
 const styles = StyleSheet.create({
     header: {
       flex: 1,
       backgroundColor: '#ffffff',
+    },
+    body: {
+      flex: 6,
     },
     product: {
         backgroundColor: '#c7f9cc',
@@ -125,9 +126,9 @@ const renderItem = ({item}) => {
     //   >
     <View>
         <Product 
-        title={item.title}
-        image={item.image} 
-        lable={item.lable}
+        title={item.name}
+        image={ImageProductMock} 
+        lable={item.brand_name}
         metric1={item.metric1}/>
     </View>
 
@@ -141,7 +142,7 @@ const ItemList = ({data}) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.name}
         />
       </SafeAreaView>
     )
@@ -158,29 +159,35 @@ export default class ProductList extends React.Component {
         data: {},
         isGet: false,
         DATA: [
-            {
-              id: '2',
-              title: 'Крем для кожи вокруг глаз с авокадо',
-             // image: this.props.img,
-              lable: "Khiel's",
-              metric1: '50%',
-            },
-            {
-              id: '3',
-              title: 'Second Item',
-            },
-            {
-              id: '58694a0f-3da1-471f-bd96-145571e29d72',
-              title: 'Third Item',
-            },
-          ],
+          {
+            "name": "Silkygirl blusher 01 (nectar blush)",
+            "brand_name": "Silkygirl",
+            "img_url": "",
+            "description": "",
+            "ingredients": "",
+            "eco_score": -1,
+            "safety_score": -1,
+            "zoo_score": -1,
+            "total_score": -1
+          },
+          {
+            "name": "Silkofix лейкопластырь на ткан осн 1.25x 500см/тел",
+            "brand_name": "",
+            "img_url": "",
+            "description": "",
+            "ingredients": "",
+            "eco_score": -1,
+            "safety_score": -1,
+            "zoo_score": -1,
+            "total_score": -1
+        },
+        ],
       };
     } 
 
     handleData = async () => {
       await fetch(`http://185.148.82.169:8005/product/history`, {
           method: 'GET',
-          mode: 'no-cors',
         })
         .then((resp) => {
           if (resp.status !== 200) {  
@@ -230,7 +237,8 @@ export default class ProductList extends React.Component {
     render() {
     return (
         <View style={styles.container}>
-          <Text>{this.state.isGet}</Text>
+          <View style={styles.body}>
+            <Text>{this.state.isGet}</Text>
             <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'})}
             >
@@ -241,6 +249,7 @@ export default class ProductList extends React.Component {
                 metric1='50%'/>
             </TouchableOpacity>
             <ItemList data={this.state.DATA}/>
+          </View>
             
             {/* Footer */}
             <View style={styles.buttonMenuContainer}>
