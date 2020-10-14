@@ -1,9 +1,12 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Dimensions} from 'react-native';
 
 import CrossButton from '../Button/CrossButton';
 import AddPhoto from './AddPhotoArea'
+import PhotoButton from './PhotoButton'
+
+var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container: {
@@ -70,8 +73,10 @@ const styles = StyleSheet.create({
         color: '#467354'
      },
      bottom: {
-        alignItems: 'center',
-        backgroundColor: 'black'
+        alignItems: 'stretch',
+        position: 'absolute',
+        top: 160,
+        width: width,
      },
      submitButton: {
         backgroundColor: '#C1E1A0',
@@ -80,6 +85,7 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'space-around',
         marginTop:30,
+        alignSelf: 'center'
      },
      submitButtonText: {
         color: '#467354',
@@ -87,20 +93,26 @@ const styles = StyleSheet.create({
         textAlign: 'center',
      },
      textArea: {
-        alignItems: 'flex-start',
-        backgroundColor: 'red'
+        alignItems: 'stretch',
+        flexDirection: 'column',
      },
      headerTextArea: {
+        paddingLeft: 30,
+        paddingRight: 30,
+        paddingTop: 10,
+        flexDirection: 'row',
 
      },
      titleTextArea: {
-
+        flex: 1,
+        fontFamily: 'Forum',
+        color: '#467354',
      },
      textAreaInput: {
         borderWidth: 4,
+        backgroundColor: 'white',
         borderColor: '#C1E1A0',
         borderRadius: 20,
-        margin: 15,
         marginRight: 25,
         marginLeft: 25,
         padding: 10,
@@ -191,21 +203,21 @@ export default class ProductNotFound extends React.Component {
                         <View style={styles.textArea}>
                             <View style={styles.headerTextArea}>
                                 <Text style={styles.titleTextArea}>Ингредиенты:</Text>
+                                <PhotoButton/>
                             </View>
                             <TextInput
-                                multiline={true}
-                                numberOfLines={4}
                                 style={styles.textAreaInput}
+                                autoCapitalize = "none"
                             />
                         </View>
                         <View style={styles.textArea}>
                             <View style={styles.headerTextArea}>
                                 <Text style={styles.titleTextArea}>Описание:</Text>
+                                <PhotoButton/>
                             </View>
                             <TextInput
-                                multiline={true}
-                                numberOfLines={4}
                                 style={styles.textAreaInput}
+                                autoCapitalize = "none"
                             />
                         </View>
                         <TouchableOpacity 

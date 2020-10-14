@@ -14,6 +14,7 @@ import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
 import AddProductPage from './component/AddProduct/AddProductPage'
+import Product from './component/Product/Product'
 
 
 const styles = StyleSheet.create({
@@ -38,18 +39,7 @@ function Search({ navigation }) {
     </View>
   );
 };
-function Result({ route, navigation }) {
-  const {type, data} = route.params;
-  return(
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Type:{type} Data:{data}</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
+
 function Profile({ navigation }) {
   return(
   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -78,7 +68,7 @@ export default class App extends React.Component {
           <Stack.Screen name='Profile' component={Profile} />
           <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
           <Stack.Screen name='Search' component={Search} />
-          <Stack.Screen name='Result' component={Result} />
+          <Stack.Screen name='Product' component={Product} />
           <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
           <Stack.Screen name='AddProduct' component={AddProductPage} />
         </Stack.Navigator>

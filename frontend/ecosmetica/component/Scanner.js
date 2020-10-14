@@ -78,7 +78,8 @@ export default class BarcodeScannerComponent extends React.Component {
       })
     this.setState({ scanned: true }); */
     if (type !== 'org.iso.QRCode') {
-      this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+      // this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+      this.state.navigation.navigate('Product', {type: type, data: data});
     }
     else {
       this.setState({
