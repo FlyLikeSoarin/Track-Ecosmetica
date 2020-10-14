@@ -7,10 +7,10 @@ import { HeaderBackground } from '@react-navigation/stack';
 
 
 /*Buttons*/
-import HomeButton from './Button/HomeButton'
-import ScanButton from './Button/ScanButton'
-import ProfileButton from './Button/ProfileButton'
-import SearchButton from './Button/SearchButton'
+// import HomeButton  from './Button/HomeButton'
+// import ScanButton from './Button/ScanButton'
+// import ProfileButton from './Button/ProfileButton'
+// import SearchButton from './Button/SearchButton'
 
 
 const styles = StyleSheet.create({
@@ -101,7 +101,7 @@ export default class MainPage extends React.Component {
       },
       headerRight: () => (
         <TouchableOpacity onPress={()=> this.state.navigation.navigate('Search')}>
-          <SearchButton />
+          
         </TouchableOpacity>
       ),
     });
@@ -127,19 +127,19 @@ export default class MainPage extends React.Component {
         {/* Footer */}
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity>
-          <HomeButton />
+          
           <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Scanner')}
             >
-              <ScanButton />
+              
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Profile')}
             >
-              <ProfileButton />
+              
               <Text style={styles.buttonText}>Профиль</Text>
             </TouchableOpacity> 
         </View>   

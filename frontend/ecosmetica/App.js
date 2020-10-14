@@ -13,6 +13,8 @@ import ProfileScreen from './component/Profile';
 import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
+import ProductInfo from './component/ProductInfo'
+import Profile from './component/Profile'
 
 
 const styles = StyleSheet.create({
@@ -49,17 +51,17 @@ function Result({ route, navigation }) {
     </View>
   );
 };
-function Profile({ navigation }) {
-  return(
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Profile</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
+// function Profile({ navigation }) {
+//   return(
+//   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>Profile</Text>
+//       <Button
+//         title="Go to Home"
+//         onPress={() => navigation.navigate('Home')}
+//       />
+//     </View>
+//   );
+// };
 /*function ProductNotFound({ route, navigation }) {
   return(
   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -82,28 +84,67 @@ function AddProduct({ navigation, route }) {
     </View>
   );
 };
+// function ProductInfo({ navigation, route }) {
+//   return(
+//   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>ProductInfo</Text>
+//       <Button
+//         title="Go to Home"
+//         onPress={() => navigation.navigate('Home')}
+//       />
+//     </View>
+//   );
+// };
 
 
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      //isHistory: false,
+      isHistory: true,
+    }
+  }
+
   render() {
-      return (
-        <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={MainPage}
-          />
-          <Stack.Screen name='Profile' component={Profile} />
-          <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-          <Stack.Screen name='Search' component={Search} />
-          <Stack.Screen name='Result' component={Result} />
-          <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
-          <Stack.Screen name='AddProduct' component={AddProduct} />
-        </Stack.Navigator>
-        </NavigationContainer>
-      );
+      if (this.state.isHistory == true){    
+        return (
+          <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={ProductList}
+            />
+            <Stack.Screen name='Profile' component={Profile} />
+            <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+            <Stack.Screen name='Search' component={Search} />
+            <Stack.Screen name='Result' component={Result} />
+            <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+            <Stack.Screen name='AddProduct' component={AddProduct} />
+            <Stack.Screen name='ProductInfo' component={ProductInfo} />
+          </Stack.Navigator>
+          </NavigationContainer>
+        )}
+        else {
+          return (
+            <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Home"
+                component={MainPage}
+              />
+              <Stack.Screen name='Profile' component={Profile} />
+              <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+              <Stack.Screen name='Search' component={Search} />
+              <Stack.Screen name='Result' component={Result} />
+              <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+              <Stack.Screen name='AddProduct' component={AddProduct} />
+            </Stack.Navigator>
+            </NavigationContainer>
+          )
+        }
   }
 }
