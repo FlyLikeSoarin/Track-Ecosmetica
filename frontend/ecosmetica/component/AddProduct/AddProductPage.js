@@ -7,6 +7,7 @@ import AddPhoto from './AddPhotoArea'
 import PhotoButton from './PhotoButton'
 
 var width = Dimensions.get('window').width;
+const URL = ''
 
 const styles = StyleSheet.create({
     container: {
@@ -130,11 +131,15 @@ export default class ProductNotFound extends React.Component {
             barcode: this.props.route.params.data,
             name: '',
             brand: '',
+            ingredients: '',
+            discription: ''
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
         this.handleBrand = this.handleBrand.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.hamdelIngredients = this.hamdelIngredients.bind(this)
+        this.handleDiscriptions = this.handleDiscriptions.bind(this)
     }
 
     async componentDidMount() {
@@ -162,8 +167,27 @@ export default class ProductNotFound extends React.Component {
             brand: text
         });
     }
+    hamdelIngredients(text) {
+        this.setState({
+            ingredients: text
+        });
+    }
+    handleDiscriptions(text) {
+        this.setState({
+            discription: text
+        });
+    }
     handleSubmit() {
-        // Отправляем данные на бэк
+        /*fetch(`${URL}/product/add`, {
+        method: 'POST',
+        body: JSON.stringify({
+            barcode: this.state.barcode,
+            name: this.state.name,
+            brand: this.state.brand,
+            ingredients: this.state.ingredients,
+            discription: this.state.ingredients
+        })
+      })*/
     }
 
     render() {
@@ -208,6 +232,7 @@ export default class ProductNotFound extends React.Component {
                             <TextInput
                                 style={styles.textAreaInput}
                                 autoCapitalize = "none"
+                                onChangeText={this.hamdelIngredients}
                             />
                         </View>
                         <View style={styles.textArea}>
@@ -218,6 +243,7 @@ export default class ProductNotFound extends React.Component {
                             <TextInput
                                 style={styles.textAreaInput}
                                 autoCapitalize = "none"
+                                onChangeText={this.handleDiscriptions}
                             />
                         </View>
                         <TouchableOpacity 
