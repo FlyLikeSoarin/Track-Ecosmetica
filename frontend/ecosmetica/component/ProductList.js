@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     metrics: {
       flex: 1,
       flexDirection: 'row',
-      justifyContent: 'space-arownd',   
+      justifyContent: 'space-around',   
     },
     title: {
       flex: 2,
