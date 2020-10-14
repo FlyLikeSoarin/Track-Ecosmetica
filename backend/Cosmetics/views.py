@@ -61,5 +61,6 @@ class ProductRetrieveCreateView(APIView):
                 code_format=data['code_format'],
                 product=product)
 
+        History.objects.create(product=barcode.product)
         product_serializer = ProductReadSerializer(product)
         return Response(product_serializer.data)
