@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Dimensions} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Dimensions, ScrollView} from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import CrossButton from '../Button/CrossButton';
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 160,
         width: width,
-        padding: 25
+        padding: 25,
      },
      name: {
         position: 'absolute',
@@ -134,6 +134,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Forum',
         fontSize: 20,
         color: '#467354'
+    },
+    contentContainer: {
+        flexGrow : 1
     }
 })
 
@@ -153,9 +156,29 @@ export default class Product extends React.Component {
             allergy_score: '50%',
             ewg_score: 10,
             description: '',
-            ingredients: ['Ингредиент1', 'Ингредиент2', 'Ингредиент3'],
+            ingredients: ['Ингредиент1', 'Ингредиент2', 'Ингредиент3', 'Ингредиент4', 'Ингредиент5', 'Ингредиент4', 'Ингредиент5'],
         }
     }
+
+    /*
+    constructor(props) {
+        super(props);
+        this.state = {
+            navigation: this.props.navigation,
+            type: this.props.route.params.type,
+            barcode: this.props.route.params.barcode,
+            name: this.props.route.params.data.name,
+            img_url: '',
+            brand: this.props.route.params.data.brand,
+            naturality_score: this.props.route.params.data.naturality_score,
+            risk_score: this.props.route.params.data.risk_score,
+            allergy_score: this.props.route.params.data.allergy_score,
+            ewg_score: this.props.route.params.data.ewg_score,
+            description: this.props.route.params.data.description,
+            ingredients: this.props.route.params.data.ingredients,
+        }
+    }
+    */
 
     async componentDidMount() {
         await Font.loadAsync({
@@ -205,23 +228,25 @@ export default class Product extends React.Component {
                         </View>
                     </View>
                     <View style={styles.bottom}>
-                        <View style={styles.ingregientsArea}>
-                            <Text style={styles.ingredientTitle}>
-                                Ингредиенты:
-                            </Text>
-                            {this.state.ingredients.map(ingredient => {
-                            return (
-                                <View style={styles.ingregientBlock}>
-                                    <Text style={styles.ingredientName}>
-                                        {ingredient}
-                                    </Text>
-                                    <Text style={styles.scoreIngregient}>
-                                    10
-                                    </Text>
-                                </View>
-                            );
-                        })}
-                        </View>
+                        <ScrollView decelerationRate="fast" contentContainerStyle={styles.contentContainer}>
+                            <View style={styles.ingregientsArea}>
+                                <Text style={styles.ingredientTitle}>
+                                    Ингредиенты:
+                                </Text>
+                                {this.state.ingredients.map(ingredient => {
+                                    return (
+                                        <View style={styles.ingregientBlock}>
+                                            <Text style={styles.ingredientName}>
+                                                {ingredient}
+                                            </Text>
+                                            <Text style={styles.scoreIngregient}>
+                                            10
+                                            </Text>
+                                        </View>
+                                    );
+                                 })}
+                            </View>
+                        </ScrollView >
                     </View>
                 </View>
             </View>

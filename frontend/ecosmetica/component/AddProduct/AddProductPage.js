@@ -7,7 +7,7 @@ import AddPhoto from './AddPhotoArea'
 import PhotoButton from './PhotoButton'
 
 var width = Dimensions.get('window').width;
-const URL = ''
+const URL = 'http://185.148.82.169:8005/'
 
 const styles = StyleSheet.create({
     container: {
@@ -179,16 +179,27 @@ export default class ProductNotFound extends React.Component {
         });
     }
     handleSubmit() {
-        /*fetch(`${URL}/product/add`, {
+        fetch(`${URL}product/`, {
         method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-            barcode: this.state.barcode,
+            code: this.state.barcode,
             name: this.state.name,
             brand_name: this.state.brand,
             ingredients: this.state.ingredients,
-            description: this.state.description
+            description: ''
         })
-      })*/
+      })
+      this.setState({
+          barcode: '',
+          name: '',
+          brand: '',
+          ingredients: '',
+          description: ''
+      })
 
     }
 
@@ -209,11 +220,13 @@ export default class ProductNotFound extends React.Component {
                         onChangeText={this.handleBarcode}
                         />
                     <TextInput style={styles.input}
+                        value={this.state.name}
                         placeholder='Название'
                         placeholderTextColor = "#DCDCDC"
                         autoCapitalize = "none"
                         onChangeText={this.handleName}/>
                     <TextInput style={styles.input}
+                        value={this.state.brand}
                         placeholder='Бренд'
                         placeholderTextColor = "#DCDCDC"
                         autoCapitalize = "none"
@@ -232,6 +245,7 @@ export default class ProductNotFound extends React.Component {
                                 <PhotoButton/>
                             </View>
                             <TextInput
+                                value={this.state.ingredients}
                                 style={styles.textAreaInput}
                                 autoCapitalize = "none"
                                 onChangeText={this.hamdelIngredients}
@@ -243,6 +257,7 @@ export default class ProductNotFound extends React.Component {
                                 <PhotoButton/>
                             </View>
                             <TextInput
+                                value={this.state.discription}
                                 style={styles.textAreaInput}
                                 autoCapitalize = "none"
                                 onChangeText={this.handleDiscriptions}
