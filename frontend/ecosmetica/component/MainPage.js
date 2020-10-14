@@ -7,7 +7,7 @@ import { HeaderBackground } from '@react-navigation/stack';
 
 
 /*Buttons*/
-// import HomeButton  from './Button/HomeButton'
+ import HomeButton  from './Button/HomeButton'
 // import ScanButton from './Button/ScanButton'
 // import ProfileButton from './Button/ProfileButton'
 // import SearchButton from './Button/SearchButton'
@@ -127,7 +127,7 @@ export default class MainPage extends React.Component {
         {/* Footer */}
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity>
-          
+          <HomeButton/>
           <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
             <TouchableOpacity
