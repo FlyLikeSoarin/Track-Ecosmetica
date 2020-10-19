@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8005",
     "192.168.0.105",
+    "93.175.4.51"
 ]
 
 AUTH_USER_MODEL = 'Users.User'
