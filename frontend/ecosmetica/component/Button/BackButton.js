@@ -1,31 +1,18 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+import back from '../../assets/svg/back_new.svg';
 
-import back from '../../assets/back.svg';
-
-const BackButton = (props) => {
+export default function BackButton() {
   return (
-  	<View style={ styles.container }>
-    <Image
-      style={styles.tinyLogo}
-      source={ back }
-      onClick={ props.closeScan }/>
+  	<View style={ styles.back }>
+     <SvgXml xml={back} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 50,
-  },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  logo: {
-    width: 66,
-    height: 58,
-  },
-});
-
-export default BackButton;
+  back: {
+      marginLeft: 20
+  }
+})

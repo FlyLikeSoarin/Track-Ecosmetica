@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
 export default function SearchButton(){
     return(
         <View style={styles.button} >
-            <SvgXml width="30" height="30" xml={Search} />
+            <SvgXml width="24" height="24" fill='#929292' xml={Search} />
         </View>
     )
 } 

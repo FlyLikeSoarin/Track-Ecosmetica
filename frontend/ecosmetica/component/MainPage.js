@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Image, StatusBar, ActivityIndicator} from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator} from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
@@ -12,6 +12,8 @@ import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'
 
+
+var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   header: {
@@ -25,16 +27,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   productImage: {
-    flex: 5,
+    flex: 4,
   },
   containerProductText: {
+    flex: 6,
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   productText: {
-    color: '#467354',
-    fontSize: 40,
+    color: '#676767',
+    fontSize: 24,
     fontFamily: 'Forum',
     textAlign: 'center',
+    marginBottom: 50
   },
   image: {
     flex: 1,
@@ -44,14 +50,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    backgroundColor: '#fff'
   },
   buttonMenuContainer:{
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    flexGrow: 1,
-    backgroundColor: '#9ae7af',
+    backgroundColor: '#fff',
+    borderTopColor: '#929292',
+    borderTopWidth: 0.5
   },
   buttonImage: {
     color:'#9ae7af',
@@ -61,11 +69,40 @@ const styles = StyleSheet.create({
     height: 80,
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#929292',
     fontSize: 10,
     fontFamily: 'Forum',
     textAlign: 'center',
-  }
+    justifyContent: 'center',
+  },
+  buttonArea: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  registrButton: {
+    backgroundColor: '#009E4E',
+    width: width - 60,
+    height: 40,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    margin: 5
+  },
+  logInButton: {
+    backgroundColor: '#E5E5E5',
+    width: width - 60,
+    height: 40,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    margin: 5
+  },
+  registrText: {
+    color: '#fff',
+  }, 
+  logInText: {
+    color: '#009E4E',
+  },
 })
 
 export default class MainPage extends React.Component {
@@ -91,9 +128,11 @@ export default class MainPage extends React.Component {
     this.state.navigation.setOptions({ 
       headerTitle: 'Ecosmetica',
       headerStyle: {
-        backgroundColor: '#9ae7af',
+        backgroundColor: '#fff',
+        borderBottomColor: '#929292',
+        borderBottomWidth: 0.5
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#929292',
       headerTitleStyle: {
         fontWeight: 'bold',
         fontSize: 30,
@@ -116,27 +155,41 @@ export default class MainPage extends React.Component {
       <View style={styles.container}>
         {/* Body */}
         <View style={styles.productImage}>
-          <ImageBackground source={backgroundImage} style={styles.image}>
+          {/*<ImageBackground source={backgroundImage} style={styles.image}>
           <View></View>
-          </ImageBackground>
+    </ImageBackground>*/}
         </View>
         <View style={styles.containerProductText}>
-          <Text style={styles.productText}>У вас пока нет отсканированных продуктов</Text>
+          <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr')}>
+            <View style={styles.registrButton}>
+              <Text style={styles.registrText}>
+              Зарегистрироваться
+             </Text>
+           </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+          <View style={styles.logInButton}>
+            <Text style={styles.logInText}>
+              Войти
+            </Text>
+          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View style={styles.buttonMenuContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity style={styles.buttonArea}>
           <HomeButton />
           <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
-            <TouchableOpacity
+            <TouchableOpacity style={styles.buttonArea}
               onPress={() => this.props.navigation.navigate('Scanner')}
             >
               <ScanButton />
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            <TouchableOpacity style={styles.buttonArea}
               onPress={() => this.props.navigation.navigate('Profile')}
             >
               <ProfileButton />
