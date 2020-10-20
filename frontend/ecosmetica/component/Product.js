@@ -9,6 +9,7 @@ import {
 
 import { SvgXml } from 'react-native-svg';
 import ImageProductMock from '../static/bottleMock.jpg'
+import Star from './Button/Star'
 
 import metric11 from '../assets/svg/plant-leaf-with-white-details.svg';
   
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         flexDirection: 'row',
-        border: 1,
+        borderWidth: 1,
     },
     container: {
         flex: 1,
@@ -73,12 +74,12 @@ const styles = StyleSheet.create({
 //   )
 // }
 
-const starSvg = (
+/*const starSvg = (
 <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11 0L13.4697 7.60081H21.4616L14.996 12.2984L17.4656 19.8992L11 15.2016L4.53436 19.8992L7.00402 12.2984L0.538379 7.60081H8.53035L11 0Z" fill="#FFA21F"/>
 <path d="M11 0L13.4697 7.60081H21.4616L14.996 12.2984L17.4656 19.8992L11 15.2016L4.53436 19.8992L7.00402 12.2984L0.538379 7.60081H8.53035L11 0Z" fill="#FFA21F"/>
 </svg>
-)
+)*/
 
 const renderImage = ({image}) => {
   if (image!=='undefined') 
@@ -102,11 +103,11 @@ const Product = ({title, image, lable, metric1}) => {
               <Text style={styles.lable}>{lable}</Text>
             </View>
             <View style={styles.metrics}>
-                {starSvg}
-                {starSvg}
-                {starSvg}
-                {starSvg}
-                {starSvg}
+                <Star />
+                <Star />
+                <Star />
+                <Star />
+                <Star />
                 <Text style={styles.metricsText}>4.0</Text>
             </View>
           </View>
