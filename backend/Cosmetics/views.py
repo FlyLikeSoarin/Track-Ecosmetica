@@ -20,7 +20,7 @@ class ProductHistoryView(APIView):
 
     def get(self, request):
         products = History.objects.filter(user=request.user.id)\
-            .order_by('').values_list('product', flat=True)
+            .order_by('-timestamp').values_list('product', flat=True)[:10]
         result = []
         for product_id in products:
             product = get_object_or_404(Product.objects.all(), pk=product_id)
@@ -92,6 +92,6 @@ class ProductRetrieveCreateView(APIView):
                 product=product)
 
         if request.auth is not None:
-            History.objects.create(product=barcode.product, request.user)
+            History.objects.create(product=barcode.product, user=request.user)
         product_serializer = ProductReadSerializer(product)
         return Response(product_serializer.data)

@@ -25,13 +25,16 @@ SECRET_KEY = 'go0f+_g8rdj7m5xzmx55mhl#b21w#ji(5mni0%h7s4dn5*4#o7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8005",
     "192.168.0.105",
-    "93.175.4.51"
+    "93.175.4.51",
+    "*",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'Users.User'
 
@@ -45,8 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheareds',
+    'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'Cosmetics',
     'Users',
 ]

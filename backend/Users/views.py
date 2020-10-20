@@ -9,9 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authtoken.models import Token
 
 from .serializers import UserCreationSerializer, ProtectedUserSerializer, UnprotectedUserSerializer
-from .serializers import VKAuthRequestSerializer
 from .models import User
-from .web import fetch_user
 
 
 class AuthView(APIView):
