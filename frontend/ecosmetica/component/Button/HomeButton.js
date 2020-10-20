@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function HomeButton(){
+export default function HomeButton(props){
     return(
-        <SvgXml width="30" height="30" xml={Home} fill="#009E4E"/>
+        <SvgXml width="30" height="30" xml={Home} fill={props.fill}/>
     )
 } 

@@ -130,6 +130,7 @@ export default class Registr extends React.Component {
                         first_name: '',
                         last_name: ''
                     })
+                    this.state.navigation.navigate('Home')
 
                 } else {
                     console.log('fail')

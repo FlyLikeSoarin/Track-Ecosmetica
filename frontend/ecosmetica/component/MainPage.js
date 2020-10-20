@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator} from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator } from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     backgroundColor: '#fff'
   },
-  buttonMenuContainer:{
+  buttonMenuContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.5
   },
   buttonImage: {
-    color:'#9ae7af',
+    color: '#9ae7af',
   },
   img: {
     width: 80,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   registrText: {
     color: '#fff',
-  }, 
+  },
   logInText: {
     color: '#009E4E',
   },
@@ -114,9 +114,9 @@ export default class MainPage extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
     };
-  } 
+  }
 
-  async componentDidMount(){
+  async componentDidMount() {
     /* Загрузка шрифтов */
     await Font.loadAsync({
       'Forum': require('../assets/fonts/Forum.ttf')
@@ -125,7 +125,7 @@ export default class MainPage extends React.Component {
     this.setState({ assetsLoaded: true });
 
     /* Кастомизация хедера */
-    this.state.navigation.setOptions({ 
+    this.state.navigation.setOptions({
       headerTitle: 'Ecosmetica',
       headerStyle: {
         backgroundColor: '#fff',
@@ -139,50 +139,50 @@ export default class MainPage extends React.Component {
         fontFamily: 'Forum'
       },
       headerRight: () => (
-        <TouchableOpacity onPress={()=> this.state.navigation.navigate('Search')}>
+        <TouchableOpacity onPress={() => this.state.navigation.navigate('Search')}>
           <SearchButton />
         </TouchableOpacity>
       ),
     });
   }
- 
+
   render() {
-    const {assetsLoaded} = this.state;
+    const { assetsLoaded } = this.state;
 
     if (assetsLoaded) {
 
-    return (
-      <View style={styles.container}>
-        {/* Body */}
-        <View style={styles.productImage}>
-          {/*<ImageBackground source={backgroundImage} style={styles.image}>
+      return (
+        <View style={styles.container}>
+          {/* Body */}
+          <View style={styles.productImage}>
+            {/*<ImageBackground source={backgroundImage} style={styles.image}>
           <View></View>
     </ImageBackground>*/}
-        </View>
-        <View style={styles.containerProductText}>
-          <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr')}>
-            <View style={styles.registrButton}>
-              <Text style={styles.registrText}>
-              Зарегистрироваться
-             </Text>
-           </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
-          <View style={styles.logInButton}>
-            <Text style={styles.logInText}>
-              Войти
-            </Text>
           </View>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.containerProductText}>
+            <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr')}>
+              <View style={styles.registrButton}>
+                <Text style={styles.registrText}>
+                  Зарегистрироваться
+             </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
+              <View style={styles.logInButton}>
+                <Text style={styles.logInText}>
+                  Войти
+            </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-        {/* Footer */}
-        <View style={styles.buttonMenuContainer}>
-          <TouchableOpacity style={styles.buttonArea}>
-          <HomeButton />
-          <Text style={styles.buttonText}>Домой</Text>
-          </TouchableOpacity>
+          {/* Footer */}
+          <View style={styles.buttonMenuContainer}>
+            <TouchableOpacity style={styles.buttonArea}>
+              <HomeButton fill='#009E4E'/>
+              <Text style={styles.buttonText}>Домой</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
               onPress={() => this.props.navigation.navigate('Scanner')}
             >
@@ -194,10 +194,10 @@ export default class MainPage extends React.Component {
             >
               <ProfileButton />
               <Text style={styles.buttonText}>Профиль</Text>
-            </TouchableOpacity> 
-        </View>   
-      </View>
-    );
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
     }
     else {
       return (
