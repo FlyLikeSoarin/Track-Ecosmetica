@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .serializers import BarcodeSerializer, ProductReadSerializer, ProductWriteSerializer
 from .models import Barcode, Product, History
@@ -13,8 +15,12 @@ import json
 
 
 class ProductHistoryView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        products = History.objects.all().order_by('pk').values_list('product', flat=True)
+        products = History.objects.filter(user=request.user.id)\
+            .order_by('').values_list('product', flat=True)
         result = []
         for product_id in products:
             product = get_object_or_404(Product.objects.all(), pk=product_id)
@@ -25,6 +31,9 @@ class ProductHistoryView(APIView):
 
 
 class ProductRetrieveCreateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, AllowAny]
+
     def get(self, request):
         serializer = BarcodeSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -35,8 +44,9 @@ class ProductRetrieveCreateView(APIView):
         elif barcodes.count() > 1:
             barcodes = barcodes.filter(code_format=serializer.validated_data['code_format'])
 
-        barcode = barcodes.get()
-        History.objects.create(product=barcode.product)
+        if request.auth is not None:
+            barcode = barcodes.get()
+            History.objects.create(product=barcode.product, user=request.user)
 
         product = barcode.product
         ewg_product = get_product_or_fetch(product.name, product.brand_name)
@@ -81,6 +91,7 @@ class ProductRetrieveCreateView(APIView):
                 code_format=data['code_format'],
                 product=product)
 
-        History.objects.create(product=barcode.product)
+        if request.auth is not None:
+            History.objects.create(product=barcode.product, request.user)
         product_serializer = ProductReadSerializer(product)
         return Response(product_serializer.data)

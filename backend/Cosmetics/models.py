@@ -33,3 +33,5 @@ class Product(models.Model):
 
 class History(models.Model):
     product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
+    user = models.ForeignKey('Users.User', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
