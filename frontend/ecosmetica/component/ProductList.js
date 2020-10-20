@@ -5,12 +5,9 @@ import {
     Text, 
     View, 
     StyleSheet, 
-    Button, 
-    ImageBackground, 
     TouchableOpacity, 
     Image, 
     SafeAreaView, 
-    SectionList ,
     FlatList
 } from 'react-native';
 import { svg } from 'react-native-svg';
@@ -118,35 +115,32 @@ const productData = {
     description: '',
 }
 
+// const renderItem = ({item, onPress}) => {
+//     return(
+//       <TouchableOpacity
+//         onPress={onPress}>
+//         <View>
+//             <Product 
+//             title={item.name}
+//             image={item.image} 
+//             lable={item.brand_name}
+//             metric1={item.metric1}/>
+//         </View>
+//       </TouchableOpacity>
+//     )
+// };
+// const ItemList = ({data}) => {
 
-const renderItem = ({item}) => {
-    return(
-    //   <TouchableOpacity
-    //     onPress={() => this.props.navigation.navigate('ProductInfo', {productID: 1})}
-    //   >
-    <View>
-        <Product 
-        title={item.name}
-        image={ImageProductMock} 
-        lable={item.brand_name}
-        metric1={item.metric1}/>
-    </View>
-
-    //   </TouchableOpacity>
-    )
-};
-const ItemList = ({data}) => {
-
-    return(
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.name}
-        />
-      </SafeAreaView>
-    )
-}
+//     return(
+//       <SafeAreaView style={styles.container}>
+//         <FlatList
+//           data={data}
+//           renderItem={renderItem}
+//           keyExtractor={item => {item.name /*+ Math.floor(Math.random()*1000000000000)*/}}
+//         />
+//       </SafeAreaView>
+//     )
+// }
 
 export default class ProductList extends React.Component {
 
@@ -156,9 +150,8 @@ export default class ProductList extends React.Component {
       this.state = {
         navigation: this.props.navigation,  
         assetsLoaded: false,
-        data: {},
         isGet: false,
-        DATA: [
+        data: [
           {
             "name": "Silkygirl blusher 01 (nectar blush)",
             "brand_name": "Silkygirl",
@@ -168,7 +161,8 @@ export default class ProductList extends React.Component {
             "eco_score": -1,
             "safety_score": -1,
             "zoo_score": -1,
-            "total_score": -1
+            "total_score": -1,
+           // "onPress": this.handlePress,
           },
           {
             "name": "Silkofix лейкопластырь на ткан осн 1.25x 500см/тел",
@@ -179,31 +173,41 @@ export default class ProductList extends React.Component {
             "eco_score": -1,
             "safety_score": -1,
             "zoo_score": -1,
-            "total_score": -1
+            "total_score": -1,
+            //"onPress": this.handlePress,
         },
         ],
       };
     } 
 
-    handleData = async () => {
-      await fetch(`http://185.148.82.169:8005/product/history`, {
-          method: 'GET',
-        })
-        .then((resp) => {
-          if (resp.status !== 200) {  
-            console.log('Looks like there was a problem. Status Code: ' +  
-              resp.status);  
-            return;  
-          }
-          else{
-            resp.json();
-            console.log(resp)
-          }
+    handlePress = (id) => {this.props.navigation.navigate('ProductInfo', {productID: id})}
 
+    renderItem = ({item}) => {
+      return(
+        <TouchableOpacity
+          // onPress={this.handlePress(item.name)}
+          >
+          <View>
+              <Product 
+              title={item.name}
+              image={item.image} 
+              lable={item.brand_name}
+              metric1={item.metric1}/>
+          </View>
+        </TouchableOpacity>
+      )
+  };
+
+    handleData = async () => {
+      await fetch(`${URL}product/history`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+            },
         })
+        .then((resp) => resp.json())
         .then((data) => {
           this.setState({data: data});
-          console.log(data);
         })
       this.setState({isGet: true});
     }
@@ -215,14 +219,14 @@ export default class ProductList extends React.Component {
     
         /* Кастомизация хедера */
         this.state.navigation.setOptions({ 
-          headerTitle: 'Ecosmetica',
-          headerStyle: {
-            backgroundColor: '#9ae7af',
-          },
-          headerTintColor: '#fff',
+          headerTitle: 'История',
+          // headerStyle: {
+          //   backgroundColor: '#9ae7af',
+          // },
+          // headerTintColor: '#fff',
           headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 30,
+            //fontWeight: 'bold',
+            //fontSize: 30,
             fontFamily: 'Forum'
           },
           headerRight: () => (
@@ -248,7 +252,14 @@ export default class ProductList extends React.Component {
                 lable="Khiel's" 
                 metric1='50%'/>
             </TouchableOpacity>
-            <ItemList data={this.state.DATA}/>
+            <SafeAreaView style={styles.container}>
+              <FlatList
+                data={this.state.data}
+                renderItem={this.renderItem}
+                keyExtractor={item => {item.name /*+ Math.floor(Math.random()*1000000000000)*/}}
+              />
+            </SafeAreaView>
+            {/* <ItemList data={this.state.data}/> */}
           </View>
             
             {/* Footer */}

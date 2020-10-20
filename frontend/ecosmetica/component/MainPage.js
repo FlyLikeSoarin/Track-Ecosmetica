@@ -5,7 +5,7 @@ import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
 
-
+import Home from '../assets/svg/home.svg';
 /*Buttons*/
  import HomeButton  from './Button/HomeButton'
 // import ScanButton from './Button/ScanButton'
@@ -128,6 +128,7 @@ export default class MainPage extends React.Component {
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity>
           <HomeButton/>
+          
           <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
             <TouchableOpacity
