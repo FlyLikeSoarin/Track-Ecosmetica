@@ -8,13 +8,16 @@ import {
     TouchableOpacity, 
     Image, 
     SafeAreaView, 
-    FlatList
+    FlatList,
+    ScrollView,
 } from 'react-native';
 import { svg } from 'react-native-svg';
 import product1img from '../static/lRWynXU__sg.jpg';
 import product2img from '../static/250mlbottle_ricewheatshampoo_lg_1_1_1_1 (1).webp';
 import Product from './Product'
 import ImageProductMock from '../static/EEyMAHcCfnE.jpg'
+import DATA from '../static/BackendDataSimulator'
+import EmtyHistory from './EmptyHistory'
 
 const styles = StyleSheet.create({
     header: {
@@ -22,6 +25,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff',
     },
     body: {
+      overflow: 'hidden',
       flex: 6,
     },
     product: {
@@ -33,8 +37,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     container: {
-        flex: 1,
-        backgroundColor: '#ffffff',
+      overflow: 'hidden',
+      flex: 1,
+      backgroundColor: '#ffffff',
     },
     productInfo: {
         flex: 2,
@@ -92,55 +97,24 @@ const styles = StyleSheet.create({
         fontSize: 10,
         fontFamily: 'Forum',
         textAlign: 'center',
-      }
-
-    // item:{
-    //     padding: 20,
-    //     marginVertical: 8,
-    //     backgroundColor: '#9ae7af',
-    // },
+      },
 });
 
 const URL = 'http://185.148.82.169:8005/';
-const productData = {
-    productID: 1,
-    name: 'Шампунь для объема с экстрактом риса и пшеницы',
-    lable: "Khiel's",
-    img_url: {product2img},
-    eco_score: 98,
-    safety_score: 20,
-    env_score: 10,
-    our_score: 9,
-    ingridients: [],
-    description: '',
+
+const ItemList = ({data, renderItem, isEmpty}) => {
+  if (isEmpty) 
+    return(<EmtyHistory/>)
+  else
+    return(
+      <SafeAreaView style={styles.container}>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => {item.name /*+ Math.floor(Math.random()*1000000000000)*/}}
+      />
+    </SafeAreaView>)
 }
-
-// const renderItem = ({item, onPress}) => {
-//     return(
-//       <TouchableOpacity
-//         onPress={onPress}>
-//         <View>
-//             <Product 
-//             title={item.name}
-//             image={item.image} 
-//             lable={item.brand_name}
-//             metric1={item.metric1}/>
-//         </View>
-//       </TouchableOpacity>
-//     )
-// };
-// const ItemList = ({data}) => {
-
-//     return(
-//       <SafeAreaView style={styles.container}>
-//         <FlatList
-//           data={data}
-//           renderItem={renderItem}
-//           keyExtractor={item => {item.name /*+ Math.floor(Math.random()*1000000000000)*/}}
-//         />
-//       </SafeAreaView>
-//     )
-// }
 
 export default class ProductList extends React.Component {
 
@@ -151,33 +125,9 @@ export default class ProductList extends React.Component {
         navigation: this.props.navigation,  
         assetsLoaded: false,
         isGet: false,
-        data: [
-          {
-            "name": "Silkygirl blusher 01 (nectar blush)",
-            "brand_name": "Silkygirl",
-            "img_url": "",
-            "description": "",
-            "ingredients": "",
-            "eco_score": -1,
-            "safety_score": -1,
-            "zoo_score": -1,
-            "total_score": -1,
-           // "onPress": this.handlePress,
-          },
-          {
-            "name": "Silkofix лейкопластырь на ткан осн 1.25x 500см/тел",
-            "brand_name": "",
-            "img_url": "",
-            "description": "",
-            "ingredients": "",
-            "eco_score": -1,
-            "safety_score": -1,
-            "zoo_score": -1,
-            "total_score": -1,
-            //"onPress": this.handlePress,
-        },
-        ],
-      };
+        data: DATA,
+        isEmptyList: !DATA.length,
+      }
     } 
 
     handlePress = (id) => {this.props.navigation.navigate('ProductInfo', {productID: id})}
@@ -190,9 +140,9 @@ export default class ProductList extends React.Component {
           <View>
               <Product 
               title={item.name}
-              image={item.image} 
+              image={item.img_url} 
               lable={item.brand_name}
-              metric1={item.metric1}/>
+              metric1={item.total_score}/>
           </View>
         </TouchableOpacity>
       )
@@ -202,7 +152,8 @@ export default class ProductList extends React.Component {
       await fetch(`${URL}product/history`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'token<b86cab766b1392ce3ac2c9e8c5002cfb34bfbbe>',
             },
         })
         .then((resp) => resp.json())
@@ -239,11 +190,12 @@ export default class ProductList extends React.Component {
       }
 
     render() {
+
     return (
         <View style={styles.container}>
           <View style={styles.body}>
-            <Text>{this.state.isGet}</Text>
-            <TouchableOpacity
+            {/* <ScrollView> */}
+            {/* <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'})}
             >
                 <Product 
@@ -251,15 +203,16 @@ export default class ProductList extends React.Component {
                 image={product2img} 
                 lable="Khiel's" 
                 metric1='50%'/>
-            </TouchableOpacity>
-            <SafeAreaView style={styles.container}>
+            </TouchableOpacity> */}
+           {/* <SafeAreaView style={styles.container}>
               <FlatList
                 data={this.state.data}
                 renderItem={this.renderItem}
-                keyExtractor={item => {item.name /*+ Math.floor(Math.random()*1000000000000)*/}}
+                keyExtractor={item => {item.name }}
               />
-            </SafeAreaView>
-            {/* <ItemList data={this.state.data}/> */}
+          </SafeAreaView>*/}
+            <ItemList data={this.state.data} renderItem={this.renderItem} isEmpty={this.state.isEmptyList}/>
+            {/* </ScrollView> */}
           </View>
             
             {/* Footer */}
