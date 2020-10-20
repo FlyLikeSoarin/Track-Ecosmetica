@@ -234,7 +234,7 @@ export default class Product extends React.Component {
                                 </Text>
                                 {ingredients.map(ingredient => {
                                     return (
-                                        <View style={styles.ingregientBlock}>
+                                        <View style={styles.ingregientBlock} key={ingredient}>
                                             <Text style={styles.ingredientName}>
                                                 {ingredient}
                                             </Text>

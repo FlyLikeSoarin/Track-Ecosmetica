@@ -70,40 +70,47 @@ export default class BarcodeScannerComponent extends React.Component {
   }
 
   handleBarCodeScanned = async ({ type, data }) => {
+    this.setState({
+      scanned: true
+    })
+    let notFound = false;
     await fetch(`${URL}/product/?code=${data}`, {
         method: 'GET'
       })
       .then((resp) => {
-        this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
-      })
-        /*if(resp.status === 200) {
+        if(resp.status === 200) {
           return resp.json()
         }
         else {
-          this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+          notFound = true
         }
       })
       .then((ans) => {
-        const _data = ans;
         if (type !== 'org.iso.QRCode') {
+          if (notFound) {
+            this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
+            this.setState({
+              scanned: false
+            })
+          } else {
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
+            this.setState({
+              scanned: false
+            })
+          }
         }
         else {
           this.setState({
             scannedQRCode: true
-        })*/
-        //setTimeout(() => this.setState({scannedQRCode: false}), 3000)
-    
-      }
-    /*this.setState({ scanned: true });
-    /*const _data = {
-      product: data,
-      code: 200
-    }*/
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-  
-
-}
+          })
+          setTimeout(() => this.setState({scannedQRCode: false}), 3000)
+          this.setState({
+            scanned: false
+          })
+        }
+      })
+    }
+};
 
 const styles = StyleSheet.create({
   header: {
