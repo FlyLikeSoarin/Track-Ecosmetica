@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Barcode
 from .models import Product
 from .models import History
+from .models import Review
 
 
 @admin.register(Product)
@@ -12,7 +13,14 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Barcode)
 class BarcodeAdmin(admin.ModelAdmin):
     list_display = ('code', 'product')
+    readonly_fields = ('product', )
 
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
-    list_display = ('product', )
+    list_display = ('user', 'product', )
+    readonly_fields = ('product', )
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'title', 'rating')
+    readonly_fields = ('product', )

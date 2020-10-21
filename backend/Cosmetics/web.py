@@ -89,8 +89,8 @@ class EWSProductParser(HTMLParser):
             parent_attrs_dict = {key: value for key, value in self.tag_stack[-2][1]}
             if 'class' in parent_attrs_dict:
                 if parent_tag == 'div' and 'product-image' in parent_attrs_dict['class']:
-                    if tag == 'img'  and 'src' in attrs_dict and 'uri' not in self.product:
-                        self.product['uri'] = attrs_dict['src']
+                    if tag == 'img'  and 'src' in attrs_dict and 'img_uri' not in self.product:
+                        self.product['img_uri'] = attrs_dict['src']
                 if parent_tag == 'div' and 'product-score' in parent_attrs_dict['class']:
                     if tag == 'img'  and 'src' in attrs_dict and 'score' not in self.product:
                         hits = re.findall('score-.+-', attrs_dict['src'])
@@ -98,6 +98,16 @@ class EWSProductParser(HTMLParser):
                             self.product['score'] = hits[0][6:-1]
                         else:
                             self.product['score'] = -1
+                if parent_tag == 'td' and 'td-score' in parent_attrs_dict['class']:
+                    if tag == 'img' and 'src' in attrs_dict:
+                        if 'ingredient' not in self.product:
+                            self.product['ingredient'] = list()
+
+                        hits = re.findall('score-.+-', attrs_dict['src'])
+                        if hits:
+                            self.product['ingredient'].append(int(hits[0][6:-1]))
+                        else:
+                            self.product['ingredient'].append(-1)
                 if parent_tag == 'div' and 'td-ingredient-interior' in parent_attrs_dict['class']:
                     if tag == 'a' and 'href' in attrs_dict:
                         self.next_data = 'ingredient'
@@ -119,6 +129,10 @@ class EWSProductParser(HTMLParser):
         if self.next_data is not None:
             if self.next_data not in self.product:
                 self.product[self.next_data] = list()
+            if self.next_data == 'ingredient':
+                self.product['ingredient'][-1] = (self.product['ingredient'][-1], data.strip())
+                self.next_data = None
+                return
             self.product[self.next_data].append(data.strip())
             self.next_data = None
 
@@ -160,8 +174,6 @@ def get_product_or_fetch(product_name, brand_name):
     list_product_name = product_name.replace(pure_brand_name, '').split()
     list_product_name = [word for word in list_product_name if is_word_allowed(word)]
     pure_product_name = ' '.join(list_product_name)
-
-    print(pure_brand_name, pure_product_name)
 
     products, _ = search_product(f'{pure_brand_name} {pure_product_name}')
     products.sort(key=lambda p:\

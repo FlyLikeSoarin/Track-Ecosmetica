@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Barcode, Product
+from .models import Barcode, Product, Review
 
 
 class BarcodeSerializer(serializers.ModelSerializer):
@@ -24,3 +24,15 @@ class ProductWriteSerializer(serializers.ModelSerializer):
 
     code = serializers.CharField(max_length=50)
     code_format = serializers.CharField(max_length=10, default = 'UPCEAN', required=False)
+
+
+class ReviewReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
+class ReviewWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        exclude = ['user', 'product']

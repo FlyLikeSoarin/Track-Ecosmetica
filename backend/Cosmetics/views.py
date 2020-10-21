@@ -5,10 +5,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 
-from .serializers import BarcodeSerializer, ProductReadSerializer, ProductWriteSerializer
-from .models import Barcode, Product, History
+from .serializers import BarcodeSerializer
+from .serializers import ProductWriteSerializer, ProductReadSerializer
+from .serializers import ReviewWriteSerializer, ReviewReadSerializer
+from .models import Barcode, Product, History, Review
 from .web import get_product_or_fetch, severity_to_score
 from .utils import add_to_history
 
@@ -59,7 +61,7 @@ class ProductRetrieveCreateView(APIView):
             product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
             product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
             product.total_score = str(11 - int(ewg_product['score']))
-            product.img_url = ewg_product['uri']
+            product.img_url = ewg_product['img_uri']
             product.save()
 
 
@@ -101,3 +103,35 @@ class ProductRetrieveCreateView(APIView):
             add_to_history(product=barcode.product, user=request.user)
         product_serializer = ProductReadSerializer(product)
         return Response(product_serializer.data)
+
+
+class ReviewCreateListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        if 'code' in request.query_params:
+            barcode = get_object_or_404(Barcode, code=request.query_params['code'])
+            product = barcode.product
+        elif 'product' in request.query_params:
+            product = get_object_or_404(Product, product=request.query_params['product'])
+        reviews = Review.objects.filter(product=product.name)
+        result = []
+        for review in reviews:
+            result.append(ReviewReadSerializer(review).data)
+        return Response(result)
+
+    def post(self, request):
+        if 'code' in request.query_params:
+            barcode = get_object_or_404(Barcode, code=request.query_params['code'])
+            product = barcode.product
+        elif 'product' in request.query_params:
+            product = get_object_or_404(Product, product=request.query_params['product'])
+
+        serializer = ReviewWriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        review = Review.objects.create(**data, user=request.user, product=product)
+
+
+        return Response(ReviewReadSerializer(review).data)

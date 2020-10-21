@@ -12,6 +12,9 @@ class Barcode(models.Model):
     code_format = models.CharField(max_length=10, default='UPCEAN', verbose_name='format of barcode')
     product = models.ForeignKey('product', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.code
+
 
 class Product(models.Model):
     class Meta:
@@ -30,8 +33,25 @@ class Product(models.Model):
     zoo_score = models.IntegerField(default=-1)
     total_score = models.IntegerField(default=-1)
 
+    def __str__(self):
+        return self.name
+
 
 class History(models.Model):
     product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
     user = models.ForeignKey('Users.User', on_delete=models.CASCADE, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return f'{str(self.user)} viewed {str(self.product)} at {str(self.timestamp)}'
+
+
+class Review(models.Model):
+    product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
+    user = models.ForeignKey('Users.User', on_delete=models.CASCADE, null=True)
+    title = models.TextField(blank=True)
+    review = models.TextField(blank=True)
+    rating = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.title} (Rating: {self.rating})'
