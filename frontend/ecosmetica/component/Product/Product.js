@@ -183,7 +183,7 @@ export default class Product extends React.Component {
             type: this.props.route.params.type,
             barcode: this.props.route.params.barcode,
             name: this.props.route.params.data_.name,
-            img_url: this.props.route.params.img_url,
+            img_url: this.props.route.params.data_.img_url,
             brand: this.props.route.params.data_.brand_name,
             //naturality_score: this.props.route.params.data_.naturality_score,
             risk_score: this.props.route.params.data_.eco_score,
@@ -206,6 +206,7 @@ export default class Product extends React.Component {
 
     render() {
         const { img_url,brand, name, total_score, risk_score, allergy_score, ingredients } = this.state
+        console.log(img_url)
         //ingredients.json()
         /*return(
             <View style={styles.container}>
@@ -278,7 +279,8 @@ export default class Product extends React.Component {
 
                 <View style={styles.body}>
                     <View style={styles.imageArea}>
-                        <Image style={styles.image} source={{ uri: 'https://static.ewg.org/skindeep/img/ewg_missing_product.png' }} />
+                        {/*https://static.ewg.org/skindeep/img/ewg_missing_product.png*/}
+                        <Image style={styles.image} source={{ uri: `${img_url}` }} />
                         <View style={styles.scoreArea}>
                             <Star />
                             <Star />
@@ -302,7 +304,7 @@ export default class Product extends React.Component {
                                 <FlatList
                                     data={ingredients}
                                     renderItem={renderItem}
-                                    keyExtractor={item => { item }}
+                                    keyExtractor={item => { item[1] }}
                                 />
                             </SafeAreaView>
                         </View>
@@ -335,8 +337,13 @@ export default class Product extends React.Component {
 const renderItem = ({ item }) => {
     return (
         <View style={styles.ingredientBlock}>
+            <View>
+                <Text style={styles.ingredientScoreText}>
+                {item[0]}
+                </Text>
+            </View>
             <Text style={styles.ingredientText}>
-                {item}
+                {item[1]}
             </Text>
         </View>
     );
@@ -428,11 +435,19 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5,
         borderColor: '#929292',
         padding: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     ingredientText: {
         fontFamily: 'NotoSanaTamilLight',
         fontSize: 15,
         color: '#676767',
+    },
+    ingredientScoreText: {
+        fontSize: 15,
+        color: '#676767',
+        fontFamily: 'NotoSanaTamilLight',
+        marginRight: 10
     },
 
     /*buttom*/
