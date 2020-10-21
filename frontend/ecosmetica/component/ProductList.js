@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
       buttonText: {
         color: '#ffffff',
         fontSize: 10,
-        fontFamily: 'Forum',
         textAlign: 'center',
       },
 });
@@ -145,19 +144,24 @@ export default class ProductList extends React.Component {
               metric1={item.total_score}/>
           </View>
         </TouchableOpacity>
+        //
       )
   };
 
     handleData = async () => {
-      await fetch(`${URL}product/history`, {
+      await fetch(`${URL}history/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'token<b86cab766b1392ce3ac2c9e8c5002cfb34bfbbe>',
+            'Authorization': 'Token bb86cab766b1392ce3ac2c9e8c5002cfb34bfbbe',
             },
         })
-        .then((resp) => resp.json())
+        .then((resp) => {
+          console.log(resp.status)
+          return resp.json()
+        })
         .then((data) => {
+          console.log(data)
           this.setState({data: data});
         })
       this.setState({isGet: true});
@@ -178,7 +182,6 @@ export default class ProductList extends React.Component {
           headerTitleStyle: {
             //fontWeight: 'bold',
             //fontSize: 30,
-            fontFamily: 'Forum'
           },
           headerRight: () => (
             <TouchableOpacity onPress={()=> this.state.navigation.navigate('Search')}>

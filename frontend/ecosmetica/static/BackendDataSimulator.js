@@ -78,4 +78,4 @@ const data = [
 },
 ]
 const data1 = [];
-export default data;
+export default data1;
