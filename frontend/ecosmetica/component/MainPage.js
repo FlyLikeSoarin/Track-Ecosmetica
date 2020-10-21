@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#ffffff',
     fontSize: 40,
-    fontFamily: 'Forum',
+    fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
   },
   productImage: {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   productText: {
     color: '#676767',
     fontSize: 24,
-    fontFamily: 'Forum',
+    fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     marginBottom: 50
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#929292',
     fontSize: 10,
-    fontFamily: 'Forum',
+    fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     justifyContent: 'center',
   },
@@ -101,9 +101,11 @@ const styles = StyleSheet.create({
   },
   registrText: {
     color: '#fff',
+    fontFamily: 'NotoSanaTamilLight',
   },
   logInText: {
     color: '#009E4E',
+    fontFamily: 'NotoSanaTamilLight',
   },
   body: {
     flex: 10
@@ -138,7 +140,7 @@ export default class MainPage extends React.Component {
     }
     /* Загрузка шрифтов */
     await Font.loadAsync({
-      'Forum': require('../assets/fonts/Forum.ttf')
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
     /* Кастомизация хедера */
@@ -151,9 +153,8 @@ export default class MainPage extends React.Component {
       },
       headerTintColor: '#929292',
       headerTitleStyle: {
-        fontWeight: 'bold',
-        fontSize: 30,
-        fontFamily: 'Forum'
+        fontSize: 24,
+        fontFamily: 'NotoSanaTamilLight'
       },
       headerRight: () => (
         <TouchableOpacity onPress={() => this.state.navigation.navigate('Search')}>

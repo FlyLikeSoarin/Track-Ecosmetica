@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Font from 'expo-font'
 import { 
     Text, 
     View, 
@@ -32,10 +33,20 @@ const styles = StyleSheet.create({
         fontSize: 28,
         color: '#676767',
         padding: 50,
+        fontFamily: 'NotoSanaTamilLight',
     }
 });
 
 const EmptyHistory = () => {
+    React.useEffect(() => {
+        async function loadFont() {
+          await Font.loadAsync({
+            'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+          });
+        }
+    
+        loadFont()
+      }, []);
     return(
         <View style={styles.container}>
           <View style={styles.imageContainer}>

@@ -38,8 +38,8 @@ export default class Login extends React.Component {
     async componentDidMount() {
         /* Загрузка шрифтов */
         await Font.loadAsync({
-            'Forum': require('../../assets/fonts/Forum.ttf')
-        });
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+          });
 
         this.setState({ assetsLoaded: true });
 
@@ -54,8 +54,8 @@ export default class Login extends React.Component {
             headerTintColor: '#929292',
             headerTitleStyle: {
                 fontWeight: 'bold',
-                fontSize: 30,
-                fontFamily: 'Forum'
+                fontSize: 24,
+                fontFamily: 'NotoSanaTamilLight'
             },
             headerLeft: () => (
                 <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     },
     text: {
         marginLeft: 25,
+        fontFamily: 'NotoSanaTamilLight',
     },
     input: {
         backgroundColor: '#E5E5E5',
@@ -198,6 +199,7 @@ const styles = StyleSheet.create({
     },
     bottomText: {
         color: '#fff',
+        fontFamily: 'NotoSanaTamilLight',
     }
 
 })

@@ -7,6 +7,7 @@ import Balm from './Balm';
 import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
+import ShampooSvg from './ShampooSvg'
 
 
 export default class ProductNotFound extends React.Component {
@@ -21,7 +22,7 @@ export default class ProductNotFound extends React.Component {
 
     async componentDidMount() {
         await Font.loadAsync({
-            'Forum': require('../../assets/fonts/Forum.ttf')
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
         });
 
         this.state.navigation.setOptions({
@@ -42,7 +43,7 @@ export default class ProductNotFound extends React.Component {
                 </View>
                 <View style={styles.body}>
                     <View style={styles.imageArea}>
-                        <Balm />
+                        <ShampooSvg />
                     </View>
                     <View style={styles.infoArea}>
                         <Text style={styles.bigText}>
@@ -54,18 +55,18 @@ export default class ProductNotFound extends React.Component {
                     </View>
                     <View style={styles.buttonAddArea}>
                         <TouchableOpacity onPress={() => this.state.navigation.navigate('AddProduct', { data: data, type: type })}>
-                        <View style={styles.buttonAdd}>
-                            <Text style={styles.buttonAddText}>
-                                Добавить
+                            <View style={styles.buttonAdd}>
+                                <Text style={styles.buttonAddText}>
+                                    Добавить
                             </Text>
-                        </View>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
-                    onPress={() => this.state.navigation.navigate('Home')}>
-                        <HomeButton fill='#929292'/>
+                        onPress={() => this.state.navigation.navigate('Home')}>
+                        <HomeButton fill='#929292' />
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
@@ -171,13 +172,13 @@ const styles = StyleSheet.create({
     /**  infoArea **/
     bigText: {
         color: '#929292',
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         fontSize: 40,
     },
     smallText: {
         marginTop: 40,
         color: '#929292',
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         fontSize: 20,
     },
     /**  buttonAddArea **/
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     },
     buttonAddText: {
         color: '#fff',
-        fontFamily: 'Forum'
+        fontFamily: 'NotoSanaTamilLight'
     },
     /* bottom */
     buttonArea: {
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#929292',
         fontSize: 10,
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         textAlign: 'center',
         justifyContent: 'center',
     },

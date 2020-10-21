@@ -25,6 +25,7 @@ export default class ProductNotFound extends React.Component {
             ingredients: '',
             discription: '',
             submited: false,
+            token: null
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -36,12 +37,24 @@ export default class ProductNotFound extends React.Component {
 
     async componentDidMount() {
         await Font.loadAsync({
-            'Forum': require('../../assets/fonts/Forum.ttf')
-        });
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+          });
 
         this.state.navigation.setOptions({
             headerShown: false
         })
+
+        let token = null
+        try {
+            token = await AsyncStorage.getItem('token');
+        } catch (e) {
+            console.log(e)
+        }
+        if (token !== null) {
+            this.setState({
+                token: token
+            })
+        }
     }
 
     handleBarcode(text) {
@@ -70,11 +83,13 @@ export default class ProductNotFound extends React.Component {
         });
     }
     handleSubmit() {
+        const token = this.state.token
         fetch(`${URL}product/`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
             },
             body: JSON.stringify({
                 code: this.state.barcode,
@@ -301,13 +316,13 @@ const styles = StyleSheet.create({
     },
     bigText: {
         color: '#929292',
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         fontSize: 40,
     },
     smallText: {
         marginTop: 40,
         color: '#929292',
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         fontSize: 20,
     },
     /**  buttonAddArea **/
@@ -322,7 +337,7 @@ const styles = StyleSheet.create({
     },
     buttonAddText: {
         color: '#fff',
-        fontFamily: 'Forum'
+        fontFamily: 'NotoSanaTamilLight'
     },
     /* bottom */
     buttonArea: {
@@ -333,7 +348,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#929292',
         fontSize: 10,
-        fontFamily: 'Forum',
+        fontFamily: 'NotoSanaTamilLight',
         textAlign: 'center',
         justifyContent: 'center',
     },

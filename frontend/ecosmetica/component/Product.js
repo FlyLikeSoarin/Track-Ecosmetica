@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Font from 'expo-font'
 import { 
     Text, 
     View, 
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
       marginTop: 5,
       marginBottom: 8,
       color: '#606060',
+      fontFamily: 'NotoSanaTamilLight',
     },
     metrics: {
       flex: 1,
@@ -60,11 +62,13 @@ const styles = StyleSheet.create({
       paddingTop: 20,
       fontSize: 16,
       color: '#4F4F4F',
+      fontFamily: 'NotoSanaTamilLight',
     },
     metricsText: {
         fontSize: 16,
         color: '#FFA21F',
         margin: 2,
+        fontFamily: 'NotoSanaTamilLight',
     },
 });
 
@@ -93,6 +97,16 @@ const RenderImage = ({image}) => {
 // }
 const Product = ({title, image, lable, metric1}) => {
   const starsScore = Math.floor(metric1/2);
+
+  React.useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+      });
+    }
+
+    loadFont()
+  }, []);
 
     return (
         <View style={styles.product}>

@@ -1,11 +1,12 @@
 import * as React from 'react';
+import * as Font from 'expo-font';
 import { Text, View, StyleSheet, Button, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Permissions from 'expo-permissions';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import BarcodeImage from './Scanner/Barcodeimage'
-import CrossButton from './Button/CrossButton'
+import Back from './Button/BackButton'
 
 const URL = 'http://185.148.82.169:8005';
 
@@ -41,6 +42,9 @@ export default class BarcodeScannerComponent extends React.Component {
         token: token
       })
     }
+    await Font.loadAsync({
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+    });
   }
 
   getPermissionsAsync = async () => {
@@ -69,7 +73,7 @@ export default class BarcodeScannerComponent extends React.Component {
 
         <View style={styles.header}>
           <TouchableOpacity onPress={() => this.state.navigation.navigate('Home') }>
-            <CrossButton />
+            <Back />
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
@@ -96,9 +100,9 @@ export default class BarcodeScannerComponent extends React.Component {
         },
       })
       .then((resp) => {
-        console.log(resp)
+        /*console.log(resp)
         console.log(resp.status)
-        console.log(token)
+        console.log(token)*/
         if(resp.status === 200) {
           return resp.json()
         }
@@ -121,9 +125,9 @@ export default class BarcodeScannerComponent extends React.Component {
           })
           setTimeout(() => this.setState({scannedQRCode: false}), 3000)
         }
-        this.setState({
+        setTimeout(() => this.setState({
           scanned: false
-        })
+        }), 5000)
       })
     }
 };
@@ -132,6 +136,7 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, .5)',
+    paddingTop: 30
   },
   scanArea: {
     flex: 2,
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
   alert: {
     color: "white",
     fontSize: 30,
-    fontFamily: 'Forum',
+    fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
   }
 });
