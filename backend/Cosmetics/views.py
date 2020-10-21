@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import BarcodeSerializer, ProductReadSerializer, ProductWriteSerializer
 from .models import Barcode, Product, History
 from .web import get_product_or_fetch, severity_to_score
+from .utils import add_to_history
 
 import json
 
@@ -20,7 +21,8 @@ class ProductHistoryView(APIView):
 
     def get(self, request):
         products = History.objects.filter(user=request.user.id)\
-            .order_by('-timestamp').values_list('product', flat=True)[:10]
+            .order_by('-timestamp').values_list('product', flat=True).distinct()
+        print(list(products.distinct()))
         result = []
         for product_id in products:
             product = get_object_or_404(Product.objects.all(), pk=product_id)
@@ -46,7 +48,7 @@ class ProductRetrieveCreateView(APIView):
 
         barcode = barcodes.get()
         if request.auth is not None:
-            History.objects.create(product=barcode.product, user=request.user)
+            add_to_history(product=barcode.product, user=request.user)
 
         product = barcode.product
         ewg_product = get_product_or_fetch(product.name, product.brand_name)
@@ -57,6 +59,7 @@ class ProductRetrieveCreateView(APIView):
             product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
             product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
             product.total_score = str(11 - int(ewg_product['score']))
+            product.img_url = ewg_product['uri']
             product.save()
 
 
@@ -95,6 +98,6 @@ class ProductRetrieveCreateView(APIView):
                 product=product)
 
         if request.auth is not None:
-            History.objects.create(product=barcode.product, user=request.user)
+            add_to_history(product=barcode.product, user=request.user)
         product_serializer = ProductReadSerializer(product)
         return Response(product_serializer.data)
