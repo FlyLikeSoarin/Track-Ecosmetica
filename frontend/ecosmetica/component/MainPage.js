@@ -7,7 +7,7 @@ import { HeaderBackground } from '@react-navigation/stack';
 
 
 /*Buttons*/
-import HomeButton from './Button/HomeButton'
+import HomeButton   from './Button/HomeButton'
 import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'

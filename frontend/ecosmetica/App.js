@@ -98,7 +98,12 @@ export default class App extends React.Component {
   }
 
   async initAuthToken() {
-    const authToken = await AsyncStorage.getItem('token');
+    let authToken = null
+    try {
+      authToken = await AsyncStorage.getItem('token');
+    } catch(e) {
+      console.log(e)
+    }
     this.setState({
       userToken: authToken
     })
