@@ -104,7 +104,9 @@ export default class Login extends React.Component {
                 }
             })
         if (token !== null) {
+            this.props.route.params.setToken(token)
             await AsyncStorage.setItem('token', token);
+            console.log(token)
         }
     }
 

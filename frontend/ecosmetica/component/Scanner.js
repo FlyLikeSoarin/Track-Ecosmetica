@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Button, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Permissions from 'expo-permissions';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -18,7 +18,8 @@ export default class BarcodeScannerComponent extends React.Component {
       navigation: this.props.navigation,
       scanned: false,
       scannedQRCode: false,
-      data: null
+      data: null,
+      token: null
     };
   }
 
@@ -28,6 +29,18 @@ export default class BarcodeScannerComponent extends React.Component {
     this.state.navigation.setOptions({
       headerShown: false
     })
+
+    let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+    } catch(e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      this.setState({
+        token: token
+      })
+    }
   }
 
   getPermissionsAsync = async () => {
@@ -74,10 +87,18 @@ export default class BarcodeScannerComponent extends React.Component {
       scanned: true
     })
     let notFound = false;
+    const token = this.state.token
     await fetch(`${URL}/product/?code=${data}`, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
       })
       .then((resp) => {
+        console.log(resp)
+        console.log(resp.status)
+        console.log(token)
         if(resp.status === 200) {
           return resp.json()
         }
@@ -86,17 +107,12 @@ export default class BarcodeScannerComponent extends React.Component {
         }
       })
       .then((ans) => {
+        console.log(ans)
         if (type !== 'org.iso.QRCode') {
           if (notFound) {
             this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
-            this.setState({
-              scanned: false
-            })
           } else {
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
-            this.setState({
-              scanned: false
-            })
           }
         }
         else {
@@ -104,10 +120,10 @@ export default class BarcodeScannerComponent extends React.Component {
             scannedQRCode: true
           })
           setTimeout(() => this.setState({scannedQRCode: false}), 3000)
-          this.setState({
-            scanned: false
-          })
         }
+        this.setState({
+          scanned: false
+        })
       })
     }
 };

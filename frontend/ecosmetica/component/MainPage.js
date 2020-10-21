@@ -1,16 +1,18 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator, AsyncStorage } from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
 
-
+import Home from '../assets/svg/home.svg';
 /*Buttons*/
-import HomeButton   from './Button/HomeButton'
+import HomeButton from './Button/HomeButton'
 import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'
+
+import ProductList from './ProductList'
 
 
 var width = Dimensions.get('window').width;
@@ -103,6 +105,9 @@ const styles = StyleSheet.create({
   logInText: {
     color: '#009E4E',
   },
+  body: {
+    flex: 10
+  }
 })
 
 export default class MainPage extends React.Component {
@@ -113,16 +118,28 @@ export default class MainPage extends React.Component {
     this.state = {
       navigation: this.props.navigation,
       assetsLoaded: false,
+      token: null
     };
+
+    this.setToken = this.setToken.bind(this);
   }
 
   async componentDidMount() {
+    let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+    } catch (e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      this.setState({
+        token: token
+      })
+    }
     /* Загрузка шрифтов */
     await Font.loadAsync({
       'Forum': require('../assets/fonts/Forum.ttf')
     });
-
-    this.setState({ assetsLoaded: true });
 
     /* Кастомизация хедера */
     this.state.navigation.setOptions({
@@ -144,6 +161,27 @@ export default class MainPage extends React.Component {
         </TouchableOpacity>
       ),
     });
+    this.setState({ assetsLoaded: true });
+  }
+
+  async componentDidUpdate() {
+    /*let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+    } catch(e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      this.setState({
+        token: token
+      })
+    }*/
+  }
+
+  setToken(token) {
+    this.setState({
+      token: token
+    })
   }
 
   render() {
@@ -154,33 +192,42 @@ export default class MainPage extends React.Component {
       return (
         <View style={styles.container}>
           {/* Body */}
-          <View style={styles.productImage}>
-            {/*<ImageBackground source={backgroundImage} style={styles.image}>
+          {this.state.token === null && (
+            <View style={styles.body}>
+              <View style={styles.productImage}>
+                {/*<ImageBackground source={backgroundImage} style={styles.image}>
           <View></View>
     </ImageBackground>*/}
-          </View>
-          <View style={styles.containerProductText}>
-            <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr')}>
-              <View style={styles.registrButton}>
-                <Text style={styles.registrText}>
-                  Зарегистрироваться
+              </View>
+              <View style={styles.containerProductText}>
+                <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr', { setToken: this.setToken })}>
+                  <View style={styles.registrButton}>
+                    <Text style={styles.registrText}>
+                      Зарегистрироваться
              </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')}>
-              <View style={styles.logInButton}>
-                <Text style={styles.logInText}>
-                  Войти
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
+                  <View style={styles.logInButton}>
+                    <Text style={styles.logInText}>
+                      Войти
             </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          )}
+          {this.state.token !== null && (
+            <View style={styles.body}>
+              <ProductList token={this.state.token} navigation={this.state.navigation}/>
+            </View>
+          )}
 
           {/* Footer */}
           <View style={styles.buttonMenuContainer}>
             <TouchableOpacity style={styles.buttonArea}>
-              <HomeButton fill='#009E4E'/>
+              <HomeButton fill='#009E4E' />
               <Text style={styles.buttonText}>Домой</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}

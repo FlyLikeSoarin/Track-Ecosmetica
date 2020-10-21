@@ -10,6 +10,8 @@ import {
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 import MainPage from './component/MainPage';
@@ -21,6 +23,9 @@ import AddProductPage from './component/AddProduct/AddProductPage'
 import Product from './component/Product/Product'
 import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
+
+import ProductInfo from './component/ProductInfo'
+//import Profile from './component/Profile'
 
 
 const styles = StyleSheet.create({
@@ -35,6 +40,18 @@ const styles = StyleSheet.create({
 });
 
 function Search({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Search Screen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+
+function AddIngridient({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Search Screen</Text>
@@ -82,9 +99,60 @@ function Profile({ navigation }) {
     </View>
   );
 };
+// function ProductInfo({ navigation, route }) {
+//   return(
+//   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>ProductInfo</Text>
+//       <Button
+//         title="Go to Home"
+//         onPress={() => navigation.navigate('Home')}
+//       />
+//     </View>
+//   );
+// };
 
 
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+// function HomeTabs() {
+//   return (
+
+//     <NavigationContainer>
+//       <Tab.Navigator
+//         screenOptions={({ route }) => ({
+//           tabBarIcon: ({ color, size }) => {
+//             let iconName;
+//             switch (route.name) {
+//               case 'Домой': iconName ='ios-home';
+//               break
+//               case 'Сканировать': iconName = 'md-reverse-camera';
+//               break
+//               case 'Профиль': iconName = 'ios-person';
+//               break
+//             }
+//             return <Ionicons name={iconName} size={size} color={color} />;
+//           },
+//         })}
+//         tabBarOptions={{
+//           activeTintColor: '#9ae7af',
+//           inactiveTintColor: 'gray',
+//           labelStyle: {
+//             fontSize: 16,
+//           },
+//           // style: {
+//           //   backgroundColor: '#9ae7af',
+//           // },
+//         }}
+//     >
+//       <Tab.Screen name='Домой' component={ProductList} />
+//       <Tab.Screen name='Сканировать' component={ProductList} />
+//       <Tab.Screen name='Профиль' component={ProductList} />
+//     </Tab.Navigator>
+//     </NavigationContainer>
+
+// );
+// }
 
 export default class App extends React.Component {
 
@@ -113,6 +181,8 @@ export default class App extends React.Component {
     this.initAuthToken();
   }
 
+
+  /*MainPage - home*/
   render() {
     return (
       <NavigationContainer>
@@ -129,6 +199,9 @@ export default class App extends React.Component {
           <Stack.Screen name='AddProduct' component={AddProductPage} />
           <Stack.Screen name='Login' component={Login} />
           <Stack.Screen name='Registr' component={Registr} />
+
+          <Stack.Screen name='AddIngridient' component={AddIngridient} />
+          <Stack.Screen name='ProductInfo' component={ProductInfo} />
         </Stack.Navigator>
       </NavigationContainer>
     );
