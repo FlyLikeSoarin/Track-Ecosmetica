@@ -135,7 +135,7 @@ const ItemList = ({ data, renderItem, isEmpty }) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => { item.name + Math.floor(Math.random()*1000000000000) }}
+          keyExtractor={item => { item.name /*+ Math.floor(Math.random()*1000000000000)*/ }}
         />
       </SafeAreaView>)
 }

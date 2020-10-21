@@ -12,28 +12,17 @@ Font.loadAsync({
 
 const styles = StyleSheet.create({
     starArea: {
-        position: 'absolute',
-        left: 10,
-        top: -50
     },
     star: {
     },
     score: {
-        fontSize: 40,
-        fontFamily: 'Forum',
-        position: 'absolute',
-        top: 50,
-        right: 50
     }
 })
 
 export default function Star(props){
     return(
         <View style={styles.starArea}>
-            <SvgXml style={styles.star} width="140" height="140" xml={star} />
-            <Text style={styles.score}>
-                {props.score}
-            </Text>
+            <SvgXml style={styles.star} width="15" height="15" fill='#009E4E' xml={star} />
         </View>
     )
 } 
