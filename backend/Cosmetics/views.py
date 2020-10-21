@@ -32,7 +32,7 @@ class ProductHistoryView(APIView):
 
 class ProductRetrieveCreateView(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, AllowAny]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         serializer = BarcodeSerializer(data=request.query_params)
@@ -44,8 +44,8 @@ class ProductRetrieveCreateView(APIView):
         elif barcodes.count() > 1:
             barcodes = barcodes.filter(code_format=serializer.validated_data['code_format'])
 
+        barcode = barcodes.get()
         if request.auth is not None:
-            barcode = barcodes.get()
             History.objects.create(product=barcode.product, user=request.user)
 
         product = barcode.product
@@ -62,7 +62,10 @@ class ProductRetrieveCreateView(APIView):
 
         product_serializer = ProductReadSerializer(barcode.product)
         data = product_serializer.data
-        data['ingredients'] = json.loads(data['ingredients'])
+        try:
+            data['ingredients'] = json.loads(data['ingredients'])
+        except:
+            pass
         return Response(data)
 
     def post(self, request):
