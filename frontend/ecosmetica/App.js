@@ -25,7 +25,7 @@ import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
 
 import ProductInfo from './component/ProductInfo'
-//import Profile from './component/Profile'
+import Profile from './component/Profile'
 
 
 const styles = StyleSheet.create({
@@ -62,7 +62,7 @@ function AddIngridient({ navigation }) {
     </View>
   );
 };
-
+/*
 function Profile({ navigation }) {
   const [token, setToken] = React.useState('')
   const showToken = async () => {
@@ -98,7 +98,7 @@ function Profile({ navigation }) {
 
     </View>
   );
-};
+};*/
 // function ProductInfo({ navigation, route }) {
 //   return(
 //   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
