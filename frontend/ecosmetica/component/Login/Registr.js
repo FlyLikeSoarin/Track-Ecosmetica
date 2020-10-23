@@ -11,6 +11,8 @@ import {
     ActivityIndicator,
     AsyncStorage
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons'
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 /*Buttons*/
 import BackButton from '../Button/BackButton'
@@ -30,7 +32,13 @@ export default class Registr extends React.Component {
             password: '',
             repeated_password: '',
             first_name: '',
-            last_name: ''
+            last_name: '',
+            submitEmptyField: false, // не введен логин или пароль
+            PasswordsDifferent: false, // password != repeated_password
+            fallServer: false,
+            userExist: false,
+            icon: 'ios-eye-off',
+            secure: true
         };
 
         this.handlerEmail = this.handlerEmail.bind(this)
@@ -45,7 +53,7 @@ export default class Registr extends React.Component {
         /* Загрузка шрифтов */
         await Font.loadAsync({
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
-          });
+        });
 
         this.setState({ assetsLoaded: true });
 
@@ -69,6 +77,13 @@ export default class Registr extends React.Component {
                 </TouchableOpacity>
             ),
         });
+    }
+
+    changeIcon() {
+        this.setState(prevState => ({
+            icon: prevState.icon === 'ios-eye' ? 'ios-eye-off' : 'ios-eye',
+            secure: !prevState.secure
+        }))
     }
 
     handlerEmail(text) {
@@ -99,51 +114,113 @@ export default class Registr extends React.Component {
     async handlerRegister() {
         var success = false
         var token = null
-        await fetch(`${URL}/auth/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: this.state.email,
-                password: this.state.password,
-                email: this.state.email,
-                first_name: this.state.first_name,
-                last_name: this.state.last_name
+        if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password) {
+            await fetch(`${URL}/auth/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: this.state.email,
+                    password: this.state.password,
+                    email: this.state.email,
+                    first_name: this.state.first_name,
+                    last_name: this.state.last_name
+                })
             })
-        })
-            .then((response) => {
-                console.log(response.status)
-                if (response.status === 200) {
-                    success = true
-                }
-                return response.json()
-            })
-            .then((ans) => {
-                if (success) {
-                    token = ans.Token;
-                    //console.log(ans.Token)
-                    this.setState({
-                        email: '',
-                        password: '',
-                        repeated_password: '',
-                        first_name: '',
-                        last_name: ''
-                    })
-                    this.state.navigation.navigate('Home')
+                .then((response) => {
+                    console.log(response.status)
+                    if (response.status === 200) {
+                        success = true
+                    }
+                    if (400 <= response.status && response.status <= 499) {
+                        this.showAlertUserExists()
+                    }
+                    if (500 <= response.status && response.status <= 526) {
+                        this.showAlertServer()
+                    }
+                    return response.json()
+                })
+                .then((ans) => {
+                    if (success) {
+                        token = ans.Token;
+                        //console.log(ans.Token)
+                        this.setState({
+                            email: '',
+                            password: '',
+                            repeated_password: '',
+                            first_name: '',
+                            last_name: '',
+                        })
+                        this.state.navigation.navigate('Home')
 
-                } else {
-                    console.log('fail')
-                }
-            })
-        if (token !== null) {
-            this.props.route.params.setToken(token)
-            await AsyncStorage.setItem('token', token);
+                    } else {
+                        console.log('fail')
+                    }
+                })
+            if (token !== null) {
+                this.props.route.params.setToken(token)
+                await AsyncStorage.setItem('token', token);
+            }
+        } else {
+            if (this.state.password !== this.state.repeated_password) {
+                this.showAlertDifferentPasswords();
+            } else {
+                this.showAlertSubmitEmpty()
+            }
         }
+    }
+    showAlertUserExists = () => {
+        this.setState({
+            userExist: true
+        })
+    }
+    hideAlertUserExists = () => {
+        this.setState({
+            userExist: false
+        })
+    }
+    showAlertServer = () => {
+        this.setState({
+            fallServer: true
+        });
+    }
+
+    hideAlertServer = () => {
+        this.setState({
+            fallServer: false
+        });
+    }
+
+    showAlertSubmitEmpty = () => {
+        this.setState({
+            submitEmptyField: true
+        });
+    }
+
+    hideAlertSubmitEmpty = () => {
+        this.setState({
+            submitEmptyField: false
+        });
+    }
+    showAlertDifferentPasswords = () => {
+        this.setState({
+            PasswordsDifferent: true
+        });
+        this.setState({
+            password: '',
+            repeated_password: ''
+        })
+    }
+
+    hideAlertDifferentPasswords = () => {
+        this.setState({
+            PasswordsDifferent: false
+        });
     }
 
     render() {
-        const { assetsLoaded } = this.state;
+        const { assetsLoaded, submitEmptyField, PasswordsDifferent, fallServer, userExist } = this.state;
 
         if (assetsLoaded) {
 
@@ -157,19 +234,24 @@ export default class Registr extends React.Component {
                             placeholderTextColor="#8B8B8B"
                             autoCapitalize="none"
                         />
-                        <TextInput style={styles.input}
-                            value={this.state.password}
-                            onChangeText={this.handlerPassword}
-                            placeholder='Password'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                        />
+                        <View style={styles.passwordInput}>
+                            <TextInput style={styles.passwordInputArea}
+                                value={this.state.password}
+                                onChangeText={this.handlerPassword}
+                                placeholder='Password'
+                                placeholderTextColor="#8B8B8B"
+                                autoCapitalize="none"
+                                secureTextEntry={this.state.secure}
+                            />
+                            <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
+                        </View>
                         <TextInput style={styles.input}
                             value={this.state.repeated_password}
                             onChangeText={this.handlerRepeatedPassword}
                             placeholder='Repeat Password'
                             placeholderTextColor="#8B8B8B"
                             autoCapitalize="none"
+                            secureTextEntry={this.state.secure}
                         />
                         <TextInput style={styles.inputName}
                             value={this.state.first_name}
@@ -186,6 +268,7 @@ export default class Registr extends React.Component {
                             autoCapitalize="none"
                         />
 
+
                     </View>
 
                     <View style={styles.buttonArea}>
@@ -193,11 +276,73 @@ export default class Registr extends React.Component {
                             <View style={styles.bottom}>
                                 <Text style={styles.bottomText}>
                                     Зарегистрироваться
-                </Text>
+                                </Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                </View>
+
+                    {/* Alerts */}
+                    <AwesomeAlert
+                        show={submitEmptyField}
+                        showProgress={false}
+                        title="Вы заполнили не все поля"
+                        message="Обязательные поля: Email, Password и Repeat Password"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText="OK"
+                        confirmButtonColor="#009E4E"
+                        onConfirmPressed={() => {
+                            this.hideAlertSubmitEmpty();
+                        }}
+                    />
+                    <AwesomeAlert
+                        show={PasswordsDifferent}
+                        showProgress={false}
+                        title="Повторите попытку"
+                        message="Пароли не свопадают"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText="OK"
+                        confirmButtonColor="#009E4E"
+                        onConfirmPressed={() => {
+                            this.hideAlertDifferentPasswords();
+                        }}
+                    />
+                    <AwesomeAlert
+                        show={fallServer}
+                        showProgress={false}
+                        title="Сервер недоступен"
+                        message="Повторите поытку через некоторе время"
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText="OK"
+                        confirmButtonColor="#009E4E"
+                        onConfirmPressed={() => {
+                            this.hideAlertServer();
+                        }}
+                    />
+                    <AwesomeAlert
+                        show={userExist}
+                        showProgress={false}
+                        title="Пользователь уже существует"
+                        message=""
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText="OK"
+                        confirmButtonColor="#009E4E"
+                        onConfirmPressed={() => {
+                            this.hideAlertUserExists();
+                        }}
+                    />
+                </View >
             );
         }
         else {
@@ -260,6 +405,26 @@ const styles = StyleSheet.create({
         padding: 10,
         height: 40,
         borderRadius: 10,
+    },
+    eyeIcon: {
+        paddingRight: 10,
+    },
+    passwordInput: {
+        flexDirection: 'row',
+        backgroundColor: '#E5E5E5',
+        margin: 10,
+        marginRight: 25,
+        marginLeft: 25,
+        padding: 10,
+        height: 40,
+        borderRadius: 10,
+    },
+    passwordInputArea: {
+        flex: 1,
+        paddingLeft: 0,
+        backgroundColor: '#E5E5E5',
+        color: '#424242',
     }
+
 
 })
