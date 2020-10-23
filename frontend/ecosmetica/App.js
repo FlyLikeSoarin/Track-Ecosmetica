@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Search({ navigation }) {
+function Search({ navigation, route }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Search Screen</Text>
@@ -47,6 +47,7 @@ function Search({ navigation }) {
         title="Go to Home"
         onPress={() => navigation.navigate('Home')}
       />
+      <Button title='logout' onPress={() => route.params.logOut()} />
     </View>
   );
 };

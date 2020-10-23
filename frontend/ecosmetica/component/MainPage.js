@@ -124,6 +124,7 @@ export default class MainPage extends React.Component {
     };
 
     this.setToken = this.setToken.bind(this);
+    this.logOut = this.logOut.bind(this)
   }
 
   async componentDidMount() {
@@ -157,7 +158,7 @@ export default class MainPage extends React.Component {
         fontFamily: 'NotoSanaTamilLight'
       },
       headerRight: () => (
-        <TouchableOpacity onPress={() => this.state.navigation.navigate('Search')}>
+        <TouchableOpacity onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut})}>
           <SearchButton />
         </TouchableOpacity>
       ),
@@ -183,6 +184,17 @@ export default class MainPage extends React.Component {
     this.setState({
       token: token
     })
+  }
+
+  async logOut() {
+    this.setState({
+      token: null
+    })
+    try {
+      await AsyncStorage.removeItem('token');
+    } catch(e) {
+      console.log(e)
+    } 
   }
 
   render() {
