@@ -72,14 +72,6 @@ const styles = StyleSheet.create({
     },
 });
 
-/*const starSvg = (
-      <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M11 0L13.4697 7.60081H21.4616L14.996 12.2984L17.4656 19.8992L11 15.2016L4.53436 19.8992L7.00402 12.2984L0.538379 7.60081H8.53035L11 0Z" fill="#FFA21F"/>
-        <path d="M11 0L13.4697 7.60081H21.4616L14.996 12.2984L17.4656 19.8992L11 15.2016L4.53436 19.8992L7.00402 12.2984L0.538379 7.60081H8.53035L11 0Z" fill="#FFA21F"/>
-      </svg>
-)*/
-
-
 const RenderImage = ({image}) => {
   console.log(image)
   if (image!=='') return <Image style={styles.image} source={{uri: image}}></Image>
@@ -87,15 +79,19 @@ const RenderImage = ({image}) => {
 }
 
 // const RenderMetric = ({score}) => { 
-// //   const result = Array(score).forEach((item, index)=>{
-// //     return(starSvg) 
-// //   });
-// // return <View>{result}</View>;
-// if (score>4) return starSvg
-// else return {starSvg}
+//   if (score == -1) return 0;
   
 
+//   else 
+//     {
+//       let a = [0,0,0,0,0];
+//       a.map((item, index) => {})
+//     }
+
+
 // }
+
+
 const Product = ({title, image, lable, metric1}) => {
   const starsScore = Math.floor(metric1/2);
 
@@ -120,12 +116,11 @@ const Product = ({title, image, lable, metric1}) => {
               <Text style={styles.lableText}>{lable}</Text>
             </View>
             <View style={styles.metrics}>             
-              {/*{starSvg}
-              {starSvg}
-              {starSvg}
-              {starSvg}
-    {starSvg}*/}
-    <Star />
+              <Star width='25' height='25' fill='#FFFFFF'/>
+              <Star width='25' height='25'/>
+              <Star width='25' height='25'/>
+              <Star width='25' height='25'/>
+              <Star width='25' height='25'/>
               {/* <RenderMetric score={starsScore}/> */}
               <Text style={styles.metricsText}>{starsScore}</Text>
             </View>

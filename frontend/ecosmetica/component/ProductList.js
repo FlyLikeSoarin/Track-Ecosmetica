@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { useState } from 'react';
 import {
   Text,
   View,
@@ -14,11 +13,7 @@ import {
   StatusBar,
   ActivityIndicator
 } from 'react-native';
-import { svg } from 'react-native-svg';
-import product1img from '../static/lRWynXU__sg.jpg';
-import product2img from '../static/250mlbottle_ricewheatshampoo_lg_1_1_1_1 (1).webp';
 import Product from './Product'
-import ImageProductMock from '../static/EEyMAHcCfnE.jpg'
 //import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
 
@@ -155,12 +150,25 @@ export default class ProductList extends React.Component {
     }
   }
 
-  handlePress = (id) => { this.props.navigation.navigate('ProductInfo', { productID: id }) }
+  // handlePress = ({item}) => {this.props.navigation.navigate('ProductInfo', {
+  //   name: item.name, 
+    //brand_name: item.brand_name,
+    // img_url: item.img_url,
+    // description: item.description,
+    // ingredients: item.ingredients,
+    // eco_score: item.eco_score,
+    // safety_score: item.safety_score,
+    // zoo_score: item.zoo_score,
+    // total_score: item.total_score,
+  //})}
+
+  //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
 
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-      // onPress={this.handlePress(item.name)}
+       //onPress={this.handlePress(item)}
+       onPress={() => this.props.navigation.navigate('ProductInfo', {name: item.name})}
       >
         <View>
           <Product
@@ -170,7 +178,6 @@ export default class ProductList extends React.Component {
             metric1={item.total_score} />
         </View>
       </TouchableOpacity>
-      //
     )
   };
 
@@ -212,6 +219,9 @@ export default class ProductList extends React.Component {
     this.handleData();
   }
 
+  // async componentDidUpdate() {
+  //   this.handleData();
+  // }
 
   render() {
     const { assetsLoaded } = this.state;
@@ -220,48 +230,8 @@ export default class ProductList extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            {/* <ScrollView> */}
-            {/* <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'})}
-            >
-                <Product 
-                title='Шампунь для объема с экстрактом риса и пшеницы' 
-                image={product2img} 
-                lable="Khiel's" 
-                metric1='50%'/>
-            </TouchableOpacity> */}
-            {/* <SafeAreaView style={styles.container}>
-              <FlatList
-                data={this.state.data}
-                renderItem={this.renderItem}
-                keyExtractor={item => {item.name }}
-              />
-          </SafeAreaView>*/}
             <ItemList data={this.state.data} renderItem={this.renderItem} isEmpty={this.state.isEmptyList} />
-            {/* </ScrollView> */}
           </View>
-
-          {/* Footer */}
-          { /*<View style={styles.buttonMenuContainer}>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Scanner')}
-                >
-                
-                <Text style={styles.buttonText}>Домой</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Scanner')}
-                >
-                
-                <Text style={styles.buttonText} >Сканировать</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Profile')}
-                >
-                
-                <Text style={styles.buttonText}>Профиль</Text>
-                </TouchableOpacity> 
-        </View>   */}
         </View>
       );
     } else {

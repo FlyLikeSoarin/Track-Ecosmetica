@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   Button,
-  AsyncStorage
+  AsyncStorage,
 } from 'react-native';
 
 import 'react-native-gesture-handler';
@@ -26,6 +26,7 @@ import Registr from './component/Login/Registr'
 
 import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
+import LoadingScreen from './component/LoadingScreen'
 
 
 const styles = StyleSheet.create({
@@ -74,11 +75,9 @@ function Profile({ navigation }) {
       console.log(e)
     }
   }
-
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
   }
-
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>{token}</Text>
@@ -95,7 +94,6 @@ function Profile({ navigation }) {
       title="logout"
       onPress={() => logOut()}
       />
-
     </View>
   );
 };*/
@@ -193,7 +191,7 @@ export default class App extends React.Component {
           />
           <Stack.Screen name='Profile' component={Profile} />
           <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-          <Stack.Screen name='Search' component={Search} />
+          <Stack.Screen name='Search' component={LoadingScreen} />
           <Stack.Screen name='Product' component={Product} />
           <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
           <Stack.Screen name='AddProduct' component={AddProductPage} />

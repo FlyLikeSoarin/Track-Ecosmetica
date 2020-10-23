@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 export default function ProfileImageMock(){
     return(
         <View style={styles.image}>
-            <SvgXml width="120" height="120" xml={profileImageMock} />
+            <SvgXml width="60" height="60" xml={profileImageMock} />
         </View>
     )
 } 
