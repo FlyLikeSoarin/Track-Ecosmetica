@@ -3,6 +3,7 @@ from .models import Barcode
 from .models import Product
 from .models import History
 from .models import Review
+from .models import Ingredient
 
 
 @admin.register(Product)
@@ -24,3 +25,8 @@ class HistoryAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'title', 'rating')
     readonly_fields = ('product', )
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('inci_name', 'description')

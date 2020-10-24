@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticate
 from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
 from .serializers import ReviewWriteSerializer, ReviewReadSerializer
-from .models import Barcode, Product, History, Review
+from .models import Barcode, Product, History, Review, Ingredient
 from .web import get_product_or_fetch, severity_to_score, image_to_text
 from .utils import add_to_history
 
@@ -153,4 +153,11 @@ class AnalyzeIngredientImageView(APIView):
         # return Response(data)
 
         response = image_to_text(data['content'])
-        return Response(str(response))
+        words = str(response).split()
+
+        result = []
+        for word in words:
+            if Ingredient.objects.filter(inci_name__icontains=word) or\
+                Ingredient.objects.filter(inn_name__icontains=word):
+                result.append(word)
+        return Response(result)

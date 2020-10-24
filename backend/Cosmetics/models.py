@@ -37,6 +37,29 @@ class Product(models.Model):
         return self.name
 
 
+class Ingredient(models.Model):
+    inci_name = models.TextField(db_index=True, blank=True)
+    inn_name = models.TextField(db_index=True, blank=True)
+    cas_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
+    ec_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
+    description = models.TextField()
+    restrictions = models.ForeignKey('Cosmetics.Restriction', on_delete=models.SET_NULL, null=True)
+    functions = models.ForeignKey('Cosmetics.Function', on_delete=models.SET_NULL, null=True)
+
+
+class Function(models.Model):
+    name = models.CharField(max_length=250)
+    description = models.TextField()
+
+
+class Restriction(models.Model):
+    name = models.CharField(max_length=250)
+
+
+class Abbreviation(models.Model):
+    pass
+
+
 class History(models.Model):
     product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
     user = models.ForeignKey('Users.User', on_delete=models.CASCADE, null=True)
