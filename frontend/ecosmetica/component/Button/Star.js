@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { SvgXml } from 'react-native-svg';
 import { star } from '../../assets/svg/star.svg';
 
@@ -8,10 +8,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function Star(){
+export default function Star({width, height, fill}){
     return(
-        <View style={styles.cross}>
-            <SvgXml width="30" height="30" xml={star} />
-        </View>
+        <SvgXml width={width} height={height} xml={star} fill={fill}/>
     )
 } 

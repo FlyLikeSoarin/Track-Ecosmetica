@@ -11,7 +11,7 @@ import HomeButton from './Button/HomeButton'
 import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'
-
+import LoadingScreen from './LoadingScreen'
 import ProductList from './ProductList'
 
 
@@ -163,7 +163,7 @@ export default class MainPage extends React.Component {
         </TouchableOpacity>
       ),
     });
-    this.setState({ assetsLoaded: true });
+    setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
   }
 
   async componentDidUpdate() {
@@ -261,10 +261,7 @@ export default class MainPage extends React.Component {
     }
     else {
       return (
-        <View style={styles.container}>
-          <ActivityIndicator />
-          <StatusBar barStyle="default" />
-        </View>
+        <LoadingScreen />
       );
     }
   }

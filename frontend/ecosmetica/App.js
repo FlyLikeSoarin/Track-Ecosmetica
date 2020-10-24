@@ -4,7 +4,7 @@ import {
   View,
   StyleSheet,
   Button,
-  AsyncStorage
+  AsyncStorage,
 } from 'react-native';
 
 import 'react-native-gesture-handler';
@@ -26,6 +26,7 @@ import Registr from './component/Login/Registr'
 
 import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
+import LoadingScreen from './component/LoadingScreen'
 
 
 const styles = StyleSheet.create({
@@ -75,11 +76,9 @@ function Profile({ navigation }) {
       console.log(e)
     }
   }
-
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
   }
-
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>{token}</Text>
@@ -96,7 +95,6 @@ function Profile({ navigation }) {
       title="logout"
       onPress={() => logOut()}
       />
-
     </View>
   );
 };*/
@@ -161,7 +159,8 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-      userToken: null
+      userToken: null,
+      loading: true
     }
     this.initAuthToken = this.initAuthToken.bind(this);
   }
@@ -170,7 +169,7 @@ export default class App extends React.Component {
     let authToken = null
     try {
       authToken = await AsyncStorage.getItem('token');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
     }
     this.setState({
@@ -180,31 +179,38 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
+    setTimeout(() => this.setState({loading: false}), 1000)
   }
 
 
   /*MainPage - home*/
   render() {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={MainPage}
-          />
-          <Stack.Screen name='Profile' component={Profile} />
-          <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-          <Stack.Screen name='Search' component={Search} />
-          <Stack.Screen name='Product' component={Product} />
-          <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
-          <Stack.Screen name='AddProduct' component={AddProductPage} />
-          <Stack.Screen name='Login' component={Login} />
-          <Stack.Screen name='Registr' component={Registr} />
+    if (this.state.loading) {
+      return (
+        <LoadingScreen />
+      )
+    } else {
+      return (
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={MainPage}
+            />
+            <Stack.Screen name='Profile' component={Profile} />
+            <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+            <Stack.Screen name='Search' component={Search} />
+            <Stack.Screen name='Product' component={Product} />
+            <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+            <Stack.Screen name='AddProduct' component={AddProductPage} />
+            <Stack.Screen name='Login' component={Login} />
+            <Stack.Screen name='Registr' component={Registr} />
 
-          <Stack.Screen name='AddIngridient' component={AddIngridient} />
-          <Stack.Screen name='ProductInfo' component={ProductInfo} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
+            <Stack.Screen name='AddIngridient' component={AddIngridient} />
+            <Stack.Screen name='ProductInfo' component={ProductInfo} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      );
+    }
   }
 }

@@ -13,6 +13,7 @@ import {
     AsyncStorage
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import Back from '../Button/BackButton';
 import AddPhoto from './AddPhotoArea'
