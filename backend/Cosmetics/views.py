@@ -152,7 +152,7 @@ class AnalyzeIngredientImageView(APIView):
         data = serializer.validated_data
         # return Response(data)
 
-        response = image_to_text(data['content']).decode('utf-8')
+        response = bytes(str(image_to_text(data['content'])), 'ascii').decode('utf-8')
         text = response[response.rfind('text:'): -1]
         words = text.split()
 
