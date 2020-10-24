@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 export default function Star(props){
     return(
         <View style={styles.starArea}>
-            <SvgXml style={styles.star} width="15" height="15" fill='#009E4E' xml={star} />
+            <SvgXml style={styles.star} width="15" height="15" fill={props.fill} xml={star} />
         </View>
     )
 } 

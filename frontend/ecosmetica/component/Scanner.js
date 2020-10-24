@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Font from 'expo-font';
 import { Text, View, StyleSheet, Button, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Permissions from 'expo-permissions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
@@ -20,7 +21,8 @@ export default class BarcodeScannerComponent extends React.Component {
       scanned: false,
       scannedQRCode: false,
       data: null,
-      token: null
+      token: null,
+      fallServer: false
     };
   }
 
@@ -52,8 +54,20 @@ export default class BarcodeScannerComponent extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
+  showAlertServer = () => {
+    this.setState({
+        fallServer: true
+    });
+}
+
+hideAlertServer = () => {
+    this.setState({
+        fallServer: false
+    });
+}
+
   render() {
-    const { hasCameraPermission, scanned, scannedQRCode } = this.state;
+    const { hasCameraPermission, scanned, scannedQRCode, fallServer } = this.state;
 
     if (hasCameraPermission === null) {
       return <Text>Requesting for camera permission</Text>;
@@ -82,6 +96,21 @@ export default class BarcodeScannerComponent extends React.Component {
         <View style={styles.footer}>
           {scannedQRCode && <Text style={styles.alert}>Данный формат не поддерживается</Text>}
         </View>
+        <AwesomeAlert
+                            show={fallServer}
+                            showProgress={false}
+                            title="Сервер недоступен"
+                            message="Повторите поытку через некоторе время"
+                            closeOnTouchOutside={true}
+                            closeOnHardwareBackPress={false}
+                            showCancelButton={false}
+                            showConfirmButton={true}
+                            confirmText="OK"
+                            confirmButtonColor="#009E4E"
+                            onConfirmPressed={() => {
+                                this.hideAlertServer();
+                            }}
+                        />
       </View>
     );
   }
@@ -91,13 +120,24 @@ export default class BarcodeScannerComponent extends React.Component {
       scanned: true
     })
     let notFound = false;
+    let notFoundOnEWG = false
     const token = this.state.token
+    let header = null
+    let serverError = false
+
+    if (token === null) {
+      header = {
+        'Content-Type': 'application/json',
+      }
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      }
+    }
     await fetch(`${URL}/product/?code=${data}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`,
-        },
+        headers: header
       })
       .then((resp) => {
         /*console.log(resp)
@@ -106,16 +146,40 @@ export default class BarcodeScannerComponent extends React.Component {
         if(resp.status === 200) {
           return resp.json()
         }
-        else {
+        if(500 <= resp.status && resp.status <= 526 ){
+          serverError = true
+        }
+        if(400 <= resp.status && resp.status <= 499) {
           notFound = true
         }
       })
       .then((ans) => {
         console.log(ans)
         if (type !== 'org.iso.QRCode') {
-          if (notFound) {
-            this.state.navigation.navigate('ProductNotFound', {type: type, data: data});
-          } else {
+          if (!notFound && ans.ingredients === "") {
+            notFoundOnEWG = true
+          }
+          if (serverError) {
+            this.showAlertServer()
+          }
+          else if (notFound || notFoundOnEWG) {
+            let product = {}
+            if (notFoundOnEWG) {
+              product = {
+                barcode: data,
+                name: ans.name,
+                brand: ans.brand_name
+              }
+            } else {
+              product = {
+                barcode: data,
+                name: null,
+                brand: null
+              }
+            }
+            this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
+          } 
+          else {
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
           }
         }
