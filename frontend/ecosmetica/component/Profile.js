@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { 
+import * as Font from 'expo-font';
+import {
   Text,
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  FlatList 
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  FlatList
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
 import Star from './Button/Star'
-  
+
+import BackButton from './Button/BackButton'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -21,11 +25,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
-    justifyContent: 'flex-end', 
+    justifyContent: 'flex-end',
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderBottomColor: '#C4C4C4',
-    borderTopColor: '#C4C4C4',      
+    borderTopColor: '#C4C4C4',
   },
   imageWrap: {
     marginVertical: 10,
@@ -36,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-   // marginVertical: 10,
+    // marginVertical: 10,
     //paddingBottom: 5,
   },
   bigText: {
@@ -116,8 +120,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const ButtonTemplate = ({title, onPress, style, styleText}) => {
-  return(
+const ButtonTemplate = ({ title, onPress, style, styleText }) => {
+  return (
     <TouchableOpacity onPress={onPress}>
       <View style={style}>
         <Text style={styleText}>{title}</Text>
@@ -125,7 +129,7 @@ const ButtonTemplate = ({title, onPress, style, styleText}) => {
     </TouchableOpacity>
   )
 }
-  
+
 export default class Profile extends React.Component {
 
   constructor(props) {
@@ -133,60 +137,95 @@ export default class Profile extends React.Component {
 
     this.state = {
       navigation: this.props.navigation,
+      route: this.props.route,
       bathScore: '',
       excelledIngridiends: [],
     };
-  }  
-   
+  }
+
   async componentDidMount() {
     await Font.loadAsync({
-        'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
+
+    this.state.navigation.setOptions({
+      headerTitle: 'Профиль',
+      headerStyle: {
+        backgroundColor: '#fff',
+        borderBottomColor: '#929292',
+        borderBottomWidth: 0.5
+      },
+      headerTintColor: '#929292',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        fontFamily: 'NotoSanaTamilLight'
+      },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
+          <BackButton />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <TouchableOpacity
+          style={{ marginRight: 10 }}
+          onPress={() => this.handlerLogout()}>
+          <Icon name='logout' size={25} color='#C4C4C4' />
+        </TouchableOpacity>
+      )
+    });
+
   }
-      render() {
-        return (
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <View style={styles.imageWrap}>
-                <ProfileImageMock/>
-              </View>
-              <View style={styles.bigTextWrap}>
-                  <Text style={styles.bigText}>Ирен Адлер</Text>
-              </View>
-            </View>
-            <View style={styles.body}>
-              <View style={styles.infoWrap}>
-                {(this.state.bathScore!=='')&&(
-                  <View>
-                    <View style={styles.bathScoreWrap}>
-                      <Text style={styles.textScore}>Оценка ванной</Text>
-                      <View style={styles.imageScore}>
-                        <Star width='40' height='40' fill='#009E4E'/>
-                        <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
-                      </View>
-                    </View>
-                    <ButtonTemplate 
-                      title='Оценить заново' 
-                      style={styles.buttonAddAfter}
-                      styleText={styles.buttonTextAfter}
-                      onPress={()=>this.setState({bathScore: 9})} />
-                  </View>)}
-                {(this.state.bathScore=='')&&
-                  <ButtonTemplate 
-                    title='Оценить ванную' 
-                    style={styles.buttonAddBefore}
-                    styleText={styles.buttonTextBefore}
-                    onPress={()=>this.setState({bathScore: 10})} />}
-              </View>
-              <View style={styles.infoWrap}>
-                <ButtonTemplate 
-                title='Исключить ингридиент'
+
+  async handlerLogout() {
+    this.props.route.params.logOut()
+    this.state.navigation.navigate('Home')
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.imageWrap}>
+            <ProfileImageMock />
+          </View>
+          <View style={styles.bigTextWrap}>
+            <Text style={styles.bigText}>Ирен Адлер</Text>
+          </View>
+        </View>
+        <View style={styles.body}>
+          <View style={styles.infoWrap}>
+            {(this.state.bathScore !== '') && (
+              <View>
+                <View style={styles.bathScoreWrap}>
+                  <Text style={styles.textScore}>Оценка ванной</Text>
+                  <View style={styles.imageScore}>
+                    <Star width='40' height='40' fill='#009E4E' />
+                    <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
+                  </View>
+                </View>
+                <ButtonTemplate
+                  title='Оценить заново'
+                  style={styles.buttonAddAfter}
+                  styleText={styles.buttonTextAfter}
+                  onPress={() => this.setState({ bathScore: 9 })} />
+              </View>)}
+            {(this.state.bathScore == '') &&
+              <ButtonTemplate
+                title='Оценить ванную'
                 style={styles.buttonAddBefore}
                 styleText={styles.buttonTextBefore}
-                onPress={()=>this.state.navigation.navigate('AddIngridient')} />
-              </View>
-            </View>
+                onPress={() => this.setState({ bathScore: 10 })} />}
           </View>
-        );
-      }
-    }
+          <View style={styles.infoWrap}>
+            <ButtonTemplate
+              title='Исключить ингридиент'
+              style={styles.buttonAddBefore}
+              styleText={styles.buttonTextBefore}
+              onPress={() => this.state.navigation.navigate('AddIngridient')} />
+          </View>
+        </View>
+      </View>
+    );
+  }
+}

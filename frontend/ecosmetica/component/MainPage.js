@@ -250,7 +250,7 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile')}
+              onPress={() => this.props.navigation.navigate('Profile', {logOut: this.logOut})}
             >
               <ProfileButton />
               <Text style={styles.buttonText}>Профиль</Text>
