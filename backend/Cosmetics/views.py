@@ -89,7 +89,7 @@ class ProductRetrieveCreateView(APIView):
             product.name = data['name']
             product.brand_name = data['brand_name']
             product.description = data['description']
-            product.ingredients = data['ingredients']
+            product.ingredients = data['ingredient']
             product.save()
             barcode.product=product
             barcode.save()
@@ -98,7 +98,7 @@ class ProductRetrieveCreateView(APIView):
                 name = data['name'],
                 brand_name = data['brand_name'],
                 description = data['description'],
-                ingredients = data['ingredients'])
+                ingredients = data['ingredient'])
             barcode = Barcode.objects.create(
                 code=data['code'],
                 code_format=data['code_format'],
@@ -152,12 +152,13 @@ class AnalyzeIngredientImageView(APIView):
         data = serializer.validated_data
         # return Response(data)
 
-        response = image_to_text(data['content'])
-        words = str(response).split()
+        response = str(image_to_text(data['content']))
+        text = response[response.rfind('text:'): -1]
+        words = text.split()
 
         result = []
         for word in words:
-            if Ingredient.objects.filter(inci_name__icontains=word) or\
-                Ingredient.objects.filter(inn_name__icontains=word):
+            if Ingredient.objects.filter(inci_name__icontains=word).exists() or\
+                Ingredient.objects.filter(inn_name__icontains=word).exists():
                 result.append(word)
         return Response(result)
