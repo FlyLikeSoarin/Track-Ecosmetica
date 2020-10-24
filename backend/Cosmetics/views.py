@@ -29,7 +29,12 @@ class ProductHistoryView(APIView):
         for product_id in products:
             product = get_object_or_404(Product.objects.all(), pk=product_id)
             product_serializer = ProductReadSerializer(product)
-            result.append(product_serializer.data)
+            data = product_serializer.data
+            try:
+                data['ingredients'] = json.loads(data['ingredients'])
+            except:
+                pass
+            result.append(data)
         return Response(result)
 
 
@@ -135,3 +140,17 @@ class ReviewCreateListView(APIView):
 
 
         return Response(ReviewReadSerializer(review).data)
+
+
+class AnalyzeIngredientImageView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = IngredientImageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        print(data.content)
+
+        return Response(data)
