@@ -160,7 +160,7 @@ class AnalyzeIngredientImageView(APIView):
         for word in words:
             w = word.strip()
             if Ingredient.objects.filter(inci_name__icontains=w).exists():
-                result.append(Ingredient.objects.filter(inci_name__icontains=w).first())
+                result.append(Ingredient.objects.filter(inci_name__icontains=w).first().inci_name)
             elif Ingredient.objects.filter(inn_name__icontains=w).exists():
-                result.append(Ingredient.objects.filter(inn_name__icontains=w).first())
+                result.append(Ingredient.objects.filter(inn_name__icontains=w).first().inn_name)
         return Response(result)
