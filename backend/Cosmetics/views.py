@@ -11,7 +11,7 @@ from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
 from .serializers import ReviewWriteSerializer, ReviewReadSerializer
 from .models import Barcode, Product, History, Review
-from .web import get_product_or_fetch, severity_to_score
+from .web import get_product_or_fetch, severity_to_score, image_to_text
 from .utils import add_to_history
 
 import json
@@ -151,6 +151,6 @@ class AnalyzeIngredientImageView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        print(data)
+        response = image_to_text(data.content)
 
-        return Response(data)
+        return Response(str(response))

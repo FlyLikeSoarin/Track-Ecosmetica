@@ -2,3 +2,5 @@ Django==3.0.6
 djangorestframework==3.11.1
 py7zr==0.9.7
 requests==2.23.0
+django-cors-headers==3.2.0
+google-cloud-vision==2.0.0
