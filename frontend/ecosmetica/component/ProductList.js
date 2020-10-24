@@ -149,18 +149,17 @@ export default class ProductList extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       isGet: false,
-      data: [],
+      data: [],//this.props.data,
       isEmptyList: true,
       token: this.props.token
     }
+    //this.data = this.data.bind(this);
   }
-
-  handlePress = (id) => { this.props.navigation.navigate('ProductInfo', { productID: id }) }
 
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-      // onPress={this.handlePress(item.name)}
+      onPress={() => this.props.navigation.navigate('Product', {data_: item, barcode: null})}
       >
         <View>
           <Product
@@ -204,13 +203,19 @@ export default class ProductList extends React.Component {
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
-
+    console.log('productlist');
+    console.log(this.state.data)
     /* Кастомизация хедера */
     /*this.state.navigation.setOptions({
       headerShown: false
     });*/
     this.handleData();
   }
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.data !== this.state.data) {
+      this.handleData();
+    }
+  } 
 
 
   render() {
@@ -220,48 +225,8 @@ export default class ProductList extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            {/* <ScrollView> */}
-            {/* <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('ProductInfo', {productID: '1'})}
-            >
-                <Product 
-                title='Шампунь для объема с экстрактом риса и пшеницы' 
-                image={product2img} 
-                lable="Khiel's" 
-                metric1='50%'/>
-            </TouchableOpacity> */}
-            {/* <SafeAreaView style={styles.container}>
-              <FlatList
-                data={this.state.data}
-                renderItem={this.renderItem}
-                keyExtractor={item => {item.name }}
-              />
-          </SafeAreaView>*/}
             <ItemList data={this.state.data} renderItem={this.renderItem} isEmpty={this.state.isEmptyList} />
-            {/* </ScrollView> */}
           </View>
-
-          {/* Footer */}
-          { /*<View style={styles.buttonMenuContainer}>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Scanner')}
-                >
-                
-                <Text style={styles.buttonText}>Домой</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Scanner')}
-                >
-                
-                <Text style={styles.buttonText} >Сканировать</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Profile')}
-                >
-                
-                <Text style={styles.buttonText}>Профиль</Text>
-                </TouchableOpacity> 
-        </View>   */}
         </View>
       );
     } else {
