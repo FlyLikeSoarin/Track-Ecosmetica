@@ -142,6 +142,11 @@ export default class ProductNotFound extends React.Component {
         .then((ans) => {
             console.log('server ans')
             console.log(ans)
+            let sostav = ""
+            //for (let i = 0; i<= ans.lenght; i++) {}
+        })
+        .catch(() => {
+            alert('server')
         })
     }
 
