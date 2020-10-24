@@ -124,10 +124,12 @@ export default class ProductNotFound extends React.Component {
     }
 
     async uploadPhoto(base64_photo) {
+        const token = this.state.token
         await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
             },
             body: JSON.stringify({
                 content: base64_photo
@@ -146,7 +148,8 @@ export default class ProductNotFound extends React.Component {
     async handleSubmit() {
         const token = this.state.token
         const array_ing = JSON.stringify(this.state.ingredients.split(' '))
-        await fetch(`${URL}product/`, {
+        console.log(token)
+        await fetch(`${URL}/product/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

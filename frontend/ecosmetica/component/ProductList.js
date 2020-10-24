@@ -144,22 +144,22 @@ export default class ProductList extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       isGet: false,
-      data: [],
-      isEmptyList: true,
-      token: this.props.token
+      isEmptyList: this.props.data.length === 0,
+      token: this.props.token,
+      data: this.props.data
     }
   }
 
   // handlePress = ({item}) => {this.props.navigation.navigate('ProductInfo', {
   //   name: item.name, 
-    //brand_name: item.brand_name,
-    // img_url: item.img_url,
-    // description: item.description,
-    // ingredients: item.ingredients,
-    // eco_score: item.eco_score,
-    // safety_score: item.safety_score,
-    // zoo_score: item.zoo_score,
-    // total_score: item.total_score,
+  //brand_name: item.brand_name,
+  // img_url: item.img_url,
+  // description: item.description,
+  // ingredients: item.ingredients,
+  // eco_score: item.eco_score,
+  // safety_score: item.safety_score,
+  // zoo_score: item.zoo_score,
+  // total_score: item.total_score,
   //})}
 
   //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
@@ -168,8 +168,8 @@ export default class ProductList extends React.Component {
     //let array_ing = JSON.parse(item.ingredients)
     return (
       <TouchableOpacity
-       //onPress={() => console.log(array_ing)}
-       onPress={() => this.props.navigation.navigate('Product', {data_: item, barcode: null})}
+        //onPress={() => console.log(array_ing)}
+        onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
       >
         <View>
           <Product
@@ -183,7 +183,7 @@ export default class ProductList extends React.Component {
   };
 
   handleData = async () => {
-    await fetch(`${URL}product/history/`, {
+    /*await fetch(`${URL}product/history/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ export default class ProductList extends React.Component {
           })
         }
         this.setState({ data: data });
-      })
+      })*/
     this.setState({ isGet: true });
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
@@ -220,13 +220,9 @@ export default class ProductList extends React.Component {
     this.handleData();
   }
 
-  async componentDidUpdate() {
+  /*async componentDidUpdate() {
     this.handleData();
-  }
-
-  // async componentDidUpdate() {
-  //   this.handleData();
-  // }
+  }*/
 
   render() {
     const { assetsLoaded } = this.state;

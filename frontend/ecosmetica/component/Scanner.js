@@ -67,7 +67,7 @@ hideAlertServer = () => {
 }
 
 handlerBack() {
-  this.props.route.params.foo()
+  //this.props.route.params.updateHistory()
   this.state.navigation.navigate('Home')
 }
 
@@ -143,6 +143,7 @@ handlerBack() {
         'Authorization': `Token ${token}`,
       }
     }
+    console.log('scanner')
     await fetch(`${URL}/product/?code=${data}`, {
         method: 'GET',
         headers: header
@@ -152,7 +153,7 @@ handlerBack() {
         console.log(resp.status)
         console.log(token)*/
         console.log(resp.status)
-        console.log(resp)
+        /*console.log(resp)*/
         if(resp.status === 200) {
           return resp.json()
         }

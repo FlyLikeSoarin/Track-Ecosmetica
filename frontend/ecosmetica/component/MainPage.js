@@ -14,7 +14,7 @@ import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
 import ProductList from './ProductList'
 
-
+const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -121,12 +121,11 @@ export default class MainPage extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       token: null,
-      count: 0
+      history: []
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this)
-    this.increaseCount = this.increaseCount.bind(this)
   }
 
   async componentDidMount() {
@@ -168,23 +167,6 @@ export default class MainPage extends React.Component {
     setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
   }
 
-  async componentDidUpdate() {
-    /*let token = null
-    try {
-      token = await AsyncStorage.getItem('token');
-    } catch(e) {
-      console.log(e)
-    }
-    if (token !== null) {
-      this.setState({
-        token: token
-      })
-    }*/
-  }
-  increaseCount() {
-    const new_count = this.state.count + 1;
-    this.setState({count: new_count})
-  }
 
   setToken(token) {
     this.setState({
@@ -239,7 +221,7 @@ export default class MainPage extends React.Component {
           )}
           {this.state.token !== null && (
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation}/>
+              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.history}/>
             </View>
           )}
 
@@ -250,7 +232,7 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonText}>Домой</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Scanner', {foo: this.increaseCount})}
+              onPress={() => this.props.navigation.navigate('Scanner')}
             >
               <ScanButton />
               <Text style={styles.buttonText} >Сканировать</Text>
