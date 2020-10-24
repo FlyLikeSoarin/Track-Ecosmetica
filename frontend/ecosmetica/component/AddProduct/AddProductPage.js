@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
+import * as ImagePicker from 'expo-image-picker'
 import {
     Text,
     View,
@@ -7,13 +8,14 @@ import {
     TouchableOpacity,
     TextInput,
     Dimensions,
-    ScrollView,
-    Keyboard,
-    KeyboardAwareScrollView,
-    AsyncStorage
+    AsyncStorage,
+    Platform
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons'
+import Icon_photo from 'react-native-vector-icons/MaterialIcons'
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 
 import Back from '../Button/BackButton';
 import AddPhoto from './AddPhotoArea'
@@ -38,7 +40,8 @@ export default class ProductNotFound extends React.Component {
             ingredients: '',
             discription: '',
             submited: false,
-            token: null
+            token: null,
+            ingredients_detecting: false
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -95,6 +98,50 @@ export default class ProductNotFound extends React.Component {
             discription: text
         });
     }
+    async pickImage() {
+        if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+            else {
+                let result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    allowsEditing: true,
+                    aspect: [1, 3],
+                    quality: 1,
+                    base64: true
+                });
+                if(!result.cancelled) {
+                    console.log(result);
+                    this.setState({
+                        ingredients_detecting: true
+                    })
+                    this.uploadPhoto(result.base64)
+                }
+            }
+        }
+    }
+
+    async uploadPhoto(base64_photo) {
+        /*await fetch(`${URL}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                img: base64_photo
+            })
+        })
+        .then((resp) => {
+            console.log(resp)
+            return resp.json()
+        })
+        .then((ans) => {
+            console.log(ans)
+        })*/
+    }
+
     async handleSubmit() {
         const token = this.state.token
         const array_ing = JSON.stringify(this.state.ingredients.split(' '))
@@ -127,6 +174,15 @@ export default class ProductNotFound extends React.Component {
             description: ''
         })
 
+    }
+
+    takePhoto() {
+        this.pickImage();
+    }
+    hideAlertDetecting() {
+        this.setState({
+            ingredients_detecting: false
+        })
     }
 
     render() {
@@ -165,7 +221,8 @@ export default class ProductNotFound extends React.Component {
                                     placeholderTextColor="#8B8B8B"
                                     autoCapitalize="none"
                                     onChangeText={this.handleBrand} />
-                                <TextInput style={styles.input}
+                                    <View style={styles.input}>
+                                <TextInput style={styles.inputIngredients}
                                     value={this.state.ingredients}
                                     placeholder='Состав'
                                     placeholderTextColor="#8B8B8B"
@@ -173,6 +230,10 @@ export default class ProductNotFound extends React.Component {
                                     onChangeText={this.hamdelIngredients}
                                     multiline={true}
                                 />
+                                <TouchableOpacity onPress={() => this.takePhoto()}>
+                                    <Icon_photo name='photo-camera' color='gray' size={20} />
+                                </TouchableOpacity>
+                                </View>
                             </InputScrollView>
                         </View>
                         <View style={styles.buttonAddArea}>
@@ -207,6 +268,19 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
+                <AwesomeAlert
+                            show={this.state.ingredients_detecting}
+                            showProgress={true}
+                            title=""
+                            message=""
+                            closeOnTouchOutside={false}
+                            closeOnHardwareBackPress={false}
+                            showCancelButton={true}
+                            showConfirmButton={false}
+                            onCancelPressed={() => {
+                                this.hideAlertDetecting();
+                            }}
+                        />
             </View>
         )
     }
@@ -275,7 +349,11 @@ const styles = StyleSheet.create({
         marginLeft: 25,
         padding: 10,
         minHeight: 40,
-        borderRadius: 10
+        borderRadius: 10,
+        flexDirection: 'row',
+    },
+    inputIngredients: {
+        flex: 1
     },
     bigText: {
         color: '#929292',

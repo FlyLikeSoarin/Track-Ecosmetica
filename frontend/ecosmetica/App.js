@@ -26,7 +26,7 @@ import Registr from './component/Login/Registr'
 
 import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
-import LoadingScreen from './component/LoadingScreen'
+import ScannerIngredients from './component/Scanner/ScannerIngredients'
 
 
 const styles = StyleSheet.create({
@@ -64,6 +64,19 @@ function AddIngridient({ navigation }) {
     </View>
   );
 };
+
+function ScannerIngredients1({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>ScannerIngredients Screen</Text>
+      <Button
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+};
+
 /*
 function Profile({ navigation }) {
   const [token, setToken] = React.useState('')
@@ -160,7 +173,6 @@ export default class App extends React.Component {
 
     this.state = {
       userToken: null,
-      loading: true
     }
     this.initAuthToken = this.initAuthToken.bind(this);
   }
@@ -179,38 +191,31 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
-    setTimeout(() => this.setState({loading: false}), 1000)
   }
 
 
   /*MainPage - home*/
   render() {
-    if (this.state.loading) {
-      return (
-        <LoadingScreen />
-      )
-    } else {
-      return (
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Home"
-              component={MainPage}
-            />
-            <Stack.Screen name='Profile' component={Profile} />
-            <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-            <Stack.Screen name='Search' component={Search} />
-            <Stack.Screen name='Product' component={Product} />
-            <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
-            <Stack.Screen name='AddProduct' component={AddProductPage} />
-            <Stack.Screen name='Login' component={Login} />
-            <Stack.Screen name='Registr' component={Registr} />
-
-            <Stack.Screen name='AddIngridient' component={AddIngridient} />
-            <Stack.Screen name='ProductInfo' component={ProductInfo} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      );
-    }
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={MainPage}
+          />
+          <Stack.Screen name='Profile' component={Profile} />
+          <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
+          <Stack.Screen name='Search' component={Search} />
+          <Stack.Screen name='Product' component={Product} />
+          <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
+          <Stack.Screen name='AddProduct' component={AddProductPage} />
+          <Stack.Screen name='Login' component={Login} />
+          <Stack.Screen name='Registr' component={Registr} />
+          <Stack.Screen name='ScannerIngredients' component={ScannerIngredients} />
+          <Stack.Screen name='AddIngridient' component={AddIngridient} />
+          <Stack.Screen name='ProductInfo' component={ProductInfo} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
   }
 }
