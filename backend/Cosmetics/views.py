@@ -150,7 +150,7 @@ class AnalyzeIngredientImageView(APIView):
         serializer = IngredientImageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        # return Response(data)
 
-        response = image_to_text(data.content)
-
+        response = image_to_text(data['content'])
         return Response(str(response))
