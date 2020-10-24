@@ -38,8 +38,8 @@ class ReviewWriteSerializer(serializers.ModelSerializer):
         exclude = ['user', 'product']
 
 
-class IngredientImageSerializer(serializer.Serializer):
+class IngredientImageSerializer(serializers.Serializer):
     class Meta:
         fields = ['content']
 
-    content = serializers.TextField()
+    content = serializers.CharField()

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 
-from .serializers import BarcodeSerializer
+from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
 from .serializers import ReviewWriteSerializer, ReviewReadSerializer
 from .models import Barcode, Product, History, Review
@@ -151,6 +151,6 @@ class AnalyzeIngredientImageView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        print(data.content)
+        print(data)
 
         return Response(data)
