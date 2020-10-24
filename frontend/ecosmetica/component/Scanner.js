@@ -66,6 +66,11 @@ hideAlertServer = () => {
     });
 }
 
+handlerBack() {
+  this.props.route.params.foo()
+  this.state.navigation.navigate('Home')
+}
+
   render() {
     const { hasCameraPermission, scanned, scannedQRCode, fallServer } = this.state;
 
@@ -86,7 +91,10 @@ hideAlertServer = () => {
         <BarCodeScanner onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
 
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => this.state.navigation.navigate('Home') }>
+          <TouchableOpacity 
+            onPress={()=>this.handlerBack()}
+            //onPress={() => this.state.navigation.navigate('Home') }
+            >
             <Back />
           </TouchableOpacity>
         </View>
@@ -143,6 +151,8 @@ hideAlertServer = () => {
         /*console.log(resp)
         console.log(resp.status)
         console.log(token)*/
+        console.log(resp.status)
+        console.log(resp)
         if(resp.status === 200) {
           return resp.json()
         }
@@ -193,6 +203,9 @@ hideAlertServer = () => {
           scanned: false
         }), 5000)
       })
+      .catch((err) => {
+        this.showAlertServer()
+      }) 
     }
 };
 

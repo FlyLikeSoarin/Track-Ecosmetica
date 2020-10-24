@@ -120,11 +120,13 @@ export default class MainPage extends React.Component {
     this.state = {
       navigation: this.props.navigation,
       assetsLoaded: false,
-      token: null
+      token: null,
+      count: 0
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this)
+    this.increaseCount = this.increaseCount.bind(this)
   }
 
   async componentDidMount() {
@@ -178,6 +180,10 @@ export default class MainPage extends React.Component {
         token: token
       })
     }*/
+  }
+  increaseCount() {
+    const new_count = this.state.count + 1;
+    this.setState({count: new_count})
   }
 
   setToken(token) {
@@ -244,13 +250,13 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonText}>Домой</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Scanner')}
+              onPress={() => this.props.navigation.navigate('Scanner', {foo: this.increaseCount})}
             >
               <ScanButton />
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile', {logOut: this.logOut})}
+              onPress={() => this.props.navigation.navigate('Profile', { logOut : this.logOut })}
             >
               <ProfileButton />
               <Text style={styles.buttonText}>Профиль</Text>

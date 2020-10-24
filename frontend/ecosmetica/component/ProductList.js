@@ -220,6 +220,10 @@ export default class ProductList extends React.Component {
     this.handleData();
   }
 
+  async componentDidUpdate() {
+    this.handleData();
+  }
+
   // async componentDidUpdate() {
   //   this.handleData();
   // }

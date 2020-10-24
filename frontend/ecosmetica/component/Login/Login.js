@@ -156,6 +156,9 @@ export default class Login extends React.Component {
                         console.log("can't login")
                     }
                 })
+                .catch((err) => {
+                    this.showAlertServer()
+                  }) 
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);

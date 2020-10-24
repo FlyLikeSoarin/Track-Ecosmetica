@@ -26,7 +26,7 @@ import ProfileButton from '../Button/ProfileButton'
 import ShampooSvg from './ShampooSvg'
 
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005/'
+const URL = 'http://185.148.82.169:8005'
 
 export default class ProductNotFound extends React.Component {
     constructor(props) {
@@ -113,7 +113,7 @@ export default class ProductNotFound extends React.Component {
                     base64: true
                 });
                 if(!result.cancelled) {
-                    console.log(result);
+                    //console.log(result);
                     this.setState({
                         ingredients_detecting: true
                     })
@@ -124,13 +124,13 @@ export default class ProductNotFound extends React.Component {
     }
 
     async uploadPhoto(base64_photo) {
-        /*await fetch(`${URL}`, {
+        await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                img: base64_photo
+                content: base64_photo
             })
         })
         .then((resp) => {
@@ -138,8 +138,9 @@ export default class ProductNotFound extends React.Component {
             return resp.json()
         })
         .then((ans) => {
+            console.log('server ans')
             console.log(ans)
-        })*/
+        })
     }
 
     async handleSubmit() {
@@ -161,6 +162,7 @@ export default class ProductNotFound extends React.Component {
         })
             .then((resp) => {
                 console.log(resp.status)
+                this.hideAlertDetecting()
                 return resp.json()
             })
             .then((ans) => {

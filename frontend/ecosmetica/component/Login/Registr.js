@@ -158,6 +158,9 @@ export default class Registr extends React.Component {
                         console.log('fail')
                     }
                 })
+                .catch((err) => {
+                    this.showAlertServer()
+                  }) 
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);
