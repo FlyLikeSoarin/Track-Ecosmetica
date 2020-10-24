@@ -144,9 +144,9 @@ export default class ProductList extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       isGet: false,
-      isEmptyList: this.props.data.length === 0,
+      data: [],//this.props.data,
+      isEmptyList: true,
       token: this.props.token,
-      data: this.props.data
     }
   }
 
@@ -183,7 +183,7 @@ export default class ProductList extends React.Component {
   };
 
   handleData = async () => {
-    /*await fetch(`${URL}product/history/`, {
+    await fetch(`${URL}product/history/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ export default class ProductList extends React.Component {
           })
         }
         this.setState({ data: data });
-      })*/
+      })
     this.setState({ isGet: true });
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
@@ -220,9 +220,11 @@ export default class ProductList extends React.Component {
     this.handleData();
   }
 
-  /*async componentDidUpdate() {
-    this.handleData();
-  }*/
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.data !== this.state.data) {
+      this.handleData();
+    }
+  } 
 
   render() {
     const { assetsLoaded } = this.state;

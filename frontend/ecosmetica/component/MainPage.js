@@ -121,12 +121,52 @@ export default class MainPage extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       token: null,
-      history: []
+      data: [
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+      },
+      ],
+      isDataLoaded: false,
+      isEmptyList: true,
+
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this)
   }
+
+  // handleData = async () => {
+  //   await fetch(`${URL}product/history/`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Token ${this.state.token}`,
+  //     },
+  //   })
+  //     .then((resp) => {
+  //       console.log(resp.status)
+  //       return resp.json()
+  //     })
+  //     .then((data) => {
+  //       console.log(data)
+  //       if (data.length !== 0) {
+  //         this.setState({
+  //           isEmptyList: false
+  //         })
+  //       }
+  //       this.setState({ data: data });
+  //     })
+  //   this.setState({ isDataLoaded: true });
+  //   setTimeout(() => this.setState({ assetsLoaded: true }), 500)
+  // }
 
   async componentDidMount() {
     let token = null
@@ -140,6 +180,10 @@ export default class MainPage extends React.Component {
         token: token
       })
     }
+
+    // if (token !== null) {
+    //   this.handleData()
+    // }
     /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
@@ -221,7 +265,7 @@ export default class MainPage extends React.Component {
           )}
           {this.state.token !== null && (
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.history}/>
+              <ProductList token={this.state.token} navigation={this.state.navigation} /*data={this.state.data}*//>
             </View>
           )}
 
