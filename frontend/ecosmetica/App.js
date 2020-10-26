@@ -11,19 +11,13 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-
 import MainPage from './component/MainPage';
-import ProfileScreen from './component/Profile';
-import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
 import AddProductPage from './component/AddProduct/AddProductPage'
 import Product from './component/Product/Product'
 import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
-
 import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
 import ScannerIngredients from './component/Scanner/ScannerIngredients'

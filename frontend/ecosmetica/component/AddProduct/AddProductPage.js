@@ -15,6 +15,7 @@ import InputScrollView from 'react-native-input-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { ImageManipulator } from 'expo-image-crop'
 
 
 import Back from '../Button/BackButton';
@@ -41,7 +42,10 @@ export default class ProductNotFound extends React.Component {
             discription: '',
             submited: false,
             token: null,
-            ingredients_detecting: false
+            ingredients_detecting: false,
+            isVisible: false,
+            uri: '',
+            base64: ''
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -98,57 +102,6 @@ export default class ProductNotFound extends React.Component {
             discription: text
         });
     }
-    async pickImage() {
-        if (Platform.OS !== 'web') {
-            const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
-            }
-            else {
-                let result = await ImagePicker.launchCameraAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.All,
-                    allowsEditing: true,
-                    aspect: [1, 3],
-                    quality: 1,
-                    base64: true
-                });
-                if(!result.cancelled) {
-                    //console.log(result);
-                    this.setState({
-                        ingredients_detecting: true
-                    })
-                    this.uploadPhoto(result.base64)
-                }
-            }
-        }
-    }
-
-    async uploadPhoto(base64_photo) {
-        const token = this.state.token
-        await fetch(`${URL}/product/analyze_image/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            body: JSON.stringify({
-                content: base64_photo
-            })
-        })
-        .then((resp) => {
-            console.log(resp)
-            return resp.json()
-        })
-        .then((ans) => {
-            console.log('server ans')
-            console.log(ans)
-            let sostav = ""
-            //for (let i = 0; i<= ans.lenght; i++) {}
-        })
-        .catch(() => {
-            alert('server')
-        })
-    }
 
     async handleSubmit() {
         const token = this.state.token
@@ -170,7 +123,6 @@ export default class ProductNotFound extends React.Component {
         })
             .then((resp) => {
                 console.log(resp.status)
-                this.hideAlertDetecting()
                 return resp.json()
             })
             .then((ans) => {
@@ -186,6 +138,63 @@ export default class ProductNotFound extends React.Component {
 
     }
 
+    async pickImage() {
+        if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+            else {
+                let result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    allowsEditing: false,
+                    aspect: [1, 3],
+                    quality: 1,
+                    base64: true
+                });
+
+                if(!result.cancelled) {
+                    this.setState({
+                        uri: result.uri,
+                        base64: result.base64
+                    })
+                    this.onToggleModal()
+                }
+            }
+        }
+    }
+
+    async uploadPhoto(base64_photo) {
+        this.setState({
+            ingredients_detecting: true
+        })
+        const token = this.state.token
+        //console.log(base64_photo)
+        await fetch(`${URL}/product/analyze_image/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            },
+            body: JSON.stringify({
+                content: base64_photo
+            })
+        })
+        .then((resp) => {
+            return resp.json()
+        })
+        .then((ans) => {
+            console.log('server ans')
+            console.log(ans)
+        })
+        .catch(() => {
+
+            alert('server')
+        })
+        this.setState({ base64 : '', uri: '' })
+        this.hideAlertDetecting()
+    }
+
     takePhoto() {
         this.pickImage();
     }
@@ -194,8 +203,20 @@ export default class ProductNotFound extends React.Component {
             ingredients_detecting: false
         })
     }
+    onToggleModal = () => {
+        const { isVisible } = this.state
+        this.setState({ isVisible: !isVisible })
+    }
+
+    onPictureChoosed(uri, base64) {
+        if (base64 !== undefined) {
+            this.setState({ uri: uri, base64: base64 })
+        }
+        this.uploadPhoto(this.state.base64)
+    }
 
     render() {
+        const { uri, isVisible } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -278,12 +299,19 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
+                <ImageManipulator
+                  photo={{ uri }}
+                  saveOptions={{'base64': true}}
+                  isVisible={isVisible}
+                  onPictureChoosed={({ uri: uriM, base64: base64M }) => this.onPictureChoosed(uriM, base64M)}
+                  onToggleModal={this.onToggleModal}
+                />
                 <AwesomeAlert
                             show={this.state.ingredients_detecting}
                             showProgress={true}
                             title=""
                             message=""
-                            closeOnTouchOutside={false}
+                            closeOnTouchOutside={true}
                             closeOnHardwareBackPress={false}
                             showCancelButton={true}
                             showConfirmButton={false}

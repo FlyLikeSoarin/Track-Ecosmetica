@@ -220,11 +220,11 @@ export default class ProductList extends React.Component {
     this.handleData();
   }
 
-  async componentDidUpdate(prevProps, prevState) {
+  /*async componentDidUpdate(prevProps, prevState) {
     if (prevState.data !== this.state.data) {
       this.handleData();
     }
-  } 
+  } */
 
   render() {
     const { assetsLoaded } = this.state;
