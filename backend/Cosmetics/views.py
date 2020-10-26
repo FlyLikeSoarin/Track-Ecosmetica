@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import ValidationError
 
 from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
@@ -89,8 +90,6 @@ class ProductRetrieveCreateView(APIView):
             product.name = data['name']
             product.brand_name = data['brand_name']
             product.description = data['description']
-            product.ingredients = data['ingredients']
-            product.save()
             barcode.product=product
             barcode.save()
         except ObjectDoesNotExist:
@@ -103,6 +102,12 @@ class ProductRetrieveCreateView(APIView):
                 code=data['code'],
                 code_format=data['code_format'],
                 product=product)
+        try:
+            ingredients = json.loads(data['ingredients'])
+            product.ingredients = json.dumps(list(zip(ingredients, [-1] * len(ingredients))))
+        except:
+            raise ValidationError('Ingredients is not a valid JSON')
+        product.save()
 
         if request.auth is not None:
             add_to_history(product=barcode.product, user=request.user)
