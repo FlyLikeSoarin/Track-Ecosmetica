@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as Font from 'expo-font';
 import { 
   Text,
   View, 
@@ -6,6 +7,12 @@ import {
 } from 'react-native';
 
 const LoadingScreen = () => {
+
+    React.useEffect(() => {
+        Font.loadAsync({
+            'NotoSanaTamilExtraBold': require('../assets/fonts/NotoSansTamil-Light.ttf')
+        });
+    })
     return(
         <View style={styles.body}>
             <View style={styles.bigTextWrap}>
@@ -13,7 +20,6 @@ const LoadingScreen = () => {
               <Text style={styles.bigTextEnd}>smetica</Text>
             </View>
             <View style={styles.textFakeWrap}>
-              <Text style={styles.textFake}>Eco</Text>
             </View>
         </View>
     )
@@ -21,7 +27,7 @@ const LoadingScreen = () => {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: '#C4C4C4',
+        backgroundColor: '#fff',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
@@ -36,10 +42,12 @@ const styles = StyleSheet.create({
     bigTextStart: {
         color: '#009E4E',
         fontSize: 40,
+        fontFamily: 'NotoSanaTamilExtraBold'
     },
     bigTextEnd: {
-        color: '#FFFFFF',
+        color: '#000',
         fontSize: 40,
+        fontFamily: 'NotoSanaTamilExtraBold'
     },
     textFakeWrap: {
         flex: 1,

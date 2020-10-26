@@ -105,8 +105,7 @@ export default class ProductNotFound extends React.Component {
 
     async handleSubmit() {
         const token = this.state.token
-        const array_ing = JSON.stringify(this.state.ingredients.split(' '))
-        console.log(token)
+        const array_ingredients = this.state.ingredients === "" ? [] : this.state.ingredients.split(' ')
         await fetch(`${URL}/product/`, {
             method: 'POST',
             headers: {
@@ -117,7 +116,7 @@ export default class ProductNotFound extends React.Component {
                 code: this.state.barcode,
                 name: this.state.name,
                 brand_name: this.state.brand,
-                ingredients: array_ing,
+                ingredients: array_ingredients,
                 description: ''
             })
         })

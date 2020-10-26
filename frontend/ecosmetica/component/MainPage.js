@@ -20,7 +20,32 @@ var width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   header: {
     flex: 1,
-    backgroundColor: '#9ae7af',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: "center",
+    borderBottomColor: '#929292',
+    borderBottomWidth: 0.5,
+    paddingTop: 10,
+  },
+  title: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: "center",
+    marginLeft: 50 
+  },
+  textEco: {
+    fontSize: 24,
+    fontFamily: 'NotoSanaTamilLight',
+    color: '#009E4E',
+  },
+  textSmetica: {
+    fontSize: 24,
+    fontFamily: 'NotoSanaTamilLight',
+    color: '#000',
+  },
+  searchArea: {
+    alignItems: "center",
   },
   headerText: {
     color: '#ffffff',
@@ -186,27 +211,12 @@ export default class MainPage extends React.Component {
     // }
     /* Загрузка шрифтов */
     await Font.loadAsync({
-      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Medium.ttf')
     });
 
     /* Кастомизация хедера */
     this.state.navigation.setOptions({
-      headerTitle: 'Ecosmetica',
-      headerStyle: {
-        backgroundColor: '#fff',
-        borderBottomColor: '#929292',
-        borderBottomWidth: 0.5
-      },
-      headerTintColor: '#929292',
-      headerTitleStyle: {
-        fontSize: 24,
-        fontFamily: 'NotoSanaTamilLight'
-      },
-      headerRight: () => (
-        <TouchableOpacity onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut})}>
-          <SearchButton />
-        </TouchableOpacity>
-      ),
+      headerShown: false,
     });
     setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
   }
@@ -236,6 +246,17 @@ export default class MainPage extends React.Component {
 
       return (
         <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={styles.title}>
+              <Text style={styles.textEco}>Eco</Text>
+              <Text style={styles.textSmetica}>smetica</Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.searchArea}
+              onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut})}>
+              <SearchButton />
+            </TouchableOpacity>
+          </View>
           {/* Body */}
           {this.state.token === null && (
             <View style={styles.body}>
