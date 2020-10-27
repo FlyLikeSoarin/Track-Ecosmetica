@@ -211,7 +211,8 @@ export default class MainPage extends React.Component {
     // }
     /* Загрузка шрифтов */
     await Font.loadAsync({
-      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Medium.ttf')
+      'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
     /* Кастомизация хедера */

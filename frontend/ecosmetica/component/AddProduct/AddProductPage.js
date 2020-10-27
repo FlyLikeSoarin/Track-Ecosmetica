@@ -9,7 +9,8 @@ import {
     TextInput,
     Dimensions,
     AsyncStorage,
-    Platform
+    Platform,
+    KeyboardAvoidingView
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
@@ -161,7 +162,7 @@ export default class ProductNotFound extends React.Component {
                     base64: true
                 });
 
-                if(!result.cancelled) {
+                if (!result.cancelled) {
                     this.setState({
                         uri: result.uri,
                         base64: result.base64
@@ -188,18 +189,18 @@ export default class ProductNotFound extends React.Component {
                 content: base64_photo
             })
         })
-        .then((resp) => {
-            return resp.json()
-        })
-        .then((ans) => {
-            console.log('server ans')
-            console.log(ans)
-        })
-        .catch(() => {
+            .then((resp) => {
+                return resp.json()
+            })
+            .then((ans) => {
+                console.log('server ans')
+                console.log(ans)
+            })
+            .catch(() => {
 
-            alert('server')
-        })
-        this.setState({ base64 : '', uri: '' })
+                alert('server')
+            })
+        this.setState({ base64: '', uri: '' })
         this.hideAlertDetecting()
     }
 
@@ -234,46 +235,52 @@ export default class ProductNotFound extends React.Component {
                         <Back />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.body}>
+                <KeyboardAvoidingView
+                                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                                style={styles.body}
+                            >
                     <View style={styles.imageArea}>
-                        <AddPhotoButton setUrl={this.setUrl}/>
+                        <AddPhotoButton setUrl={this.setUrl} />
                     </View>
                     <View style={styles.bodySroll}>
                         <View style={styles.inputsArea}>
-                            <InputScrollView>
-                                <TextInput style={styles.input}
-                                    value={this.state.barcode}
-                                    placeholder='Штрих-код'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleBarcode}
-                                />
-                                <TextInput style={styles.input}
-                                    value={this.state.name}
-                                    placeholder='Название'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleName} />
-                                <TextInput style={styles.input}
-                                    value={this.state.brand}
-                                    placeholder='Бренд'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleBrand} />
+                                <InputScrollView
+                                 ref={ref => {this.scrollView = ref}}
+                                 onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
+                                    <TextInput style={styles.input}
+                                        value={this.state.barcode}
+                                        placeholder='Штрих-код'
+                                        placeholderTextColor="#8B8B8B"
+                                        autoCapitalize="none"
+                                        onChangeText={this.handleBarcode}
+                                    />
+                                    <TextInput style={styles.input}
+                                        value={this.state.name}
+                                        placeholder='Название'
+                                        placeholderTextColor="#8B8B8B"
+                                        autoCapitalize="none"
+                                        onChangeText={this.handleName} />
+                                    <TextInput style={styles.input}
+                                        value={this.state.brand}
+                                        placeholder='Бренд'
+                                        placeholderTextColor="#8B8B8B"
+                                        autoCapitalize="none"
+                                        onChangeText={this.handleBrand} />
                                     <View style={styles.input}>
-                                <TextInput style={styles.inputIngredients}
-                                    value={this.state.ingredients}
-                                    placeholder='Состав'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.hamdelIngredients}
-                                    multiline={true}
-                                />
-                                <TouchableOpacity onPress={() => this.takePhoto()}>
-                                    <Icon_photo name='photo-camera' color='gray' size={20} />
-                                </TouchableOpacity>
-                                </View>
-                            </InputScrollView>
+                                        <TextInput style={styles.inputIngredients}
+                                            value={this.state.ingredients}
+                                            placeholder='Состав'
+                                            placeholderTextColor="#8B8B8B"
+                                            autoCapitalize="none"
+                                            onChangeText={this.hamdelIngredients}
+                                            multiline={true}
+                                            onChange={() => this.scrollView.scrollToEnd({animated: true})}
+                                        />
+                                        <TouchableOpacity onPress={() => this.takePhoto()}>
+                                            <Icon_photo name='photo-camera' color='gray' size={20} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </InputScrollView>
                         </View>
                         <View style={styles.buttonAddArea}>
                             <View style={styles.buttonAdd}>
@@ -287,7 +294,7 @@ export default class ProductNotFound extends React.Component {
                             </View>
                         </View>
                     </View>
-                </View>
+                </KeyboardAvoidingView>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => this.state.navigation.navigate('Home')}>
@@ -308,25 +315,25 @@ export default class ProductNotFound extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <ImageManipulator
-                  photo={{ uri }}
-                  saveOptions={{'base64': true}}
-                  isVisible={isVisible}
-                  onPictureChoosed={({ uri: uriM, base64: base64M }) => this.onPictureChoosed(uriM, base64M)}
-                  onToggleModal={this.onToggleModal}
+                    photo={{ uri }}
+                    saveOptions={{ 'base64': true }}
+                    isVisible={isVisible}
+                    onPictureChoosed={({ uri: uriM, base64: base64M }) => this.onPictureChoosed(uriM, base64M)}
+                    onToggleModal={this.onToggleModal}
                 />
                 <AwesomeAlert
-                            show={this.state.ingredients_detecting}
-                            showProgress={true}
-                            title=""
-                            message=""
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showCancelButton={true}
-                            showConfirmButton={false}
-                            onCancelPressed={() => {
-                                this.hideAlertDetecting();
-                            }}
-                        />
+                    show={this.state.ingredients_detecting}
+                    showProgress={true}
+                    title=""
+                    message=""
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={false}
+                    onCancelPressed={() => {
+                        this.hideAlertDetecting();
+                    }}
+                />
             </View>
         )
     }
