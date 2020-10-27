@@ -12,7 +12,6 @@ import {
     Platform
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
-import Icon from 'react-native-vector-icons/Ionicons'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { ImageManipulator } from 'expo-image-crop'
@@ -25,6 +24,7 @@ import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
 import ShampooSvg from './ShampooSvg'
+import AddPhotoButton from './AddPhotoButton'
 
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
@@ -45,7 +45,8 @@ export default class ProductNotFound extends React.Component {
             ingredients_detecting: false,
             isVisible: false,
             uri: '',
-            base64: ''
+            base64: '',
+            url_loaded_photo: ''
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -53,6 +54,7 @@ export default class ProductNotFound extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.hamdelIngredients = this.hamdelIngredients.bind(this)
         this.handleDiscriptions = this.handleDiscriptions.bind(this)
+        this.setUrl = this.setUrl.bind(this)
     }
 
     async componentDidMount() {
@@ -101,6 +103,13 @@ export default class ProductNotFound extends React.Component {
         this.setState({
             discription: text
         });
+    }
+
+    setUrl = (url) => {
+        this.setState({
+            url_loaded_photo: url
+        })
+        console.log(this.state.url_loaded_photo)
     }
 
     async handleSubmit() {
@@ -227,7 +236,7 @@ export default class ProductNotFound extends React.Component {
                 </View>
                 <View style={styles.body}>
                     <View style={styles.imageArea}>
-                        <ShampooSvg />
+                        <AddPhotoButton setUrl={this.setUrl}/>
                     </View>
                     <View style={styles.bodySroll}>
                         <View style={styles.inputsArea}>

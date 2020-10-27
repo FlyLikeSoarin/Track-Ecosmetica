@@ -5,10 +5,7 @@ import add from '../../assets/svg/add.svg';
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        top: 25,
-        right:25,
-        backgroundColor: '#C1E1A0',
+        backgroundColor: '#009E4E',
         width: 120,
         height: 120,
         borderRadius: 30,
