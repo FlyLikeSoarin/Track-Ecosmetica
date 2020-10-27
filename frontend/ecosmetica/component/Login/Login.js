@@ -151,7 +151,7 @@ export default class Login extends React.Component {
                             email: '',
                             password: '',
                         })
-                        this.state.navigation.navigate('Home')
+                        this.state.navigation.navigate('Profile')
                     } else {
                         console.log("can't login")
                     }
@@ -162,7 +162,7 @@ export default class Login extends React.Component {
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);
-                console.log(token)
+                //console.log(token)
             }
         } else {
             this.alertEmptyInput()

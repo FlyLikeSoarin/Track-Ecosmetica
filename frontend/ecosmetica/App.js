@@ -15,15 +15,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 import MainPage from './component/MainPage';
-import ProfileScreen from './component/Profile';
-import ProductList from './component/ProductList';
 import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
 import AddProductPage from './component/AddProduct/AddProductPage'
 import Product from './component/Product/Product'
 import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
-
 import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
 import ScannerIngredients from './component/Scanner/ScannerIngredients'
@@ -77,53 +74,40 @@ function ScannerIngredients1({ navigation }) {
   );
 };
 
-/*
-function Profile({ navigation }) {
-  const [token, setToken] = React.useState('')
-  const showToken = async () => {
-    try {
-    const token = await AsyncStorage.getItem('token')
-    setToken(token);
-    }
-    catch(e) {
-      console.log(e)
-    }
-  }
-  const logOut = async () => {
-    await AsyncStorage.removeItem('token');
-  }
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{token}</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      //onPress={() => showToken()}
-      />
-      <Button
-      title="Token"
-      onPress={()=> showToken()}
-      />
-      <Button
-      title="logout"
-      onPress={() => logOut()}
-      />
-    </View>
-  );
-};*/
-// function ProductInfo({ navigation, route }) {
-//   return(
-//   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>ProductInfo</Text>
+
+// function Profile({ navigation }) {
+//   const [token, setToken] = React.useState('')
+//   const showToken = async () => {
+//     try {
+//     const token = await AsyncStorage.getItem('token')
+//     setToken(token);
+//     }
+//     catch(e) {
+//       console.log(e)
+//     }
+//   }
+//   const logOut = async () => {
+//     await AsyncStorage.removeItem('token');
+//   }
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>{token}</Text>
 //       <Button
 //         title="Go to Home"
 //         onPress={() => navigation.navigate('Home')}
+//       //onPress={() => showToken()}
+//       />
+//       <Button
+//       title="Token"
+//       onPress={()=> showToken()}
+//       />
+//       <Button
+//       title="logout"
+//       onPress={() => logOut()}
 //       />
 //     </View>
 //   );
 // };
-
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 

@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  Dimensions,
   SafeAreaView,
   FlatList
 } from 'react-native';
@@ -12,7 +13,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
 import Star from './Button/Star'
 
+/*Buttons*/
+import HomeButton from './Button/HomeButton'
+import ScanButton from './Button/ScanButton'
+import ProfileButton from './Button/ProfileButton'
+import SearchButton from './Button/SearchButton'
 import BackButton from './Button/BackButton'
+
+var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +28,48 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF',
+  },
+  productImage: {
+    flex: 4,
+  },
+  containerProductText: {
+    flex: 6,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  productText: {
+    color: '#676767',
+    fontSize: 24,
+    fontFamily: 'NotoSanaTamilLight',
+    textAlign: 'center',
+    marginBottom: 50
+  },
+  registrButton: {
+    backgroundColor: '#009E4E',
+    width: width - 60,
+    height: 40,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    margin: 5
+  },
+  logInButton: {
+    backgroundColor: '#E5E5E5',
+    width: width - 60,
+    height: 40,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    margin: 5
+  },
+  registrText: {
+    color: '#fff',
+    fontFamily: 'NotoSanaTamilLight',
+  },
+  logInText: {
+    color: '#009E4E',
+    fontFamily: 'NotoSanaTamilLight',
   },
   header: {
     flex: 1,
@@ -118,6 +168,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonMenuContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderTopColor: '#929292',
+    borderTopWidth: 0.5
+  },
+  buttonImage: {
+    color: '#9ae7af',
+  },
+  img: {
+    width: 80,
+    height: 80,
+  },
+  buttonText: {
+    color: '#929292',
+    fontSize: 10,
+    fontFamily: 'NotoSanaTamilLight',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  buttonArea: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  test1: {
+    flex: 1,
+    backgroundColor: '#929292'
+  }
 });
 
 const ButtonTemplate = ({ title, onPress, style, styleText }) => {
@@ -138,12 +219,33 @@ export default class Profile extends React.Component {
     this.state = {
       navigation: this.props.navigation,
       route: this.props.route,
+      token: null,
       bathScore: '',
       excelledIngridiends: [],
+      assetsLoaded: false,
     };
+    this.setToken = this.setToken.bind(this);
+    this.initAuthToken = this.initAuthToken.bind(this);
+    this.logOut = this.logOut.bind(this)
   }
 
+  async initAuthToken() {
+    let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+      console.log('Profile - tocken');
+      console.log(token);
+    } catch (e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      this.setState({
+        token: token
+      })
+    }
+  }
   async componentDidMount() {
+
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
@@ -162,7 +264,7 @@ export default class Profile extends React.Component {
         fontFamily: 'NotoSanaTamilLight'
       },
       headerLeft: () => (
-        <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => this.state.navigation.goBack()}>
           <BackButton />
         </TouchableOpacity>
       ),
@@ -174,58 +276,136 @@ export default class Profile extends React.Component {
         </TouchableOpacity>
       )
     });
+    this.initAuthToken();
+    console.log(this.props.route)
+    setTimeout(()=>{
+      this.setState({ assetsLoaded: true });
+      console.log('profile')
+      console.log(this.state.token)
+    }, 1500);
 
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.token !== this.state.token) {
+      console.log('updated')
+    }
+  } 
+
+  setToken(token) {
+    this.setState({
+      token: token
+    })
+  }
+
+  async logOut() {
+    this.setState({
+      token: null
+    })
+    try {
+      await AsyncStorage.removeItem('token');
+    } catch(e) {
+      console.log(e)
+    } 
   }
 
   async handlerLogout() {
     this.props.route.params.logOut()
-    this.state.navigation.navigate('Home')
+    this.state.navigation.navigate('Profile')
   }
 
   render() {
+    const { assetsLoaded } = this.state;
+
+    if (assetsLoaded) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.imageWrap}>
-            <ProfileImageMock />
-          </View>
-          <View style={styles.bigTextWrap}>
-            <Text style={styles.bigText}>Ирен Адлер</Text>
-          </View>
-        </View>
-        <View style={styles.body}>
-          <View style={styles.infoWrap}>
-            {(this.state.bathScore !== '') && (
-              <View>
-                <View style={styles.bathScoreWrap}>
-                  <Text style={styles.textScore}>Оценка ванной</Text>
-                  <View style={styles.imageScore}>
-                    <Star width='40' height='40' fill='#009E4E' />
-                    <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
-                  </View>
+        {this.state.token === null && (
+          <View style={styles.body}>
+            <View style={styles.productImage}>
+            </View>
+            <View style={styles.containerProductText}>
+              <Text style={styles.productText}>
+                Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты
+              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr', { setToken: this.setToken })}>
+                <View style={styles.registrButton}>
+                  <Text style={styles.registrText}>Зарегистрироваться</Text>
                 </View>
+              </TouchableOpacity>
+              <TouchableOpacity 
+              onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
+                <View style={styles.logInButton}>
+                  <Text style={styles.logInText}>Войти</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>)}
+        {this.state.token !== null && (
+          <View>
+            <View style={styles.header}>
+              <View style={styles.imageWrap}>
+                <ProfileImageMock />
+              </View>
+              <View style={styles.bigTextWrap}>
+                <Text style={styles.bigText}>Ирен Адлер</Text>
+              </View>
+            </View>
+            <View style={styles.body}>
+              <View style={styles.infoWrap}>
+              {(this.state.bathScore !== '') && (
+                <View>
+                  <View style={styles.bathScoreWrap}>
+                    <Text style={styles.textScore}>Оценка ванной</Text>
+                    <View style={styles.imageScore}>
+                      <Star width='40' height='40' fill='#009E4E' />
+                      <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
+                    </View>
+                  </View>
+                  <ButtonTemplate
+                    title='Оценить заново'
+                    style={styles.buttonAddAfter}
+                    styleText={styles.buttonTextAfter}
+                    onPress={() => this.setState({ bathScore: 9 })} />
+                </View>)}
+              {(this.state.bathScore == '') &&
                 <ButtonTemplate
-                  title='Оценить заново'
-                  style={styles.buttonAddAfter}
-                  styleText={styles.buttonTextAfter}
-                  onPress={() => this.setState({ bathScore: 9 })} />
-              </View>)}
-            {(this.state.bathScore == '') &&
-              <ButtonTemplate
-                title='Оценить ванную'
-                style={styles.buttonAddBefore}
-                styleText={styles.buttonTextBefore}
-                onPress={() => this.setState({ bathScore: 10 })} />}
-          </View>
-          <View style={styles.infoWrap}>
-            <ButtonTemplate
-              title='Исключить ингридиент'
-              style={styles.buttonAddBefore}
-              styleText={styles.buttonTextBefore}
-              onPress={() => this.state.navigation.navigate('AddIngridient')} />
+                  title='Оценить ванную'
+                  style={styles.buttonAddBefore}
+                  styleText={styles.buttonTextBefore}
+                  onPress={() => this.setState({ bathScore: 10 })} />}
+              </View>
+              <View style={styles.infoWrap}>
+                <ButtonTemplate
+                  title='Исключить ингридиент'
+                  style={styles.buttonAddBefore}
+                  styleText={styles.buttonTextBefore}
+                  onPress={() => this.state.navigation.navigate('AddIngridient')} />
           </View>
         </View>
+        </View>
+        )}
+      {/* Footer */}
+      <View style={styles.buttonMenuContainer}>
+              <TouchableOpacity style={styles.buttonArea}>
+                <HomeButton fill='#929292'/>
+                <Text style={styles.buttonText}>Домой</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Scanner')}>
+                <ScanButton />
+                <Text style={styles.buttonText} >Сканировать</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Profile')}>
+                <ProfileButton fill='#009E4E'/>
+                <Text style={styles.buttonText}>Профиль</Text>
+              </TouchableOpacity>
       </View>
-    );
+      </View>
+    );}
+    else return(
+      <Text>Loading</Text>
+    )
   }
 }

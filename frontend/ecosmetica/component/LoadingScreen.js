@@ -1,11 +1,15 @@
 import * as React from 'react';
+import { useLayoutEffect } from 'react';
 import { 
   Text,
   View, 
   StyleSheet, 
 } from 'react-native';
 
-const LoadingScreen = () => {
+const LoadingScreen = ({navigation}) => {
+    useLayoutEffect(() => {        
+        navigation.setOptions({headerShown: false})
+    }, [navigation])
     return(
         <View style={styles.body}>
             <View style={styles.bigTextWrap}>

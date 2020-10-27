@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
 
 const URL = 'http://185.148.82.169:8005/';
 
-const ItemList = ({ data, renderItem, isEmpty }) => {
+const ItemList = ({ data, renderItem, isEmpty, navigation }) => {
   if (isEmpty)
-    return (<EmtyHistory />)
+    return (<EmtyHistory navigation={navigation}/>)
   else
     return (
       <SafeAreaView style={styles.container}>
@@ -191,11 +191,11 @@ export default class ProductList extends React.Component {
       },
     })
       .then((resp) => {
-        console.log(resp.status)
+        //console.log(resp.status)
         return resp.json()
       })
       .then((data) => {
-        console.log(data)
+        //console.log(data)
         if (data.length !== 0) {
           this.setState({
             isEmptyList: false
@@ -233,7 +233,11 @@ export default class ProductList extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            <ItemList data={this.state.data} renderItem={this.renderItem} isEmpty={this.state.isEmptyList} />
+            <ItemList 
+            data={this.state.data} 
+            renderItem={this.renderItem} 
+            isEmpty={this.state.isEmptyList}
+            navigation={this.state.navigation} />
           </View>
         </View>
       );

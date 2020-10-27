@@ -172,6 +172,7 @@ export default class MainPage extends React.Component {
     let token = null
     try {
       token = await AsyncStorage.getItem('token');
+      //console.log('main', token);
     } catch (e) {
       console.log(e)
     }
@@ -208,7 +209,11 @@ export default class MainPage extends React.Component {
         </TouchableOpacity>
       ),
     });
-    setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
+    setTimeout(()=>{
+      this.setState({ assetsLoaded: true });
+      // console.log('mount')
+      // console.log(this.state.token)
+    }, 1500);
   }
 
 
@@ -282,7 +287,7 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile', { logOut : this.logOut })}
+              onPress={() => this.props.navigation.navigate('Profile')}
             >
               <ProfileButton />
               <Text style={styles.buttonText}>Профиль</Text>
@@ -293,7 +298,7 @@ export default class MainPage extends React.Component {
     }
     else {
       return (
-        <LoadingScreen />
+        <LoadingScreen navigation={this.props.navigation}/>
       );
     }
   }

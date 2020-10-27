@@ -6,13 +6,19 @@ import {
     StyleSheet, 
     Button,
     Image, 
+    Dimensions,
+    TouchableOpacity,
 } from 'react-native';
 import EmptyHistoryImage from '../static/EmtyHistory.jpg'
+
+import ScanButton from './Button/ScanButton'
+
+var {scrWidth, scrHeight} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     image: {
         height: 200,
-        width: 200,
+        width: 290,
     },
     container: {
         flex: 1,
@@ -30,14 +36,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        fontSize: 28,
+        fontSize: 20,
         color: '#676767',
         padding: 50,
         fontFamily: 'NotoSanaTamilLight',
-    }
+    },
+    scanButton: {
+      backgroundColor: '#009E4E',
+      width: 250,//scrWidth - 60,
+      height: 40,
+      alignItems: 'center',
+      borderRadius: 10,
+      justifyContent: 'center',
+      margin: 5
+    },
+    scanButtonText: {
+      color: '#fff',
+      fontFamily: 'NotoSanaTamilLight',
+    },
 });
 
-const EmptyHistory = () => {
+const EmptyHistory = ({navigation}) => {
     React.useEffect(() => {
         async function loadFont() {
           await Font.loadAsync({
@@ -54,7 +73,11 @@ const EmptyHistory = () => {
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.text}>У вас пока нет отсканированных продуктов</Text>
-            <Button title='Сканировать' color='#009E4E'></Button>
+            <TouchableOpacity style={styles.scanButton}
+              onPress={() => navigation.navigate('Scanner')}
+            >
+              <Text style={styles.scanButtonText} >Сканировать</Text>
+            </TouchableOpacity>
           </View>         
         </View>
   
