@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
-  FlatList
+  FlatList,
+  AsyncStorage
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
@@ -245,6 +246,7 @@ export default class Profile extends React.Component {
     }
   }
   async componentDidMount() {
+    console.log('profileDidMount')
 
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
@@ -287,6 +289,7 @@ export default class Profile extends React.Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
+    console.log('profileDidUpdate')
     if (prevState.token !== this.state.token) {
       console.log('updated')
     }
