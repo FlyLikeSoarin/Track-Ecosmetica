@@ -139,7 +139,7 @@ class TextProcessor:
 
 
 def process_base64(base64_str):
-    result = cloud_vision_compute(load_img_from_file('base64_str'))
+    result = cloud_vision_compute(load_img_from_base64(base64_str))
     processor = TextProcessor('./ingredient_list.txt')
     return processor.Process(result.text_annotations[0].description)
 
