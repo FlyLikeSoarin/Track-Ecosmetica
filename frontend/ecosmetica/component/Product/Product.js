@@ -137,8 +137,10 @@ function colorScore(score){
         return '#FF4D00'
     } else if (5 <= score && score <= 7) {
         return '#FFA21F'
-    } else {
+    } else if (8 <= score && score <= 10) {
         return '#009E4E'
+    } else {
+        return '#C4C4C4'
     }
 }
 
