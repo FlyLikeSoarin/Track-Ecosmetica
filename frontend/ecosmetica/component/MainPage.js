@@ -14,6 +14,8 @@ import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
 import ProductList from './ProductList'
 
+import HistoryStore from './HistoryStore'
+
 const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;
 
@@ -102,6 +104,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
   },
+  buttonTextTarget: {
+    color: '#009E4E',
+    fontSize: 10,
+    fontFamily: 'NotoSanaTamilLight',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
   buttonArea: {
     flex: 1,
     alignItems: 'center'
@@ -161,55 +170,56 @@ export default class MainPage extends React.Component {
       ],
       isDataLoaded: false,
       isEmptyList: true,
-
     };
 
     this.setToken = this.setToken.bind(this);
-    this.logOut = this.logOut.bind(this)
+    this.logOut = this.logOut.bind(this);
+    this._isMounted = false;
   }
 
-  // handleData = async () => {
-  //   await fetch(`${URL}product/history/`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Token ${this.state.token}`,
-  //     },
-  //   })
-  //     .then((resp) => {
-  //       console.log(resp.status)
-  //       return resp.json()
-  //     })
-  //     .then((data) => {
-  //       console.log(data)
-  //       if (data.length !== 0) {
-  //         this.setState({
-  //           isEmptyList: false
-  //         })
-  //       }
-  //       this.setState({ data: data });
-  //     })
-  //   this.setState({ isDataLoaded: true });
-  //   setTimeout(() => this.setState({ assetsLoaded: true }), 500)
-  // }
+  handleData = async () => {
+    await fetch(`${URL}product/history/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      },
+    })
+      .then((resp) => {
+        console.log(resp.status)
+        return resp.json()
+      })
+      .then((data) => {
+        console.log(data)
+        if (data.length !== 0) {
+          this.setState({
+            isEmptyList: false
+          })
+        }
+        this.setState({ data: data });
+      })
+    this.setState({ isDataLoaded: true });
+    setTimeout(() => this.setState({ assetsLoaded: true }), 500)
+  }
 
   async componentDidMount() {
-    let token = null
-    try {
-      token = await AsyncStorage.getItem('token');
-    } catch (e) {
-      console.log(e)
-    }
-    if (token !== null) {
-      this.setState({
-        token: token
-      })
-    }
-
+      let token = null
+      try {
+        token = await AsyncStorage.getItem('token');
+      } catch (e) {
+        console.log(e)
+      }
+      if (token !== null) {
+        console.log('tocken:', token)
+        this.setState({
+          token: token
+        })
+      }
     // if (token !== null) {
-    //   this.handleData()
+    //   await this.handleData()
+    //   console.log('data loading')
     // }
-    /* Загрузка шрифтов */
+  //   /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
@@ -221,7 +231,6 @@ export default class MainPage extends React.Component {
     });
     setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
   }
-
 
   setToken(token) {
     this.setState({
@@ -239,6 +248,12 @@ export default class MainPage extends React.Component {
       console.log(e)
     } 
   }
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.data !== this.state.data) {
+      this.handleData();
+      console.log('updated')
+    }
+  } 
 
   render() {
     const { assetsLoaded } = this.state;
@@ -259,12 +274,9 @@ export default class MainPage extends React.Component {
             </TouchableOpacity>
           </View>
           {/* Body */}
-          {this.state.token === null && (
+          {/* {this.state.token === null && (
             <View style={styles.body}>
               <View style={styles.productImage}>
-                {/*<ImageBackground source={backgroundImage} style={styles.image}>
-          <View></View>
-    </ImageBackground>*/}
               </View>
               <View style={styles.containerProductText}>
                 <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
@@ -285,17 +297,19 @@ export default class MainPage extends React.Component {
               </View>
             </View>
           )}
-          {this.state.token !== null && (
+          {this.state.token !== null && ( */}
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation} /*data={this.state.data}*//>
+              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.data}/>
+              {/* <Text>{HistoryStore.clientId}</Text> */}
+              {/* <Text>{HistoryStore.data}</Text> */}
             </View>
-          )}
+          {/* )} */}
 
           {/* Footer */}
           <View style={styles.buttonMenuContainer}>
             <TouchableOpacity style={styles.buttonArea}>
               <HomeButton fill='#009E4E' />
-              <Text style={styles.buttonText}>Домой</Text>
+              <Text style={styles.buttonTextTarget}>Домой</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
               onPress={() => this.props.navigation.navigate('Scanner')}
@@ -304,7 +318,7 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonText} >Сканировать</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile', { logOut : this.logOut })}
+              onPress={() => this.props.navigation.navigate('Profile', {logOut: this.logOut})}
             >
               <ProfileButton />
               <Text style={styles.buttonText}>Профиль</Text>
@@ -315,7 +329,7 @@ export default class MainPage extends React.Component {
     }
     else {
       return (
-        <LoadingScreen />
+        <LoadingScreen navigation={this.props.navigation}/>
       );
     }
   }

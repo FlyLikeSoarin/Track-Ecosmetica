@@ -179,6 +179,7 @@ export default class ProductNotFound extends React.Component {
         })
         const token = this.state.token
         //console.log(base64_photo)
+        let ans_str = '';
         await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
             headers: {
@@ -195,11 +196,16 @@ export default class ProductNotFound extends React.Component {
             .then((ans) => {
                 console.log('server ans')
                 console.log(ans)
+                for (let i = 0; i < ans.length; ++i) {
+                    ans_str += ans[i] + " ";
+                }
+                console.log(ans_str)
             })
             .catch(() => {
 
                 alert('server')
             })
+        this.hamdelIngredients(ans_str)
         this.setState({ base64: '', uri: '' })
         this.hideAlertDetecting()
     }
@@ -234,53 +240,64 @@ export default class ProductNotFound extends React.Component {
                         onPress={() => this.state.navigation.navigate('Scanner')}>
                         <Back />
                     </TouchableOpacity>
+                    <View style={styles.title}>
+                        <Text style={styles.titleText}>
+                            Добавить новый продукт
+                    </Text>
+                    </View>
                 </View>
                 <KeyboardAvoidingView
-                                behavior={Platform.OS == "ios" ? "padding" : "height"}
-                                style={styles.body}
-                            >
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    style={styles.body}
+                >
                     <View style={styles.imageArea}>
                         <AddPhotoButton setUrl={this.setUrl} />
                     </View>
                     <View style={styles.bodySroll}>
                         <View style={styles.inputsArea}>
-                                <InputScrollView
-                                 ref={ref => {this.scrollView = ref}}
-                                 onContentSizeChange={() => this.scrollView.scrollToEnd({animated: true})}>
-                                    <TextInput style={styles.input}
-                                        value={this.state.barcode}
-                                        placeholder='Штрих-код'
+                            <InputScrollView
+                                ref={ref => { this.scrollView = ref }}
+                                onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                                <TextInput style={styles.input}
+                                    value={this.state.barcode}
+                                    placeholder='Штрих-код'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    onChangeText={this.handleBarcode}
+                                />
+                                <TextInput style={styles.input}
+                                    value={this.state.name}
+                                    placeholder='Название'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    onChangeText={this.handleName} />
+                                <TextInput style={styles.input}
+                                    value={this.state.brand}
+                                    placeholder='Бренд'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    onChangeText={this.handleBrand} />
+                                <View style={styles.input}>
+                                    <TextInput style={styles.inputIngredients}
+                                        value={this.state.ingredients}
+                                        placeholder='Состав'
                                         placeholderTextColor="#8B8B8B"
                                         autoCapitalize="none"
-                                        onChangeText={this.handleBarcode}
+                                        onChangeText={this.hamdelIngredients}
+                                        multiline={true}
+                                        onChange={() => this.scrollView.scrollToEnd({ animated: true })}
                                     />
-                                    <TextInput style={styles.input}
-                                        value={this.state.name}
-                                        placeholder='Название'
-                                        placeholderTextColor="#8B8B8B"
-                                        autoCapitalize="none"
-                                        onChangeText={this.handleName} />
-                                    <TextInput style={styles.input}
-                                        value={this.state.brand}
-                                        placeholder='Бренд'
-                                        placeholderTextColor="#8B8B8B"
-                                        autoCapitalize="none"
-                                        onChangeText={this.handleBrand} />
-                                    <View style={styles.input}>
-                                        <TextInput style={styles.inputIngredients}
-                                            value={this.state.ingredients}
-                                            placeholder='Состав'
-                                            placeholderTextColor="#8B8B8B"
-                                            autoCapitalize="none"
-                                            onChangeText={this.hamdelIngredients}
-                                            multiline={true}
-                                            onChange={() => this.scrollView.scrollToEnd({animated: true})}
-                                        />
-                                        <TouchableOpacity onPress={() => this.takePhoto()}>
-                                            <Icon_photo name='photo-camera' color='gray' size={20} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </InputScrollView>
+                                    <TouchableOpacity onPress={() => this.takePhoto()} style={styles.buttonScanArea}>
+                                        <Icon_photo name='photo-camera' color='gray' size={20} />
+                                        <Text style={styles.buttonText}>
+                                            Сканировать
+                                            </Text>
+                                        <Text style={styles.buttonText}>
+                                            состав
+                                            </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </InputScrollView>
                         </View>
                         <View style={styles.buttonAddArea}>
                             <View style={styles.buttonAdd}>
@@ -348,10 +365,12 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        backgroundColor: '#fff',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center",
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
-        justifyContent: 'center',
+        paddingTop: 10,
     },
     body: {
         flex: 10,
@@ -371,6 +390,17 @@ const styles = StyleSheet.create({
     /* header */
     backButton: {
         marginTop: 15
+    },
+    title: {
+        flex: 1,
+        marginTop: 15,
+        alignItems: "center",
+        justifyContent: 'center',
+    },
+    titleText: {
+        fontSize: 22,
+        fontFamily: 'NotoSanaTamilLight',
+        color: '#929292',
     },
     /* body */
     imageArea: {
@@ -436,6 +466,10 @@ const styles = StyleSheet.create({
     /* bottom */
     buttonArea: {
         flex: 1,
+        alignItems: 'center',
+    },
+    buttonScanArea: {
+        flex: 0,
         alignItems: 'center',
     },
     /** buttonArea **/

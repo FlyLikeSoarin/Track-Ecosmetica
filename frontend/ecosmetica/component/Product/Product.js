@@ -25,6 +25,8 @@ import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
 
+import StarScore from '../StarScore'
+
 
 var width = Dimensions.get('window').width;
 
@@ -66,7 +68,7 @@ export default class Product extends React.Component {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.navigate('Scanner')}>
+                        onPress={() => this.state.navigation.goBack()}>
                         <Back />
                     </TouchableOpacity>
                 </View>
@@ -75,16 +77,17 @@ export default class Product extends React.Component {
                     <View style={styles.imageArea}>
                         {/*https://static.ewg.org/skindeep/img/ewg_missing_product.png*/}
                         <Image style={styles.image} source={{ uri: `${img_url}` }} />
-                        <View style={styles.scoreArea}>
+                        {/* <View style={styles.scoreArea}> */}
+                            {StarScore(total_score, styles.scoreArea, 15)}
+                            {/*<Star />
                             <Star />
                             <Star />
                             <Star />
-                            <Star />
-                            <Star />
-                            <Text style={styles.score}>
+                            <Star /> */}
+                            {/* <Text style={styles.score}>
                                 {total_score/2}
                             </Text>
-                        </View>
+                        </View> */}
                     </View>
                     <View style={styles.infoArea}>
                         <Text style={styles.nameText}>
@@ -227,14 +230,14 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 26,
+        fontSize: 20,
         marginLeft: 25,
         color: '#4F4F4F',
         marginTop: 10
     },
     brandText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 18,
+        fontSize: 14,
         marginLeft: 25,
         color: '#606060',
     },

@@ -121,16 +121,16 @@ const styles = StyleSheet.create({
 
 const URL = 'http://185.148.82.169:8005/';
 
-const ItemList = ({ data, renderItem, isEmpty }) => {
+const ItemList = ({ data, renderItem, isEmpty, navigation }) => {
   if (isEmpty)
-    return (<EmtyHistory />)
+    return (<EmtyHistory navigation={navigation}/>)
   else
     return (
       <SafeAreaView style={styles.container}>
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={item => { item.name /*+ Math.floor(Math.random()*1000000000000)*/ }}
+          keyExtractor={(item, index) => { return(item.name+index) }}
         />
       </SafeAreaView>)
 }
@@ -144,23 +144,18 @@ export default class ProductList extends React.Component {
       navigation: this.props.navigation,
       assetsLoaded: false,
       isGet: false,
-      data: [],//this.props.data,
+      data: this.props.data,
       isEmptyList: true,
       token: this.props.token,
     }
+    this.initData = this.initData.bind(this)
   }
 
-  // handlePress = ({item}) => {this.props.navigation.navigate('ProductInfo', {
-  //   name: item.name, 
-  //brand_name: item.brand_name,
-  // img_url: item.img_url,
-  // description: item.description,
-  // ingredients: item.ingredients,
-  // eco_score: item.eco_score,
-  // safety_score: item.safety_score,
-  // zoo_score: item.zoo_score,
-  // total_score: item.total_score,
-  //})}
+  initData = () => {
+    console.log('init', this.state.data.length)
+    this.setState({isEmptyList:(this.state.data.length === 0)})
+  }
+
 
   //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
 
@@ -168,7 +163,6 @@ export default class ProductList extends React.Component {
     //let array_ing = JSON.parse(item.ingredients)
     return (
       <TouchableOpacity
-        //onPress={() => console.log(array_ing)}
         onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
       >
         <View>
@@ -182,30 +176,30 @@ export default class ProductList extends React.Component {
     )
   };
 
-  handleData = async () => {
-    await fetch(`${URL}product/history/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${this.state.token}`,
-      },
-    })
-      .then((resp) => {
-        console.log(resp.status)
-        return resp.json()
-      })
-      .then((data) => {
-        console.log(data)
-        if (data.length !== 0) {
-          this.setState({
-            isEmptyList: false
-          })
-        }
-        this.setState({ data: data });
-      })
-    this.setState({ isGet: true });
-    setTimeout(() => this.setState({ assetsLoaded: true }), 500)
-  }
+  // handleData = async () => {
+  //   await fetch(`${URL}product/history/`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Token ${this.state.token}`,
+  //     },
+  //   })
+  //     .then((resp) => {
+  //       //console.log(resp.status)
+  //       return resp.json()
+  //     })
+  //     .then((data) => {
+  //       //console.log(data)
+  //       if (data.length !== 0) {
+  //         this.setState({
+  //           isEmptyList: false
+  //         })
+  //       }
+  //       this.setState({ data: data });
+  //     })
+  //   this.setState({ isGet: true });
+  //   setTimeout(() => this.setState({ assetsLoaded: true }), 500)
+  // }
 
   async componentDidMount() {
 
@@ -213,11 +207,15 @@ export default class ProductList extends React.Component {
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
+   this.initData();
+   console.log(this.state.isEmptyList)
+   console.log(this.state.data);
+
     /* Кастомизация хедера */
     /*this.state.navigation.setOptions({
       headerShown: false
     });*/
-    this.handleData();
+    //this.handleData();
   }
 
   /*async componentDidUpdate(prevProps, prevState) {
@@ -227,24 +225,28 @@ export default class ProductList extends React.Component {
   } */
 
   render() {
-    const { assetsLoaded } = this.state;
+    //const { assetsLoaded } = this.state;
 
-    if (assetsLoaded) {
+    //if (assetsLoaded) {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            <ItemList data={this.state.data} renderItem={this.renderItem} isEmpty={this.state.isEmptyList} />
+            <ItemList 
+            data={this.state.data} 
+            renderItem={this.renderItem} 
+            isEmpty={this.state.isEmptyList}
+            navigation={this.state.navigation} />
           </View>
         </View>
       );
-    } else {
-      return (
-        <View style={styles.loading}>
-          <ActivityIndicator />
-          <StatusBar barStyle="default" />
-        </View>
-      )
-    }
+    // } else {
+    //   return (
+    //     <View style={styles.loading}>
+    //       <ActivityIndicator />
+    //       <StatusBar barStyle="default" />
+    //     </View>
+    //   )
+    // }
   }
 
 }

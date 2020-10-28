@@ -6,9 +6,8 @@ import {
     StyleSheet, 
     Image, 
 } from 'react-native';
-
 import ImageProductMock from '../static/bottleMock.jpg'
-import Star from './Button/Star'
+import StarScore from './StarScore'
   
 const styles = StyleSheet.create({
     product: {
@@ -64,11 +63,14 @@ const styles = StyleSheet.create({
       color: '#4F4F4F',
       fontFamily: 'NotoSanaTamilLight',
     },
-    metricsText: {
-        fontSize: 16,
-        color: '#FFA21F',
-        margin: 2,
-        fontFamily: 'NotoSanaTamilLight',
+    metricsTextWrap: {
+      flex: 1,
+    },
+    metrics: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
 });
 
@@ -78,22 +80,7 @@ const RenderImage = ({image}) => {
   else return <Image style={styles.image} source={ImageProductMock}></Image>   
 }
 
-// const RenderMetric = ({score}) => { 
-//   if (score == -1) return 0;
-  
-
-//   else 
-//     {
-//       let a = [0,0,0,0,0];
-//       a.map((item, index) => {})
-//     }
-
-
-// }
-
-
 const Product = ({title, image, lable, metric1}) => {
-  const starsScore = Math.floor(metric1/2);
 
   React.useEffect(() => {
     async function loadFont() {
@@ -114,16 +101,8 @@ const Product = ({title, image, lable, metric1}) => {
             <View style={styles.title}>
               <Text style={styles.titleText}>{title}</Text> 
               <Text style={styles.lableText}>{lable}</Text>
-            </View>
-            <View style={styles.metrics}>             
-              <Star width='25' height='25' fill='#FFFFFF'/>
-              <Star width='25' height='25'/>
-              <Star width='25' height='25'/>
-              <Star width='25' height='25'/>
-              <Star width='25' height='25'/>
-              {/* <RenderMetric score={starsScore}/> */}
-              <Text style={styles.metricsText}>{starsScore}</Text>
-            </View>
+            </View>          
+            {StarScore(metric1, styles.metrics, 20)}
           </View>
         </View>
     )

@@ -22,6 +22,8 @@ import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
 import ScannerIngredients from './component/Scanner/ScannerIngredients'
 
+import HistoryStore from './component/HistoryStore'
+
 
 const styles = StyleSheet.create({
   mainPart: {
@@ -71,53 +73,41 @@ function ScannerIngredients1({ navigation }) {
   );
 };
 
-/*
-function Profile({ navigation }) {
-  const [token, setToken] = React.useState('')
-  const showToken = async () => {
-    try {
-    const token = await AsyncStorage.getItem('token')
-    setToken(token);
-    }
-    catch(e) {
-      console.log(e)
-    }
-  }
-  const logOut = async () => {
-    await AsyncStorage.removeItem('token');
-  }
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{token}</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      //onPress={() => showToken()}
-      />
-      <Button
-      title="Token"
-      onPress={()=> showToken()}
-      />
-      <Button
-      title="logout"
-      onPress={() => logOut()}
-      />
-    </View>
-  );
-};*/
-// function ProductInfo({ navigation, route }) {
-//   return(
-//   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>ProductInfo</Text>
+
+// function Profile({ navigation }) {
+//   const [token, setToken] = React.useState('')
+//   const showToken = async () => {
+//     try {
+//     const token = await AsyncStorage.getItem('token')
+//     console.log('set')
+//     setToken(token);
+//     }
+//     catch(e) {
+//       console.log(e)
+//     }
+//   }
+//   const logOut = async () => {
+//     await AsyncStorage.removeItem('token');
+//   }
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Text>{token}</Text>
 //       <Button
 //         title="Go to Home"
 //         onPress={() => navigation.navigate('Home')}
+//       //onPress={() => showToken()}
+//       />
+//       <Button
+//       title="Token"
+//       onPress={()=> showToken()}
+//       />
+//       <Button
+//       title="logout"
+//       onPress={() => logOut()}
 //       />
 //     </View>
 //   );
 // };
-
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -185,6 +175,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
+    console.log('mp', this.state.userToken);
   }
 
 

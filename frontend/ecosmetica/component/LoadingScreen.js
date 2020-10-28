@@ -1,18 +1,22 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
+import { useLayoutEffect } from 'react';
 import { 
   Text,
   View, 
   StyleSheet, 
 } from 'react-native';
 
-const LoadingScreen = () => {
+const LoadingScreen = ({navigation}) => {
 
     React.useEffect(() => {
         Font.loadAsync({
             'NotoSanaTamilExtraBold': require('../assets/fonts/NotoSansTamil-Light.ttf')
         });
     })
+    useLayoutEffect(() => {        
+        navigation.setOptions({headerShown: false})
+    }, [navigation])
     return(
         <View style={styles.body}>
             <View style={styles.bigTextWrap}>
