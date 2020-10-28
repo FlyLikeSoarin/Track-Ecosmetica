@@ -23,6 +23,13 @@ class UserCreationSerializer(serializers.ModelSerializer):
         user = User.objects.create(username=username, password=password)
         user.set_password(password)
         user.last_login=timezone.now()
+        
+        if 'email' in validated_data:
+            user.email = validated_data['email']
+        if 'first_name' in validated_data and 'last_name' in validated_data:
+            user.first_name = validated_data['first_name']
+            user.last_name = validated_data['last_name']
+
         user.save()
         token = Token.objects.create(user=user)
         return user

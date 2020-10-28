@@ -39,7 +39,10 @@ class RetrieveUserView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, username):
-        user = get_object_or_404(User, username=username)
+    def get(self, request, username=None):
+        if username is not None:
+            user = get_object_or_404(User, username=username)
+        else:
+            user = request.user
         serializer = ProtectedUserSerializer(user)
         return Response(serializer.data)
