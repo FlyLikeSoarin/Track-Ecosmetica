@@ -49,12 +49,12 @@ export default class BarcodeScannerComponent extends React.Component {
 
     try{
       let history = await AsyncStorage.getItem('history');
-      console.log('history in scanner', history)
+      //console.log('history in scanner', history)
     } catch (e) {
       console.log(e)
     }
     if (history!==null) {
-      this.state.history = history;
+      this.state.history = JSON.parse(history);
     }
 
     await Font.loadAsync({
@@ -201,11 +201,11 @@ handlerBack() {
                 brand: null
               }
             }
-            const tempHistory = this.state.history;
-            const newData=JSON.stringify(ans);
-            this.setState({history:newData});
+            const newHistory = this.state.history.concat(JSON.parse(ans))
+            this.setState({history:newHistory});
+            console.log('state history scanner new data',newData);  
             try {
-              AsyncStorage.setItem('history', data)
+              AsyncStorage.setItem('history', JSON.stringify(newHistory))
             }
             catch(e){
               console.log(e)
@@ -214,10 +214,16 @@ handlerBack() {
             this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
           } 
           else {
-            const tempHistory = this.state.history;
-            const newData=JSON.stringify(ans);
-            this.setState({history:newData});
-            console.log(this.state.history);           
+            const newHistory = this.state.history.concat(JSON.parse(ans))
+            this.setState({history:newHistory});
+            console.log('state history scanner new data',newData);  
+            try {
+              AsyncStorage.setItem('history', JSON.stringify(newHistory))
+            }
+            catch(e){
+              console.log(e)
+            }
+            console.log('state history scanner',this.state.history);            
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
           }
         }
