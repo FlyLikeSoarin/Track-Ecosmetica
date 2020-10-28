@@ -77,8 +77,9 @@ export default class Product extends React.Component {
                     <View style={styles.imageArea}>
                         {/*https://static.ewg.org/skindeep/img/ewg_missing_product.png*/}
                         <Image style={styles.image} source={{ uri: `${img_url}` }} />
-                        {/* <View style={styles.scoreArea}> */}
+                        <View style={styles.scoreStarArea}> 
                             {StarScore(total_score, styles.scoreArea, 15)}
+                        </View>
                             {/*<Star />
                             <Star />
                             <Star />
@@ -101,8 +102,8 @@ export default class Product extends React.Component {
                                 <FlatList
                                     style={styles.innerScroll}
                                     data={ingredients}
+                                    key={item => { item[0] }}
                                     renderItem={renderItem}
-                                    keyExtractor={item => { item[1] }}
                                 />
                             </SafeAreaView>
                         </View>
@@ -209,6 +210,12 @@ const styles = StyleSheet.create({
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
     },
+    scoreStarArea: {
+        width: width,
+        alignContent: 'flex-end',
+        justifyContent: 'flex-end',
+        backgroundColor: '#000',
+    },
     image: {
         height: 150,
         width: 150,
@@ -216,9 +223,10 @@ const styles = StyleSheet.create({
     },
     scoreArea: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignSelf: 'stretch',
-        marginRight: 25,
+        justifyContent: 'center',
+        
+        padding: 10,
+        backgroundColor: '#fff',
     },
     score: {
         color: '#FFA21F',

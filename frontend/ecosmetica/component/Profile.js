@@ -22,6 +22,7 @@ import SearchButton from './Button/SearchButton'
 import BackButton from './Button/BackButton'
 
 var width = Dimensions.get('window').width;
+const URL = 'http://185.148.82.169:8005'
 
 const styles = StyleSheet.create({
   container: {
@@ -224,7 +225,10 @@ export default class Profile extends React.Component {
       bathScore: '',
       excelledIngridiends: [],
       assetsLoaded: false,
-      iconLogoutColor: '#000'
+      iconLogoutColor: '#000',
+      first_name: 'Имя',
+      last_name: 'Фамилия',
+
     };
     this.setToken = this.setToken.bind(this);
     this.initAuthToken = this.initAuthToken.bind(this);
@@ -282,8 +286,33 @@ export default class Profile extends React.Component {
       )
     });
     this.initAuthToken();
-    console.log(this.props.route)
-    setTimeout(()=>{
+    let header = null
+
+    if (this.state.token === null) {
+      header = {
+        'Content-Type': 'application/json',
+      }
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      }
+    }
+
+    await fetch(`${URL}/user/`, {
+      method: 'GET',
+      headers: header
+    })
+      .then((resp) => {
+        return resp.json()
+      })
+      .then((ans) => {
+        console.log('user')
+        console.log(ans)
+        /*this.setState({first_name: ans.first_name, last_name: ans.last_name})
+        console.log(this.state.first_name)*/
+      })
+    setTimeout(() => {
       this.setState({ assetsLoaded: true });
       console.log('profile')
       console.log(this.state.token)
@@ -296,7 +325,7 @@ export default class Profile extends React.Component {
     if (prevState.token !== this.state.token) {
       console.log('updated')
     }
-  } 
+  }
 
   setToken(token) {
     this.setState({
@@ -310,9 +339,9 @@ export default class Profile extends React.Component {
     })
     try {
       await AsyncStorage.removeItem('token');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
-    } 
+    }
   }
 
   async handlerLogout() {
@@ -322,6 +351,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
+    const { first_name, last_name } = this.state
     return (
       <View style={styles.container}>
         {this.state.token === null && (
@@ -337,8 +367,8 @@ export default class Profile extends React.Component {
                   <Text style={styles.registrText}>Зарегистрироваться</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity 
-              onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
                 <View style={styles.logInButton}>
                   <Text style={styles.logInText}>Войти</Text>
                 </View>
@@ -352,32 +382,32 @@ export default class Profile extends React.Component {
                 <ProfileImageMock />
               </View>
               <View style={styles.bigTextWrap}>
-                <Text style={styles.bigText}>Ирен Адлер</Text>
+                <Text style={styles.bigText}>{first_name} {last_name}</Text>
               </View>
             </View>
             <View style={styles.body}>
               <View style={styles.infoWrap}>
-              {(this.state.bathScore !== '') && (
-                <View>
-                  <View style={styles.bathScoreWrap}>
-                    <Text style={styles.textScore}>Оценка ванной</Text>
-                    <View style={styles.imageScore}>
-                      <Star width='40' height='40' fill='#009E4E' />
-                      <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
+                {(this.state.bathScore !== '') && (
+                  <View>
+                    <View style={styles.bathScoreWrap}>
+                      <Text style={styles.textScore}>Оценка ванной</Text>
+                      <View style={styles.imageScore}>
+                        <Star width='40' height='40' fill='#009E4E' />
+                        <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
+                      </View>
                     </View>
-                  </View>
+                    <ButtonTemplate
+                      title='Оценить заново'
+                      style={styles.buttonAddAfter}
+                      styleText={styles.buttonTextAfter}
+                      onPress={() => this.setState({ bathScore: 9 })} />
+                  </View>)}
+                {(this.state.bathScore == '') &&
                   <ButtonTemplate
-                    title='Оценить заново'
-                    style={styles.buttonAddAfter}
-                    styleText={styles.buttonTextAfter}
-                    onPress={() => this.setState({ bathScore: 9 })} />
-                </View>)}
-              {(this.state.bathScore == '') &&
-                <ButtonTemplate
-                  title='Оценить ванную'
-                  style={styles.buttonAddBefore}
-                  styleText={styles.buttonTextBefore}
-                  onPress={() => this.setState({ bathScore: 10 })} />}
+                    title='Оценить ванную'
+                    style={styles.buttonAddBefore}
+                    styleText={styles.buttonTextBefore}
+                    onPress={() => this.setState({ bathScore: 10 })} />}
               </View>
               <View style={styles.infoWrap}>
                 <ButtonTemplate
@@ -385,15 +415,15 @@ export default class Profile extends React.Component {
                   style={styles.buttonAddBefore}
                   styleText={styles.buttonTextBefore}
                   onPress={() => this.state.navigation.navigate('AddIngridient')} />
+              </View>
+            </View>
           </View>
-        </View>
-        </View>
         )}
         {/* Footer */}
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Home')}>
-            <HomeButton fill='#929292'/>
+            <HomeButton fill='#929292' />
             <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonArea}
@@ -403,7 +433,7 @@ export default class Profile extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Profile')}>
-            <ProfileButton fill='#009E4E'/>
+            <ProfileButton fill='#009E4E' />
             <Text style={styles.buttonText}>Профиль</Text>
           </TouchableOpacity>
         </View>
