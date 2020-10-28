@@ -1,6 +1,7 @@
 import difflib
 import io
 import re
+import base64
 
 from collections import defaultdict
 from unidecode import unidecode
