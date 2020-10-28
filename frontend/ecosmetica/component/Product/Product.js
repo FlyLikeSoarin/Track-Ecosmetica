@@ -149,7 +149,7 @@ const renderItem = ({ item }) => {
         <View style={styles.ingredientBlock}>
             <View style={
                 {
-                    backgroundColor: colorScore(item[0]),
+                    backgroundColor: colorScore(item[1]),
                     flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -157,11 +157,11 @@ const renderItem = ({ item }) => {
                 }
             }>
                 <Text style={styles.ingredientScoreText}>
-                {item[0]}
+                {item[1]}
                 </Text>
             </View>
             <Text style={styles.ingredientText}>
-                {item[1]}
+                {item[0]}
             </Text>
         </View>
     );
@@ -211,7 +211,8 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 150,
-        width: 150
+        width: 150,
+        borderRadius: 20,
     },
     scoreArea: {
         flexDirection: 'row',

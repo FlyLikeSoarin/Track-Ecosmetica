@@ -135,11 +135,13 @@ export default class AddPhotoButton extends React.Component {
     }
 
     render() {
+        const {submited} = this.props
+        console.log(this.state.photoisLoaded)
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
-                    {!this.state.photoisLoaded && <AddPhoto />}
-                    {this.state.photoisLoaded && <Image style={styles.image} source={{ uri: `${this.state.photo_url}` }}/>}
+                    {(!this.state.photoisLoaded || submited) && <AddPhoto />}
+                    {(this.state.photoisLoaded && !submited) && <Image style={styles.image} source={{ uri: `${this.state.photo_url}` }}/>}
                 </TouchableOpacity>
                 <AwesomeAlert
                             show={this.state.loadingPhoto}

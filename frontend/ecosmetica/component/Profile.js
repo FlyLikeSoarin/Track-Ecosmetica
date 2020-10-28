@@ -224,6 +224,7 @@ export default class Profile extends React.Component {
       bathScore: '',
       excelledIngridiends: [],
       assetsLoaded: false,
+      iconLogoutColor: '#000'
     };
     this.setToken = this.setToken.bind(this);
     this.initAuthToken = this.initAuthToken.bind(this);
@@ -241,8 +242,10 @@ export default class Profile extends React.Component {
     }
     if (token !== null) {
       this.setState({
-        token: token
+        token: token,
+        iconLogoutColor: '#C4C4C4'
       })
+
     }
   }
   async componentDidMount() {
@@ -274,7 +277,7 @@ export default class Profile extends React.Component {
         <TouchableOpacity
           style={{ marginRight: 10 }}
           onPress={() => this.handlerLogout()}>
-          <Icon name='logout' size={25} color='#C4C4C4' />
+          <Icon name='logout' size={25} color={this.state.iconLogoutColor} />
         </TouchableOpacity>
       )
     });

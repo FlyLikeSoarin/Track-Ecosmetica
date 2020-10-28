@@ -168,6 +168,7 @@ export default class ProductList extends React.Component {
         <View>
           <Product
             title={item.name}
+            key={item.name}
             image={item.img_url}
             lable={item.brand_name}
             metric1={item.total_score} />

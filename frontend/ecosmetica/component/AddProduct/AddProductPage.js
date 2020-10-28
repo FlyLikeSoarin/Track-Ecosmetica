@@ -47,7 +47,10 @@ export default class ProductNotFound extends React.Component {
             isVisible: false,
             uri: '',
             base64: '',
-            url_loaded_photo: ''
+            url_loaded_photo: '',
+            fallServer: false,
+            error: false,
+            error_code: null,
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -113,9 +116,17 @@ export default class ProductNotFound extends React.Component {
         console.log(this.state.url_loaded_photo)
     }
 
+    hideAlertServer = () => {
+        this.setState({
+            fallServer: false
+        });
+    }
+
     async handleSubmit() {
         const token = this.state.token
-        const array_ingredients = this.state.ingredients === "" ? [] : this.state.ingredients.split(' ')
+        const a = this.state.ingredients.split(', ')
+        const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
+        console.log(this.state.url_loaded_photo)
         await fetch(`${URL}/product/`, {
             method: 'POST',
             headers: {
@@ -127,22 +138,29 @@ export default class ProductNotFound extends React.Component {
                 name: this.state.name,
                 brand_name: this.state.brand,
                 ingredients: array_ingredients,
-                description: ''
+                description: '',
+                img_url: this.state.url_loaded_photo,
             })
         })
             .then((resp) => {
+                console.log('submit product')
                 console.log(resp.status)
                 return resp.json()
             })
             .then((ans) => {
                 console.log(ans)
             })
+            .catch((e) => {
+                this.setState({fallServer: true})
+            })
         this.setState({
             barcode: '',
             name: '',
             brand: '',
             ingredients: '',
-            description: ''
+            description: '',
+            url_loaded_photo: '',
+            submited: true
         })
 
     }
@@ -177,8 +195,9 @@ export default class ProductNotFound extends React.Component {
         this.setState({
             ingredients_detecting: true
         })
+        let status;
         const token = this.state.token
-        //console.log(base64_photo)
+        console.log(token)
         let ans_str = '';
         await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
@@ -191,19 +210,24 @@ export default class ProductNotFound extends React.Component {
             })
         })
             .then((resp) => {
+                status = resp.status
+                console.log(status)
                 return resp.json()
             })
             .then((ans) => {
                 console.log('server ans')
                 console.log(ans)
-                for (let i = 0; i < ans.length; ++i) {
-                    ans_str += ans[i] + " ";
+                if (status < 300) {
+                    for (let i = 0; i < ans.length; ++i) {
+                        ans_str += ans[i] + ", ";
+                    }
+                } else {
+                    this.hideAlertDetecting()
+                    this.setState({error: true, error_code: status})
                 }
-                console.log(ans_str)
             })
             .catch(() => {
-
-                alert('server')
+                this.setState({fallServer: true})
             })
         this.hamdelIngredients(ans_str)
         this.setState({ base64: '', uri: '' })
@@ -226,12 +250,14 @@ export default class ProductNotFound extends React.Component {
     onPictureChoosed(uri, base64) {
         if (base64 !== undefined) {
             this.setState({ uri: uri, base64: base64 })
+            this.uploadPhoto(base64)
+        } else {
+            this.uploadPhoto(this.state.base64)
         }
-        this.uploadPhoto(this.state.base64)
     }
 
     render() {
-        const { uri, isVisible } = this.state
+        const { uri, isVisible, ingredients_detecting, fallServer, error, error_code, submited } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -251,7 +277,7 @@ export default class ProductNotFound extends React.Component {
                     style={styles.body}
                 >
                     <View style={styles.imageArea}>
-                        <AddPhotoButton setUrl={this.setUrl} />
+                        <AddPhotoButton setUrl={this.setUrl} submited={submited}/>
                     </View>
                     <View style={styles.bodySroll}>
                         <View style={styles.inputsArea}>
@@ -339,16 +365,50 @@ export default class ProductNotFound extends React.Component {
                     onToggleModal={this.onToggleModal}
                 />
                 <AwesomeAlert
-                    show={this.state.ingredients_detecting}
+                    show={ingredients_detecting}
                     showProgress={true}
                     title=""
-                    message=""
+                    message="Подождите, фото обрабатывается."
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={false}
-                    onCancelPressed={() => {
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Закрыть"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
                         this.hideAlertDetecting();
+                    }}
+                />
+                <AwesomeAlert
+                    show={fallServer}
+                    showProgress={false}
+                    title="Сервер недоступен"
+                    message="Повторите поытку через некоторе время"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="OK"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.hideAlertServer();
+                    }}
+                />
+                <AwesomeAlert
+                    show={error}
+                    showProgress={false}
+                    title="Что-то пошло не так"
+                    message={error_code}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="OK"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.setState({
+                            error: false
+                        })
                     }}
                 />
             </View>
