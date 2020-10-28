@@ -81,9 +81,6 @@ const RenderImage = ({image}) => {
 }
 
 const Product = ({title, image, lable, metric1}) => {
-  // const starsScore = 0;
-  // if(metric1 > 0)
-  //   starsScore = Math.floor(metric1/2);
 
   React.useEffect(() => {
     async function loadFont() {
@@ -105,7 +102,7 @@ const Product = ({title, image, lable, metric1}) => {
               <Text style={styles.titleText}>{title}</Text> 
               <Text style={styles.lableText}>{lable}</Text>
             </View>          
-            {StarScore(metric1, styles.metrics)}
+            {StarScore(metric1, styles.metrics, 20)}
           </View>
         </View>
     )

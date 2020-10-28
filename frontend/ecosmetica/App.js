@@ -25,6 +25,8 @@ import ProductInfo from './component/ProductInfo'
 import Profile from './component/Profile'
 import ScannerIngredients from './component/Scanner/ScannerIngredients'
 
+import HistoryStore from './HistoryStore'
+
 
 const styles = StyleSheet.create({
   mainPart: {
@@ -80,6 +82,7 @@ function ScannerIngredients1({ navigation }) {
 //   const showToken = async () => {
 //     try {
 //     const token = await AsyncStorage.getItem('token')
+//     console.log('set')
 //     setToken(token);
 //     }
 //     catch(e) {
@@ -175,6 +178,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
+    console.log('mp', this.state.userToken);
   }
 
 

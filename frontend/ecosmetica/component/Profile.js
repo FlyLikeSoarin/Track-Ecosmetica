@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSanaTamilLight',
   },
   body: {
-    flex: 4,
+    flex: 10,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -315,9 +315,6 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    const { assetsLoaded } = this.state;
-
-    if (assetsLoaded) {
     return (
       <View style={styles.container}>
         {this.state.token === null && (
@@ -385,27 +382,25 @@ export default class Profile extends React.Component {
         </View>
         </View>
         )}
-      {/* Footer */}
-      <View style={styles.buttonMenuContainer}>
-              <TouchableOpacity style={styles.buttonArea}>
-                <HomeButton fill='#929292'/>
-                <Text style={styles.buttonText}>Домой</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonArea}
-                onPress={() => this.props.navigation.navigate('Scanner')}>
-                <ScanButton />
-                <Text style={styles.buttonText} >Сканировать</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonArea}
-                onPress={() => this.props.navigation.navigate('Profile')}>
-                <ProfileButton fill='#009E4E'/>
-                <Text style={styles.buttonText}>Профиль</Text>
-              </TouchableOpacity>
-      </View>
-      </View>
-    );}
-    else return(
-      <Text>Loading</Text>
-    )
+        {/* Footer */}
+        <View style={styles.buttonMenuContainer}>
+          <TouchableOpacity style={styles.buttonArea}
+            onPress={() => this.props.navigation.navigate('Home')}>
+            <HomeButton fill='#929292'/>
+            <Text style={styles.buttonText}>Домой</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonArea}
+            onPress={() => this.props.navigation.navigate('Scanner')}>
+            <ScanButton />
+            <Text style={styles.buttonText} >Сканировать</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonArea}
+            onPress={() => this.props.navigation.navigate('Profile')}>
+            <ProfileButton fill='#009E4E'/>
+            <Text style={styles.buttonText}>Профиль</Text>
+          </TouchableOpacity>
+        </View>
+      </View>)
+
   }
 }

@@ -78,8 +78,8 @@ export default class Product extends React.Component {
                         {/*https://static.ewg.org/skindeep/img/ewg_missing_product.png*/}
                         <Image style={styles.image} source={{ uri: `${img_url}` }} />
                         {/* <View style={styles.scoreArea}> */}
-                            {StarScore(total_score,styles.scoreArea)}
-                            {/* <Star />
+                            {StarScore(total_score, styles.scoreArea, 15)}
+                            {/*<Star />
                             <Star />
                             <Star />
                             <Star />
@@ -230,14 +230,14 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 26,
+        fontSize: 20,
         marginLeft: 25,
         color: '#4F4F4F',
         marginTop: 10
     },
     brandText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 18,
+        fontSize: 14,
         marginLeft: 25,
         color: '#606060',
     },
