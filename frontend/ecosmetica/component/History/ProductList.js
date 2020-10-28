@@ -13,7 +13,7 @@ import {
   StatusBar,
   ActivityIndicator
 } from 'react-native';
-import Product from '../Product'
+import Product from './Product'
 //import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
 
@@ -204,7 +204,7 @@ export default class ProductList extends React.Component {
   async componentDidMount() {
 
     await Font.loadAsync({
-      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+      'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
    this.initData();

@@ -314,6 +314,7 @@ export default class Profile extends React.Component {
 
   async handlerLogout() {
     this.props.route.params.logOut()
+    this.setToken(null)
     this.state.navigation.navigate('Profile')
   }
 

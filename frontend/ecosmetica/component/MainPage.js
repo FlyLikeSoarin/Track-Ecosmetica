@@ -12,9 +12,9 @@ import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
-import ProductList from './ProductList'
+import ProductList from './History/ProductList'
 
-import HistoryStore from './HistoryStore'
+import HistoryStore from './History/HistoryStore'
 
 const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;

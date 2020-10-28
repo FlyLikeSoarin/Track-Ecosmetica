@@ -9,9 +9,9 @@ import {
     Dimensions,
     TouchableOpacity,
 } from 'react-native';
-import EmptyHistoryImage from '../static/EmtyHistory.jpg'
+import EmptyHistoryImage from '../../static/EmtyHistory.jpg'
 
-import ScanButton from './Button/ScanButton'
+import ScanButton from '../Button/ScanButton'
 
 var {scrWidth, scrHeight} = Dimensions.get('window');
 
@@ -60,7 +60,7 @@ const EmptyHistory = ({navigation}) => {
     React.useEffect(() => {
         async function loadFont() {
           await Font.loadAsync({
-            'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
           });
         }
     

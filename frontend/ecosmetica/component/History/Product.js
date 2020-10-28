@@ -6,7 +6,7 @@ import {
     StyleSheet, 
     Image, 
 } from 'react-native';
-import ImageProductMock from '../static/bottleMock.jpg'
+import ImageProductMock from '../../static/bottleMock.jpg'
 import StarScore from './StarScore'
   
 const styles = StyleSheet.create({
@@ -85,7 +85,7 @@ const Product = ({title, image, lable, metric1}) => {
   React.useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+        'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
       });
     }
 

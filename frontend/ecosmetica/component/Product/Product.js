@@ -25,7 +25,7 @@ import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
 
-import StarScore from '../StarScore'
+import StarScore from '../History/StarScore'
 
 
 var width = Dimensions.get('window').width;
