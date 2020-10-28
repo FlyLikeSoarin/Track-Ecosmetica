@@ -9,6 +9,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import BarcodeImage from './Scanner/Barcodeimage'
 import Back from './Button/BackButton'
 
+
 const URL = 'http://185.148.82.169:8005';
 
 export default class BarcodeScannerComponent extends React.Component {
@@ -22,7 +23,8 @@ export default class BarcodeScannerComponent extends React.Component {
       scannedQRCode: false,
       data: null,
       token: null,
-      fallServer: false
+      fallServer: false,
+      history: [],
     };
   }
 
@@ -44,6 +46,17 @@ export default class BarcodeScannerComponent extends React.Component {
         token: token
       })
     }
+
+    try{
+      let history = await AsyncStorage.getItem('history');
+      console.log('history in scanner', history)
+    } catch (e) {
+      console.log(e)
+    }
+    if (history!==null) {
+      this.state.history = history;
+    }
+
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
@@ -188,9 +201,23 @@ handlerBack() {
                 brand: null
               }
             }
+            const tempHistory = this.state.history;
+            const newData=JSON.stringify(ans);
+            this.setState({history:newData});
+            try {
+              AsyncStorage.setItem('history', data)
+            }
+            catch(e){
+              console.log(e)
+            }
+            console.log('state history scanner',this.state.history);  
             this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
           } 
           else {
+            const tempHistory = this.state.history;
+            const newData=JSON.stringify(ans);
+            this.setState({history:newData});
+            console.log(this.state.history);           
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
           }
         }

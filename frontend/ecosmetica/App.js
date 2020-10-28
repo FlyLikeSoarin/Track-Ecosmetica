@@ -175,7 +175,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
-    console.log('mp', this.state.userToken);
+    //console.log('mp', this.state.userToken);
   }
 
 
