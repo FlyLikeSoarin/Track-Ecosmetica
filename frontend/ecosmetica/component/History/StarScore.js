@@ -5,7 +5,7 @@ import {
     View, 
     StyleSheet, 
 } from 'react-native';
-import Star from './Button/Star'
+import Star from '../Button/Star'
 
 const badScoreColor='#FF4D00';
 const averageScoreColor = '#FFA21F';

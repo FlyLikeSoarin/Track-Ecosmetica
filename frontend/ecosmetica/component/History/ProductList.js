@@ -13,7 +13,7 @@ import {
   StatusBar,
   ActivityIndicator
 } from 'react-native';
-import Product from './Product'
+import Product from '../Product'
 //import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
 

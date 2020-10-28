@@ -18,11 +18,11 @@ import AddProductPage from './component/AddProduct/AddProductPage'
 import Product from './component/Product/Product'
 import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
-import ProductInfo from './component/ProductInfo'
+import ProductInfo from './component/History/ProductInfo'
 import Profile from './component/Profile'
 import ScannerIngredients from './component/Scanner/ScannerIngredients'
 
-import HistoryStore from './component/HistoryStore'
+import HistoryStore from './component/History/HistoryStore'
 
 
 const styles = StyleSheet.create({
