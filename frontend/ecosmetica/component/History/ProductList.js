@@ -153,7 +153,7 @@ export default class ProductList extends React.Component {
 
   initData = () => {
     console.log('init', this.state.data.length)
-    this.setState({isEmptyList:(this.state.data.length === 0)})
+    //this.setState({isEmptyList:(this.state.data.length === 0)})
   }
 
 
@@ -232,11 +232,12 @@ export default class ProductList extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            <ItemList 
+            {this.state.isEmptyList && <EmtyHistory />}
+            {!this.state.isEmptyList && (<ItemList 
             data={this.state.data} 
             renderItem={this.renderItem} 
             isEmpty={this.state.isEmptyList}
-            navigation={this.state.navigation} />
+            navigation={this.state.navigation} />)}
           </View>
         </View>
       );

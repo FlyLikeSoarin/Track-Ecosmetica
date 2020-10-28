@@ -5,10 +5,10 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
   SafeAreaView,
   FlatList,
-  AsyncStorage
+  AsyncStorage,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
@@ -18,34 +18,20 @@ import Star from './Button/Star'
 import HomeButton from './Button/HomeButton'
 import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
-import SearchButton from './Button/SearchButton'
 import BackButton from './Button/BackButton'
 
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
 
 const styles = StyleSheet.create({
-  container: {
+  containerScreen: {
     flex: 1,
+  },
+  container: {
+    flex: 10,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor: '#FFFFFF',
-  },
-  productImage: {
-    flex: 4,
-  },
-  containerProductText: {
-    flex: 6,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  productText: {
-    color: '#676767',
-    fontSize: 24,
-    fontFamily: 'NotoSanaTamilLight',
-    textAlign: 'center',
-    marginBottom: 50
+    //backgroundColor: '#FFFFFF',
   },
   registrButton: {
     backgroundColor: '#009E4E',
@@ -69,12 +55,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'NotoSanaTamilLight',
   },
+  productImage: {
+    flex: 4,
+  },
   logInText: {
     color: '#009E4E',
     fontFamily: 'NotoSanaTamilLight',
   },
   header: {
-    flex: 1,
+    flex: 0.5,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
     justifyContent: 'flex-end',
@@ -82,6 +71,31 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomColor: '#C4C4C4',
     borderTopColor: '#C4C4C4',
+  },
+  body: {
+    flex: 10,
+    // flexDirection: 'column',
+    // justifyContent: 'flex-start',
+    // alignItems: 'center',
+  },
+  containerProductText: {
+    flex: 6,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  productText: {
+    color: '#676767',
+    fontSize: 24,
+    fontFamily: 'NotoSanaTamilLight',
+    textAlign: 'center',
+    marginBottom: 50
+  },
+  bodyProfile: {
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   imageWrap: {
     marginVertical: 10,
@@ -100,16 +114,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'NotoSanaTamilLight',
   },
-  body: {
-    flex: 10,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
   infoWrap: {
     flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#C4C4C4',
   },
   bathScoreWrap: {
     flex: 1,
@@ -203,6 +209,7 @@ const styles = StyleSheet.create({
   }
 });
 
+
 const ButtonTemplate = ({ title, onPress, style, styleText }) => {
   return (
     <TouchableOpacity onPress={onPress}>
@@ -221,7 +228,6 @@ export default class Profile extends React.Component {
     this.state = {
       navigation: this.props.navigation,
       route: this.props.route,
-      token: null,
       bathScore: '',
       excelledIngridiends: [],
       assetsLoaded: false,
@@ -229,19 +235,21 @@ export default class Profile extends React.Component {
       first_name: 'Имя',
       last_name: 'Фамилия',
 
+      token: null,
     };
     this.setToken = this.setToken.bind(this);
-    this.initAuthToken = this.initAuthToken.bind(this);
-    this.logOut = this.logOut.bind(this)
   }
 
-  async initAuthToken() {
+  async componentDidMount() {
+    await Font.loadAsync({
+      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+    });
+
     let token = null
     try {
       token = await AsyncStorage.getItem('token');
-      console.log('Profile - tocken');
-      console.log(token);
-    } catch (e) {
+      console.log('Profile', token)
+    } catch(e) {
       console.log(e)
     }
     if (token !== null) {
@@ -251,13 +259,6 @@ export default class Profile extends React.Component {
       })
 
     }
-  }
-  async componentDidMount() {
-    console.log('profileDidMount')
-
-    await Font.loadAsync({
-      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
-    });
 
     this.state.navigation.setOptions({
       headerTitle: 'Профиль',
@@ -273,7 +274,7 @@ export default class Profile extends React.Component {
         fontFamily: 'NotoSanaTamilLight'
       },
       headerLeft: () => (
-        <TouchableOpacity onPress={() => this.state.navigation.goBack()}>
+        <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
           <BackButton />
         </TouchableOpacity>
       ),
@@ -285,33 +286,6 @@ export default class Profile extends React.Component {
         </TouchableOpacity>
       )
     });
-    this.initAuthToken();
-    let header = null
-
-    if (this.state.token === null) {
-      header = {
-        'Content-Type': 'application/json',
-      }
-    } else {
-      header = {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${this.state.token}`,
-      }
-    }
-
-    await fetch(`${URL}/user/`, {
-      method: 'GET',
-      headers: header
-    })
-      .then((resp) => {
-        return resp.json()
-      })
-      .then((ans) => {
-        console.log('user')
-        console.log(ans)
-        /*this.setState({first_name: ans.first_name, last_name: ans.last_name})
-        console.log(this.state.first_name)*/
-      })
     setTimeout(() => {
       this.setState({ assetsLoaded: true });
       console.log('profile')
@@ -323,7 +297,31 @@ export default class Profile extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     console.log('profileDidUpdate')
     if (prevState.token !== this.state.token) {
-      console.log('updated')
+      let header = null
+      if (this.state.token === null) {
+        header = {
+          'Content-Type': 'application/json',
+        }
+      } else {
+        header = {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${this.state.token}`,
+        }
+      }
+  
+      await fetch(`${URL}/user/`, {
+        method: 'GET',
+        headers: header
+      })
+        .then((resp) => {
+          return resp.json()
+        })
+        .then((ans) => {
+          console.log('user')
+          console.log(ans)
+          this.setState({first_name: ans.first_name, last_name: ans.last_name})
+          console.log(this.state.first_name)
+        })
     }
   }
 
@@ -346,21 +344,20 @@ export default class Profile extends React.Component {
 
   async handlerLogout() {
     this.props.route.params.logOut()
-    this.setToken(null)
-    this.state.navigation.navigate('Profile')
+    this.state.navigation.navigate('Home')
   }
 
   render() {
     const { first_name, last_name } = this.state
     return (
-      <View style={styles.container}>
+      <View style={styles.containerScreen}>
         {this.state.token === null && (
           <View style={styles.body}>
             <View style={styles.productImage}>
             </View>
             <View style={styles.containerProductText}>
               <Text style={styles.productText}>
-                Зарегистрирутесь или войдите, чтобы добавить нежелательные ингредиенты
+                Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты
               </Text>
               <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr', { setToken: this.setToken })}>
                 <View style={styles.registrButton}>
@@ -376,7 +373,7 @@ export default class Profile extends React.Component {
             </View>
           </View>)}
         {this.state.token !== null && (
-          <View style={styles.body}>
+          <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.imageWrap}>
                 <ProfileImageMock />
@@ -385,7 +382,7 @@ export default class Profile extends React.Component {
                 <Text style={styles.bigText}>{first_name} {last_name}</Text>
               </View>
             </View>
-            <View style={styles.body}>
+            <View style={styles.bodyProfile}>
               <View style={styles.infoWrap}>
                 {(this.state.bathScore !== '') && (
                   <View>
@@ -417,9 +414,8 @@ export default class Profile extends React.Component {
                   onPress={() => this.state.navigation.navigate('AddIngridient')} />
               </View>
             </View>
-          </View>
-        )}
-        {/* Footer */}
+        </View>)}
+        {/*FOOTER*/ }
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Home')}>
@@ -437,7 +433,6 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonText}>Профиль</Text>
           </TouchableOpacity>
         </View>
-      </View>)
-
-  }
+    </View>
+  )}
 }

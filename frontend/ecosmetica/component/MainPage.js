@@ -14,7 +14,7 @@ import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
 import ProductList from './History/ProductList'
 
-import HistoryStore from './History/HistoryStore'
+//import HistoryStore from './History/HistoryStore'
 
 const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;
@@ -170,11 +170,13 @@ export default class MainPage extends React.Component {
       ],
       isDataLoaded: false,
       isEmptyList: true,
+      storageHistory: [],
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this);
-    this._isMounted = false;
+    this.handleData = this.handleData.bind(this);
+    this.initHistory = this.initHistory.bind(this);
   }
 
   handleData = async () => {
@@ -194,12 +196,52 @@ export default class MainPage extends React.Component {
         if (data.length !== 0) {
           this.setState({
             isEmptyList: false
-          })
+          });
         }
         this.setState({ data: data });
+        this.initHistory(JSON.stringify(
+          {
+            "name": "Aussie aussome volume",
+            "brand_name": "Aussie",
+            "img_url": 'https://reactjs.org/logo-og.png',
+            "description": "",
+            "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+            "eco_score": 10,
+            "safety_score": 10,
+            "zoo_score": 2,
+            "total_score": 6
+        },
+        ));
       })
-    this.setState({ isDataLoaded: true });
+      // .then((data) => {
+        
+      // })
+    // this.setState({ isDataLoaded: true });
+    //this.initHistory();
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
+  }
+
+  async initHistory(data) {
+   
+    //await AsyncStorage.removeItem('history');
+    await AsyncStorage.setItem('history', data)
+  }
+
+  async loadHistory() {
+    let history = null
+    try{
+      //history = await AsyncStorage.getItem('history');
+      await AsyncStorage.getItem('history').then(
+        (resp) => {
+          console.log('getItem',resp);
+          this.setState({storageHistory: resp})
+        }
+
+      )
+    } catch (e) {
+      console.log('load history e',e)
+    }
+    console.log('load history',this.state.storageHistory);
   }
 
   async componentDidMount() {
@@ -219,6 +261,8 @@ export default class MainPage extends React.Component {
     //   await this.handleData()
     //   console.log('data loading')
     // }
+    await this.handleData();
+    await this.loadHistory();
   //   /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
@@ -248,12 +292,12 @@ export default class MainPage extends React.Component {
       console.log(e)
     } 
   }
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.data !== this.state.data) {
-      this.handleData();
-      console.log('updated')
-    }
-  } 
+  // async componentDidUpdate(prevProps, prevState) {
+  //   if (prevState.data !== this.state.data) {
+  //     this.handleData();
+  //     console.log('updated')
+  //   }
+  // } 
 
   render() {
     const { assetsLoaded } = this.state;
