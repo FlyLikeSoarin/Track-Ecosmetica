@@ -12,7 +12,8 @@ from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
 from .serializers import ReviewWriteSerializer, ReviewReadSerializer
 from .models import Barcode, Product, History, Review, Ingredient
-from .web import get_product_or_fetch, severity_to_score, image_to_text
+from .web import get_product_or_fetch, severity_to_score
+from .analyze_ingredients import process_base64
 from .utils import add_to_history
 
 import json
@@ -59,17 +60,16 @@ class ProductRetrieveCreateView(APIView):
             add_to_history(product=barcode.product, user=request.user)
 
         product = barcode.product
-        ewg_product = get_product_or_fetch(product.name, product.brand_name)
-        if ewg_product != False:
-            product.ingredients = json.dumps(ewg_product['ingredient'])
-            product.ingredients = json.dumps(ewg_product['ingredient'])
-            product.eco_score = severity_to_score(ewg_product['gauges'][0][1])
-            product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
-            product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
-            product.total_score = str(11 - int(ewg_product['score']))
-            product.img_url = ewg_product['img_uri']
-            product.save()
-
+        # ewg_product = get_product_or_fetch(product.name, product.brand_name)
+        # if ewg_product != False:
+        #     product.ingredients = json.dumps(ewg_product['ingredient'])
+        #     product.ingredients = json.dumps(ewg_product['ingredient'])
+        #     product.eco_score = severity_to_score(ewg_product['gauges'][0][1])
+        #     product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
+        #     product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
+        #     product.total_score = str(11 - int(ewg_product['score']))
+        #     product.img_url = ewg_product['img_uri']
+        #     product.save()
 
         product_serializer = ProductReadSerializer(barcode.product)
         data = product_serializer.data
@@ -102,6 +102,10 @@ class ProductRetrieveCreateView(APIView):
                 code=data['code'],
                 code_format=data['code_format'],
                 product=product)
+
+        if 'img_url' in data and data['img_url'] != '':
+            product.img_url = data['img_url']
+
         try:
             ingredients = json.loads(data['ingredients'])
             product.ingredients = json.dumps(list(zip(ingredients, [-1] * len(ingredients))))
@@ -155,17 +159,18 @@ class AnalyzeIngredientImageView(APIView):
         serializer = IngredientImageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        # return Response(data)
 
-        response = bytes(str(image_to_text(data['content'])), 'ascii').decode('utf-8')
-        text = response[response.rfind('text:'): -1]
-        words = text.split()
+        ingredient_names = process_base64(data['content'])
+        ingredients = []
+        for ingredient_name in ingredient_names:
+            qs = Ingredient.objects.filter(inci_name=ingredient_name)
+            if qs.exists():
+                ingredient = qs.first()
+            else:
+                try:
+                    ingredient = Ingredient.objects.filter(inn_name=ingredient_name).first()
+                except:
+                    continue
+            ingredients.push([ingredient, -1])
 
-        result = []
-        for word in words:
-            w = word.strip()
-            if Ingredient.objects.filter(inci_name__icontains=w).exists():
-                result.append(Ingredient.objects.filter(inci_name__icontains=w).first().inci_name)
-            elif Ingredient.objects.filter(inn_name__icontains=w).exists():
-                result.append(Ingredient.objects.filter(inn_name__icontains=w).first().inn_name)
-        return Response(result)
+        return Response(ingredient_names)

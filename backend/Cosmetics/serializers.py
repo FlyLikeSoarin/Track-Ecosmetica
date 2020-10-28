@@ -20,7 +20,15 @@ class ProductWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         extra_kwargs = { 'name': {'validators': []}, }
-        fields = ['name', 'brand_name', 'ingredients', 'description', 'code', 'code_format']
+        fields = [
+            'name',
+            'brand_name',
+            'ingredients',
+            'description',
+            'code',
+            'code_format',
+            'img_url',
+        ]
 
     code = serializers.CharField(max_length=50)
     code_format = serializers.CharField(max_length=10, default = 'UPCEAN', required=False)

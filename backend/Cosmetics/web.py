@@ -186,10 +186,3 @@ def get_product_or_fetch(product_name, brand_name):
         return fetch_product(products[-1])
     else:
         return False
-
-
-def image_to_text(img_base64_str):
-    content = base64.decodebytes(bytes(img_base64_str, "ascii"))
-    client = vision.ImageAnnotatorClient()
-    image = vision.Image(content=content)
-    return client.document_text_detection(image)
