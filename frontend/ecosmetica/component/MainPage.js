@@ -200,7 +200,7 @@ export default class MainPage extends React.Component {
         }
         this.setState({ data: data });
         this.initHistory(JSON.stringify(
-          {
+          [{
             "name": "Aussie aussome volume",
             "brand_name": "Aussie",
             "img_url": 'https://reactjs.org/logo-og.png',
@@ -210,7 +210,7 @@ export default class MainPage extends React.Component {
             "safety_score": 10,
             "zoo_score": 2,
             "total_score": 6
-        },
+        },]
         ));
       })
       // .then((data) => {
@@ -233,8 +233,9 @@ export default class MainPage extends React.Component {
       //history = await AsyncStorage.getItem('history');
       await AsyncStorage.getItem('history').then(
         (resp) => {
-          console.log('getItem',resp);
-          this.setState({storageHistory: resp})
+          //console.log('getItem',JSON.parse(resp));
+          this.setState({storageHistory: JSON.parse(resp)});
+          //console.log('loadStory',this.state.storageHistory);
         }
 
       )
@@ -343,7 +344,7 @@ export default class MainPage extends React.Component {
           )}
           {this.state.token !== null && ( */}
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.data}/>
+              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.storageHistory}/>
               {/* <Text>{HistoryStore.clientId}</Text> */}
               {/* <Text>{HistoryStore.data}</Text> */}
             </View>
