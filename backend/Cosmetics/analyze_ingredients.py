@@ -71,7 +71,10 @@ class TextProcessor:
         for match in sorted(match_count.items(), key=lambda x: x[1]):
             token_indexes.append(self.validate_entry_token(text, match[0]))
         token_indexes.sort(key=lambda x:x[0], reverse=True)
-        return token_indexes[0]
+        if len(token_indexes) > 0:
+            return token_indexes[0]
+        else:
+            return 0
 
     def validate_entry_token(self, text, candidate_token):
         token_len = len(candidate_token)
@@ -105,7 +108,7 @@ class TextProcessor:
             return ' '.join(text[token_index:].split()[1:])
 
     def split_into_ingredients(self, text):
-        words = re.sub('\.', ',', text).split(', ')
+        words = re.sub('\.', ',', text).split(',')
         return [word.strip() for word in words]
 
     def check_ingredient(self, candidate_ingredient):

@@ -90,6 +90,7 @@ class ProductRetrieveCreateView(APIView):
             product.name = data['name']
             product.brand_name = data['brand_name']
             product.description = data['description']
+            product.save()
             barcode.product=product
             barcode.save()
         except ObjectDoesNotExist:
@@ -171,6 +172,6 @@ class AnalyzeIngredientImageView(APIView):
                     ingredient = Ingredient.objects.filter(inn_name=ingredient_name).first()
                 except:
                     continue
-            ingredients.push([ingredient, -1])
+            ingredients.append([ingredient, -1])
 
         return Response(ingredient_names)
