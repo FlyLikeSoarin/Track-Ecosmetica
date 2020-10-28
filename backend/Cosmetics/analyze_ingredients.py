@@ -74,7 +74,7 @@ class TextProcessor:
         if len(token_indexes) > 0:
             return token_indexes[0]
         else:
-            return 0
+            return 0, 0
 
     def validate_entry_token(self, text, candidate_token):
         token_len = len(candidate_token)
