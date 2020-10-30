@@ -13,6 +13,8 @@ export default function BackButton() {
 
 const styles = StyleSheet.create({
   back: {
-      marginLeft: 20
+      marginLeft: 20,
+      marginRight: 20,
+      margin: 10
   }
 })

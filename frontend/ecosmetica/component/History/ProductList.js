@@ -232,7 +232,7 @@ export default class ProductList extends React.Component {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            {this.state.isEmptyList && <EmtyHistory />}
+            {this.state.isEmptyList && <EmtyHistory navigation={this.state.navigation}/>}
             {!this.state.isEmptyList && (<ItemList 
             data={this.state.data} 
             renderItem={this.renderItem} 

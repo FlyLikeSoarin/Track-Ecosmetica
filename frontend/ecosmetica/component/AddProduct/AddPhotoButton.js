@@ -42,7 +42,7 @@ export default class AddPhotoButton extends React.Component {
             else {
                 let result = await ImagePicker.launchCameraAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.All,
-                    allowsEditing: true,
+                    allowsEditing: false,
                     aspect: [1, 3],
                     quality: 1
                 });
@@ -136,7 +136,7 @@ export default class AddPhotoButton extends React.Component {
 
     render() {
         const {submited} = this.props
-        console.log(this.state.photoisLoaded)
+        //console.log(this.state.photoisLoaded)
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
@@ -150,13 +150,8 @@ export default class AddPhotoButton extends React.Component {
                             message=""
                             closeOnTouchOutside={true}
                             closeOnHardwareBackPress={false}
-                            showCancelButton={true}
+                            showCancelButton={false}
                             showConfirmButton={false}
-                            onCancelPressed={() => {
-                                this.setState({
-                                    loadingPhoto: false
-                                })
-                            }}
                         />
             </View>
         );

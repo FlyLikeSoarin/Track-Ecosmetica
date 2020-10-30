@@ -231,16 +231,18 @@ export default class Profile extends React.Component {
       bathScore: '',
       excelledIngridiends: [],
       assetsLoaded: false,
-      iconLogoutColor: '#000',
+      iconLogoutColor: '#ffffff',
       first_name: 'Имя',
       last_name: 'Фамилия',
 
-      token: null,
+      token: this.props.route.params.token,
     };
     this.setToken = this.setToken.bind(this);
   }
 
   async componentDidMount() {
+    console.log('cmponentDodMount')
+    console.log(this.state.token)
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
@@ -280,7 +282,7 @@ export default class Profile extends React.Component {
       ),
       headerRight: () => (
         <TouchableOpacity
-          style={{ marginRight: 10 }}
+          style={{ padding: 10 }}
           onPress={() => this.handlerLogout()}>
           <Icon name='logout' size={25} color={this.state.iconLogoutColor} />
         </TouchableOpacity>
@@ -288,8 +290,8 @@ export default class Profile extends React.Component {
     });
     setTimeout(() => {
       this.setState({ assetsLoaded: true });
-      console.log('profile')
-      console.log(this.state.token)
+      //console.log('profile')
+      //console.log(this.state.token)
     }, 1500);
 
   }
@@ -327,11 +329,13 @@ export default class Profile extends React.Component {
 
   setToken(token) {
     this.setState({
-      token: token
+      token: token,
+      iconLogoutColor: '#C4C4C4'
     })
   }
-
+  /* не вызывается */
   async logOut() {
+    console.log('logout')
     this.setState({
       token: null
     })
@@ -344,7 +348,11 @@ export default class Profile extends React.Component {
 
   async handlerLogout() {
     this.props.route.params.logOut()
-    this.state.navigation.navigate('Home')
+    this.setState({
+      token: null,
+      iconLogoutColor: '#fff'
+    })
+    this.state.navigation.navigate('Profile')
   }
 
   render() {

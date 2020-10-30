@@ -10,6 +10,7 @@ import {
     StatusBar,
     ActivityIndicator,
     AsyncStorage,
+    KeyboardAvoidingView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -67,7 +68,7 @@ export default class Login extends React.Component {
                 fontFamily: 'NotoSanaTamilLight'
             },
             headerLeft: () => (
-                <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
+                <TouchableOpacity onPress={() => this.state.navigation.navigate('Profile')}>
                     <BackButton />
                 </TouchableOpacity>
             ),
@@ -158,7 +159,7 @@ export default class Login extends React.Component {
                 })
                 .catch((err) => {
                     this.showAlertServer()
-                  }) 
+                })
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);
@@ -184,90 +185,95 @@ export default class Login extends React.Component {
 
             return (
                 <View style={styles.container}>
-                    <View style={styles.inputsArea}>
-                        <TextInput style={styles.input}
-                            value={this.state.email}
-                            onChangeText={this.handlerEmail}
-                            placeholder='Email'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                        />
-                        <View style={styles.passwordInput}>
-                            <TextInput style={styles.passwordInputArea}
-                                value={secure}
-                                onChangeText={this.handlerPassword}
-                                placeholder='Password'
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS == "ios" ? "padding" : "height"}
+                        style={styles.body}
+                    >
+                        <View style={styles.inputsArea}>
+                            <TextInput style={styles.input}
+                                value={this.state.email}
+                                onChangeText={this.handlerEmail}
+                                placeholder='Email'
                                 placeholderTextColor="#8B8B8B"
                                 autoCapitalize="none"
-                                secureTextEntry={this.state.secure}
                             />
-                            <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
-                        </View>
-                        {!forgotPassword && (
-                            <TouchableOpacity onPress={() => this.setState({ forgotPassword: !forgotPassword })}>
-                                <Text style={styles.text}>Забыли пароль?</Text>
-                            </TouchableOpacity>
-                        )}
-                        {forgotPassword && <Text style={styles.text}>Очень жаль :(</Text>}
-                        {/* Alerts */}
-                        <AwesomeAlert
-                            show={failedLogin}
-                            showProgress={false}
-                            title="Повторите попытку"
-                            message="Логин или пароль введен неверно."
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showCancelButton={false}
-                            showConfirmButton={true}
-                            confirmText="OK"
-                            confirmButtonColor="#009E4E"
-                            onConfirmPressed={() => {
-                                this.hideAlertLogin();
-                            }}
-                        />
-                        <AwesomeAlert
-                            show={fallServer}
-                            showProgress={false}
-                            title="Сервер недоступен"
-                            message="Повторите поытку через некоторе время"
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showCancelButton={false}
-                            showConfirmButton={true}
-                            confirmText="OK"
-                            confirmButtonColor="#009E4E"
-                            onConfirmPressed={() => {
-                                this.hideAlertServer();
-                            }}
-                        />
-                        <AwesomeAlert
-                            show={emptyInput}
-                            showProgress={false}
-                            title="Введите логин и пароль"
-                            message=""
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showCancelButton={false}
-                            showConfirmButton={true}
-                            confirmText="OK"
-                            confirmButtonColor="#009E4E"
-                            onConfirmPressed={() => {
-                                this.hideEmptySubmit();
-                            }}
-                        />
-                    </View>
-
-                    <View style={styles.buttonArea}>
-                        <TouchableOpacity
-                            onPress={() => this.handlerLogin()}
-                        >
-                            <View style={styles.bottom}>
-                                <Text style={styles.bottomText}>
-                                    Войти
-                </Text>
+                            <View style={styles.passwordInput}>
+                                <TextInput style={styles.passwordInputArea}
+                                    value={secure}
+                                    onChangeText={this.handlerPassword}
+                                    placeholder='Password'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    secureTextEntry={this.state.secure}
+                                />
+                                <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
                             </View>
-                        </TouchableOpacity>
-                    </View>
+                            {!forgotPassword && (
+                                <TouchableOpacity onPress={() => this.setState({ forgotPassword: !forgotPassword })}>
+                                    <Text style={styles.text}>Забыли пароль?</Text>
+                                </TouchableOpacity>
+                            )}
+                            {forgotPassword && <Text style={styles.text}>Очень жаль :(</Text>}
+                            {/* Alerts */}
+                            <AwesomeAlert
+                                show={failedLogin}
+                                showProgress={false}
+                                title="Повторите попытку"
+                                message="Логин или пароль введен неверно."
+                                closeOnTouchOutside={true}
+                                closeOnHardwareBackPress={false}
+                                showCancelButton={false}
+                                showConfirmButton={true}
+                                confirmText="OK"
+                                confirmButtonColor="#009E4E"
+                                onConfirmPressed={() => {
+                                    this.hideAlertLogin();
+                                }}
+                            />
+                            <AwesomeAlert
+                                show={fallServer}
+                                showProgress={false}
+                                title="Сервер недоступен"
+                                message="Повторите поытку через некоторе время"
+                                closeOnTouchOutside={true}
+                                closeOnHardwareBackPress={false}
+                                showCancelButton={false}
+                                showConfirmButton={true}
+                                confirmText="OK"
+                                confirmButtonColor="#009E4E"
+                                onConfirmPressed={() => {
+                                    this.hideAlertServer();
+                                }}
+                            />
+                            <AwesomeAlert
+                                show={emptyInput}
+                                showProgress={false}
+                                title="Введите логин и пароль"
+                                message=""
+                                closeOnTouchOutside={true}
+                                closeOnHardwareBackPress={false}
+                                showCancelButton={false}
+                                showConfirmButton={true}
+                                confirmText="OK"
+                                confirmButtonColor="#009E4E"
+                                onConfirmPressed={() => {
+                                    this.hideEmptySubmit();
+                                }}
+                            />
+                        </View>
+
+                        <View style={styles.buttonArea}>
+                            <TouchableOpacity
+                                onPress={() => this.handlerLogin()}
+                            >
+                                <View style={styles.bottom}>
+                                    <Text style={styles.bottomText}>
+                                        Войти
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </KeyboardAvoidingView>
                 </View>
             );
         }
@@ -284,7 +290,11 @@ export default class Login extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    body: {
+        flex: 1,
     },
     inputsArea: {
         flex: 1,
@@ -297,6 +307,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'stretch',
         backgroundColor: '#fff',
+        marginBottom: 60,
     },
     text: {
         marginLeft: 25,
@@ -317,7 +328,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         justifyContent: 'center',
-        margin: 25
+        marginRight: 25,
+        marginLeft: 25,
+        marginBottom: 10
     },
     bottomText: {
         color: '#fff',

@@ -51,6 +51,7 @@ export default class ProductNotFound extends React.Component {
             fallServer: false,
             error: false,
             error_code: null,
+            text_not_detected: false
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -58,12 +59,14 @@ export default class ProductNotFound extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.hamdelIngredients = this.hamdelIngredients.bind(this)
         this.handleDiscriptions = this.handleDiscriptions.bind(this)
+        this.showAlertNotDetected = this.showAlertNotDetected.bind(this)
+        this.hideAlertNotDetected = this.hideAlertNotDetected.bind(this)
         this.setUrl = this.setUrl.bind(this)
     }
 
     async componentDidMount() {
         await Font.loadAsync({
-            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+            'NotoSansTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
         });
 
         this.state.navigation.setOptions({
@@ -74,7 +77,7 @@ export default class ProductNotFound extends React.Component {
         try {
             token = await AsyncStorage.getItem('token');
         } catch (e) {
-            console.log(e)
+            //console.log(e)
         }
         if (token !== null) {
             this.setState({
@@ -113,7 +116,7 @@ export default class ProductNotFound extends React.Component {
         this.setState({
             url_loaded_photo: url
         })
-        console.log(this.state.url_loaded_photo)
+        //console.log(this.state.url_loaded_photo)
     }
 
     hideAlertServer = () => {
@@ -126,7 +129,7 @@ export default class ProductNotFound extends React.Component {
         const token = this.state.token
         const a = this.state.ingredients.split(', ')
         const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
-        console.log(this.state.url_loaded_photo)
+        //console.log(this.state.url_loaded_photo)
         await fetch(`${URL}/product/`, {
             method: 'POST',
             headers: {
@@ -143,14 +146,18 @@ export default class ProductNotFound extends React.Component {
             })
         })
             .then((resp) => {
-                console.log('submit product')
-                console.log(resp.status)
+                //console.log('submit product')
+                //console.log(resp.status)
                 return resp.json()
             })
             .then((ans) => {
                 console.log(ans)
+                let arr = JSON.parse(ans.ingredients)
+                ans.ingredients = arr
+                this.state.navigation.navigate('Product', {type: this.state.type, data_: ans, barcode: this.state.barcode})
             })
             .catch((e) => {
+                console.log(e)
                 this.setState({fallServer: true})
             })
         this.setState({
@@ -197,7 +204,7 @@ export default class ProductNotFound extends React.Component {
         })
         let status;
         const token = this.state.token
-        console.log(token)
+        //console.log(token)
         let ans_str = '';
         await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
@@ -217,21 +224,38 @@ export default class ProductNotFound extends React.Component {
             .then((ans) => {
                 console.log('server ans')
                 console.log(ans)
-                if (status < 300) {
+                //console.log(status)
+                //console.log(ans.length)
+                if (status === 200 && ans.length === 0) {
+                    this.hideAlertDetecting()
+
+                    setTimeout(() => this.setState({
+                        text_not_detected: true
+                    }), 500)
+                }
+                else if (status < 300) {
                     for (let i = 0; i < ans.length; ++i) {
                         ans_str += ans[i] + ", ";
                     }
+                    this.hideAlertDetecting()
+                    setTimeout( () =>this.setState({ 
+                        base64: '', 
+                        uri: '' ,
+                        ingredients: ans_str
+                    }), 500)
                 } else {
                     this.hideAlertDetecting()
-                    this.setState({error: true, error_code: status})
+                    setTimeout(() => this.setState({
+                        error: true, error_code: status
+                    }), 500)
                 }
             })
             .catch(() => {
-                this.setState({fallServer: true})
+                this.hideAlertDetecting()
+                setTimeout(() => this.setState({
+                    error: true, error_code: status
+                }), 500)
             })
-        this.hamdelIngredients(ans_str)
-        this.setState({ base64: '', uri: '' })
-        this.hideAlertDetecting()
     }
 
     takePhoto() {
@@ -255,9 +279,21 @@ export default class ProductNotFound extends React.Component {
             this.uploadPhoto(this.state.base64)
         }
     }
+    showAlertNotDetected() {
+        this.setState({
+            text_not_detected: true
+        })
+    }
+    hideAlertNotDetected() {
+        this.setState({
+            text_not_detected: false
+        })
+    }
 
     render() {
-        const { uri, isVisible, ingredients_detecting, fallServer, error, error_code, submited } = this.state
+        const { uri, isVisible, ingredients_detecting, fallServer, error, error_code, submited, text_not_detected } = this.state
+        console.log('ingredients_detecting', ingredients_detecting)
+        console.log('text_not_detected', text_not_detected)
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -292,17 +328,17 @@ export default class ProductNotFound extends React.Component {
                                     onChangeText={this.handleBarcode}
                                 />
                                 <TextInput style={styles.input}
-                                    value={this.state.name}
-                                    placeholder='Название'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleName} />
-                                <TextInput style={styles.input}
                                     value={this.state.brand}
                                     placeholder='Бренд'
                                     placeholderTextColor="#8B8B8B"
                                     autoCapitalize="none"
                                     onChangeText={this.handleBrand} />
+                                <TextInput style={styles.input}
+                                    value={this.state.name}
+                                    placeholder='Название'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    onChangeText={this.handleName} />
                                 <View style={styles.input}>
                                     <TextInput style={styles.inputIngredients}
                                         value={this.state.ingredients}
@@ -411,6 +447,21 @@ export default class ProductNotFound extends React.Component {
                         })
                     }}
                 />
+                <AwesomeAlert
+                    show={text_not_detected}
+                    showProgress={false}
+                    title="Попробуйте снова"
+                    message="Ингредиенты не найдены."
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Закрыть"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.hideAlertNotDetected();
+                    }}
+                />
             </View>
         )
     }
@@ -459,7 +510,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 22,
-        fontFamily: 'NotoSanaTamilLight',
+        fontFamily: 'NotoSansTamilLight',
         color: '#929292',
     },
     /* body */
@@ -500,13 +551,13 @@ const styles = StyleSheet.create({
     },
     bigText: {
         color: '#929292',
-        fontFamily: 'NotoSanaTamilLight',
+        fontFamily: 'NotoSansTamilLight',
         fontSize: 40,
     },
     smallText: {
         marginTop: 40,
         color: '#929292',
-        fontFamily: 'NotoSanaTamilLight',
+        fontFamily: 'NotoSansTamilLight',
         fontSize: 20,
     },
     /**  buttonAddArea **/
@@ -521,7 +572,7 @@ const styles = StyleSheet.create({
     },
     buttonAddText: {
         color: '#fff',
-        fontFamily: 'NotoSanaTamilLight'
+        fontFamily: 'NotoSansTamilLight'
     },
     /* bottom */
     buttonArea: {
@@ -536,7 +587,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#929292',
         fontSize: 10,
-        fontFamily: 'NotoSanaTamilLight',
+        fontFamily: 'NotoSansTamilLight',
         textAlign: 'center',
         justifyContent: 'center',
     },

@@ -9,7 +9,8 @@ import {
     Dimensions,
     StatusBar,
     ActivityIndicator,
-    AsyncStorage
+    AsyncStorage,
+    KeyboardAvoidingView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -72,7 +73,9 @@ export default class Registr extends React.Component {
                 fontFamily: 'NotoSanaTamilLight'
             },
             headerLeft: () => (
-                <TouchableOpacity onPress={() => this.state.navigation.navigate('Home')}>
+                <TouchableOpacity 
+                    style={styles.buttonBack}
+                    onPress={() => this.state.navigation.navigate('Profile')}>
                     <BackButton />
                 </TouchableOpacity>
             ),
@@ -273,6 +276,10 @@ export default class Registr extends React.Component {
 
 
                     </View>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS == "ios" ? "padding" : "height"}
+                        style={styles.buttonKeyboardAvoidArea}
+                    >
 
                     <View style={styles.buttonArea}>
                         <TouchableOpacity onPress={() => this.handlerRegister()}>
@@ -283,6 +290,7 @@ export default class Registr extends React.Component {
                             </View>
                         </TouchableOpacity>
                     </View>
+                    </KeyboardAvoidingView>
 
                     {/* Alerts */}
                     <AwesomeAlert
@@ -333,7 +341,7 @@ export default class Registr extends React.Component {
                     <AwesomeAlert
                         show={userExist}
                         showProgress={false}
-                        title="Пользователь уже существует"
+                        title="Email введен неверно"
                         message=""
                         closeOnTouchOutside={true}
                         closeOnHardwareBackPress={false}
@@ -374,6 +382,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'stretch',
         backgroundColor: '#fff',
+        marginBottom: 67
+    },
+    buttonKeyboardAvoidArea: {
+        flex: 1,
+        backgroundColor: '#fff'
     },
     text: {
         marginLeft: 25,
@@ -393,7 +406,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         justifyContent: 'center',
-        margin: 25
+        marginLeft: 25,
+        marginRight: 25,
     },
     bottomText: {
         color: '#fff',
@@ -427,7 +441,8 @@ const styles = StyleSheet.create({
         paddingLeft: 0,
         backgroundColor: '#E5E5E5',
         color: '#424242',
+    },
+    buttonBack: {
+        //backgroundColor: '#000',
     }
-
-
 })

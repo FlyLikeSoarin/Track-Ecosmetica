@@ -11,7 +11,7 @@ const LoadingScreen = ({navigation}) => {
 
     React.useEffect(() => {
         Font.loadAsync({
-            'NotoSanaTamilExtraBold': require('../assets/fonts/NotoSansTamil-Light.ttf')
+            'NotoSansTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
         });
     })
     useLayoutEffect(() => {        
@@ -46,12 +46,12 @@ const styles = StyleSheet.create({
     bigTextStart: {
         color: '#009E4E',
         fontSize: 40,
-        fontFamily: 'NotoSanaTamilExtraBold'
+        fontFamily: 'NotoSansTamilLight'
     },
     bigTextEnd: {
         color: '#000',
         fontSize: 40,
-        fontFamily: 'NotoSanaTamilExtraBold'
+        fontFamily: 'NotoSansTamilLight'
     },
     textFakeWrap: {
         flex: 1,
