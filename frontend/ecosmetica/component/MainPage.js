@@ -13,6 +13,7 @@ import ProfileButton from './Button/ProfileButton'
 import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
 import ProductList from './History/ProductList'
+import IntroWindows from './IntroWindows'
 
 //import HistoryStore from './History/HistoryStore'
 
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: "center",
-    marginLeft: 50 
+    marginLeft: 50
   },
   textEco: {
     fontSize: 24,
@@ -150,28 +151,30 @@ export default class MainPage extends React.Component {
 
   constructor(props) {
     super(props);
-      this.state = {
-        navigation: this.props.navigation,
-        assetsLoaded: false,
-        token: null,
-        data: [
-          {
-            "name": "Aussie aussome volume",
-            "brand_name": "Aussie",
-            "img_url": 'https://reactjs.org/logo-og.png',
-            "description": "",
-            "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-            "eco_score": 10,
-            "safety_score": 10,
-            "zoo_score": 2,
-            "total_score": 6
+    this.state = {
+      navigation: this.props.navigation,
+      assetsLoaded: false,
+      token: null,
+      data: [
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
         },
-        ],
-        isDataLoaded: false,
-        isEmptyList: true,
-        storageHistory: [],
-        count: false,
-        isUpdated: false,
+      ],
+      isDataLoaded: false,
+      isEmptyList: true,
+      storageHistory: [],
+      count: false,
+      isUpdated: false,
+
+      showIntroWindows: true
     };
 
     this.setToken = this.setToken.bind(this);
@@ -189,7 +192,7 @@ export default class MainPage extends React.Component {
       this.setState({count: !prevCount})
       console.log('sets')
     }, 500)*/
-    this.setState({storageHistory: data})
+    this.setState({ storageHistory: data })
   }
 
   handleCount1() {
@@ -220,54 +223,54 @@ export default class MainPage extends React.Component {
         }
         this.setState({ data: data });
       })
-      // .then((data) => {
-        
-      // })
+    // .then((data) => {
+
+    // })
     // this.setState({ isDataLoaded: true });
     //this.initHistory();
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
- 
+
 
   async loadHistory() {
     let history = null
     //await AsyncStorage.removeItem('history');
-    try{
+    try {
       await AsyncStorage.getItem('history').then(
         (resp) => {
           console.log('getItem'/*,JSON.parse(resp)*/);
           history = JSON.parse(resp);
-          this.setState({storageHistory: history});
+          this.setState({ storageHistory: history });
         }
       )
     } catch (e) {
       console.log(e)
     }
-   /* if (history!==null){
-      this.setState({storageHistory: history});
-      //console.log('loadStory',this.state.storageHistory);
-    }*/
+    /* if (history!==null){
+       this.setState({storageHistory: history});
+       //console.log('loadStory',this.state.storageHistory);
+     }*/
   }
 
   async componentDidMount() {
     console.log('main did vount')
     //AsyncStorage.removeItem('history');
-      let token = null
-      try {
-        token = await AsyncStorage.getItem('token');
-      } catch (e) {
-        console.log(e)
-      }
-      if (token !== null) {
-        console.log('tocken:', token)
-        this.setState({
-          token: token
-        })
-      }
-    
+    let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+    } catch (e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      console.log('tocken:', token)
+      this.setState({
+        token: token
+      })
+    }
+
     await this.loadHistory();
-  //   /* Загрузка шрифтов */
+    //   /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
@@ -277,7 +280,7 @@ export default class MainPage extends React.Component {
     this.state.navigation.setOptions({
       headerShown: false,
     });
-    setTimeout(()=>this.setState({ assetsLoaded: true }), 1500);
+    setTimeout(() => this.setState({ assetsLoaded: true }), 1500);
   }
 
   setToken(token) {
@@ -292,13 +295,13 @@ export default class MainPage extends React.Component {
     })
     try {
       await AsyncStorage.removeItem('token');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
-    } 
+    }
   }
   handleUpdate() {
     let isUpd = this.state.isUpdated
-    this.setState({isUpdated: !isUpd})
+    this.setState({ isUpdated: !isUpd })
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('updating')
@@ -308,87 +311,70 @@ export default class MainPage extends React.Component {
       this.loadHistory();
       console.log('updated')
     }
-  } 
+  }
 
   render() {
-    const { assetsLoaded, storageHistory } = this.state;
+    const { assetsLoaded, storageHistory, showIntroWindows } = this.state;
 
     if (assetsLoaded) {
-
-      return (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <View style={styles.title}>
-              <Text style={styles.textEco}>Eco</Text>
-              <Text style={styles.textSmetica}>smetica</Text>
-            </View>
-            <TouchableOpacity 
-              style={styles.searchArea}
-              onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut, handleCount1: this.handleCount1})}>
-              <SearchButton />
-            </TouchableOpacity>
-          </View>
-          {/* Body */}
-          {/* {this.state.token === null && (
-            <View style={styles.body}>
-              <View style={styles.productImage}>
+      if (!showIntroWindows) {
+        return (
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <View style={styles.title}>
+                <Text style={styles.textEco}>Eco</Text>
+                <Text style={styles.textSmetica}>smetica</Text>
               </View>
-              <View style={styles.containerProductText}>
-                <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr', { setToken: this.setToken })}>
-                  <View style={styles.registrButton}>
-                    <Text style={styles.registrText}>
-                      Зарегистрироваться
-             </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
-                  <View style={styles.logInButton}>
-                    <Text style={styles.logInText}>
-                      Войти
-            </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.searchArea}
+                onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, handleCount1: this.handleCount1 })}>
+                <SearchButton />
+              </TouchableOpacity>
             </View>
-          )}
-          {this.state.token !== null && ( */}
             <View style={styles.body}>
-              <ProductList 
-              token={this.state.token} 
-              navigation={this.state.navigation}
-              data={storageHistory}
-              isUpdated={this.state.isUpdated}
-              handleUpdate={()=>this.handleUpdate()}
+              <ProductList
+                token={this.state.token}
+                navigation={this.state.navigation}
+                data={storageHistory}
+                isUpdated={this.state.isUpdated}
+                handleUpdate={() => this.handleUpdate()}
               />
             </View>
-          {/* )} */}
 
-          {/* Footer */}
-          <View style={styles.buttonMenuContainer}>
-            <TouchableOpacity style={styles.buttonArea}>
-              <HomeButton fill='#009E4E' />
-              <Text style={styles.buttonTextTarget}>Домой</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Scanner', {handleCount: this.handleCount})}
-            >
-              <ScanButton />
-              <Text style={styles.buttonText} >Сканировать</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile', {logOut: this.logOut, token: this.state.token})}
-            >
-              <ProfileButton />
-              <Text style={styles.buttonText}>Профиль</Text>
-            </TouchableOpacity>
+            {/* Footer */}
+            <View style={styles.buttonMenuContainer}>
+              <TouchableOpacity style={styles.buttonArea}>
+                <HomeButton fill='#009E4E' />
+                <Text style={styles.buttonTextTarget}>Домой</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Scanner', { handleCount: this.handleCount })}
+              >
+                <ScanButton />
+                <Text style={styles.buttonText} >Сканировать</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Profile', { logOut: this.logOut, token: this.state.token })}
+              >
+                <ProfileButton />
+                <Text style={styles.buttonText}>Профиль</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      );
+        );
+      } else {
+        return (
+          <IntroWindows
+            hideIntroWindows={() => this.setState({ showIntroWindows: false })}
+            navigation={this.state.navigation}
+            setToken={this.setToken}
+          />
+        )
+      }
     }
     else {
       return (
-        <LoadingScreen navigation={this.props.navigation}/>
+        <LoadingScreen navigation={this.props.navigation} />
       );
     }
   }

@@ -19,16 +19,21 @@ Font.loadAsync({
     'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamil-Light.ttf')
 });
 
+
+const URL = 'http://185.148.82.169:8005';
+
 export default class Product extends React.Component {
-    /*props: hideModal, token*/
+    /*props: hideModal, token, barcode, product, setReviews*/
     constructor(props) {
         super(props);
         this.state = {
-            token: '',
+            token: this.props.token,
             accssedLength: 512,
             rating: 0,
             reviewText: '',
-            showAlertZeroRating: false
+            showAlertZeroRating: false,
+            barcode: this.props.barcode,
+            product: this.props.product
         }
 
         this.handleReview = this.handleReview.bind(this)
@@ -52,12 +57,39 @@ export default class Product extends React.Component {
         }
     }
 
-    handleSend() {
+    async handleSend() {
         if (this.state.rating === 0) {
             this.setState({
                 showAlertZeroRating: true
             });
         } else {
+            //console.log(this.state.token)
+            //console.log(this.state.product)
+            token = this.state.token
+            product = this.state.product
+            await fetch(`${URL}/product/review/?product=${product}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify({
+                    review: this.state.reviewText,
+                    rating: this.state.rating,
+                    title: ''
+                })
+            })
+                .then((resp) => {
+                    status = resp.status
+                    console.log(status)
+                    return resp.json()
+                })
+                .then((ans) => {
+                    console.log(ans)
+                })
+                .catch(() => {
+                })
+            this.props.setReviews(this.state.rating, this.state.reviewText)
             this.props.hideModal();
         }
     }
@@ -145,14 +177,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: 'white',
         alignItems: 'stretch',
     },
     header: {
         height: 150,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 20
+        padding: 20,
+        backgroundColor: 'rgba(52, 52, 52, 0.8)'
     },
     closeButton: {
         marginTop: 10
@@ -167,6 +199,7 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 6,
+        backgroundColor: '#fff'
     },
     ratingArea: {
         backgroundColor: '#F4F4F4',

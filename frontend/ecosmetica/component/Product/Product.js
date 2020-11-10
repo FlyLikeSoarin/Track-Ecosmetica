@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     TextInput,
     Dimensions,
-    ScrollView,
+    AsyncStorage,
     Image,
     FlatList,
     SafeAreaView,
@@ -32,6 +32,7 @@ import ProfileImageMock from '../Button/ProfileImageMock';
 import InputReview from './InputReview'
 
 var width = Dimensions.get('window').width;
+const URL = 'http://185.148.82.169:8005';
 
 export default class Product extends React.Component {
 
@@ -46,6 +47,7 @@ export default class Product extends React.Component {
             brand: this.props.route.params.data_.brand_name,
             total_score: this.props.route.params.data_.total_score,
             ingredients: this.props.route.params.data_.ingredients,
+            product: this.props.route.params.data_,
 
             showReviews: false,
             colorsTabsPanel: {
@@ -67,6 +69,8 @@ export default class Product extends React.Component {
             /*reviews: []*/
             modalVisible: false,
         }
+
+        this.setReviews = this.setReviews.bind(this)
     }
 
     async componentDidMount() {
@@ -76,6 +80,58 @@ export default class Product extends React.Component {
 
         this.state.navigation.setOptions({
             headerShown: false
+        })
+
+        let token = null
+        try {
+            token = await AsyncStorage.getItem('token');
+            console.log('Profile', token)
+        } catch (e) {
+            console.log(e)
+        }
+        if (token !== null) {
+            this.setState({
+                token: token,
+            })
+
+        }
+
+        /*await fetch(`${URL}/product/review/?code=${this.state.barcode}`, {
+             method: 'GET',
+             headers: {'Content-Type': 'application/json'}
+           })
+           .then((resp) => {
+               return resp.json()
+           })
+           .then((ans) => {
+               console.log(ans)
+           })
+           .catch(() => {
+               console.log("fail get reviews")
+           })*/
+
+    }
+
+    setReviews(rating, textReview) {
+        let day = new Date().getDate()
+        let month = new Date().getMonth()
+        let year = new Date().getFullYear()
+
+        let oldReviews = this.state.reviews
+        let review = {
+            text: textReview,
+            score: rating,
+            user_name: 'Tanya',
+            date: day + '.' + month + '.' + year,
+            likes: 0
+        }
+        console.log(review)
+        oldReviews = oldReviews.concat({
+            review: review,
+            like_it: false
+        })
+        this.setState({
+            reviews: oldReviews
         })
     }
 
@@ -104,7 +160,10 @@ export default class Product extends React.Component {
 
 
     render() {
-        const { img_url, brand, name, total_score, ingredients, reviews, modalVisible } = this.state
+        const {
+            img_url, brand, name,
+            total_score, ingredients, reviews,
+            modalVisible, token, barcode } = this.state
         const user_raiting = 5;
         const number_user_scores = 123;
         return (
@@ -267,7 +326,12 @@ export default class Product extends React.Component {
                 >
                     <InputReview hideModal={() => this.setState({
                         modalVisible: false,
-                    })} />
+                    })}
+                        barcode={this.state.barcode}
+                        token={this.state.token}
+                        product={this.state.product}
+                        setReviews={this.setReviews}
+                    />
                 </Modal>
             </View>
         );
@@ -344,17 +408,20 @@ const renderItemReview = ({ item }) => {
                             </Text>
                         </View>
                     </View>
-                    <View style={{
-                        margin: 10,
-                        borderWidth: 0.5,
-                        borderColor: color_like,
-                        backgroundColor: background_color,
-                        borderRadius: 5,
-                        padding: 5,
-                        alignItems: 'center',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                    }}>
+                    <TouchableOpacity
+                        style={{
+                            margin: 10,
+                            borderWidth: 0.5,
+                            borderColor: color_like,
+                            backgroundColor: background_color,
+                            borderRadius: 5,
+                            padding: 5,
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }}
+                        
+                    >
                         <SvgXml width="20" height="15" xml={LikeIcon} fill={color_like} />
                         <Text style={{
                             fontSize: 9,
@@ -363,7 +430,7 @@ const renderItemReview = ({ item }) => {
                         }}>
                             {item.review.likes}
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
