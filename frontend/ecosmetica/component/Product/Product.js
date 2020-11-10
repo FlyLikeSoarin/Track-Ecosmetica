@@ -10,23 +10,26 @@ import {
     ScrollView,
     Image,
     FlatList,
-    SafeAreaView
+    SafeAreaView,
+    Modal
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import StarRating from 'react-native-star-rating';
 
-import CrossButton from '../Button/CrossButton';
-import Balm from '../ProductNotFound/Balm'
-import Star from './Score'
-import risk from '../../assets/svg/biohazard.svg'
-import allergy from '../../assets/svg/coronavirus.svg'
+import Heart from '../../assets/svg/heart.svg'
+import ReviewIcon from '../../assets/svg/review.svg'
+import { profileImageMock } from '../../assets/svg/profile-image.svg';
+import LikeIcon from '../../assets/svg/like.svg'
 
+import Score from './Score'
 import Back from '../Button/BackButton'
 import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
-
 import StarScore from '../History/StarScore'
-
+import UserRaiting from './UserRaiting'
+import ProfileImageMock from '../Button/ProfileImageMock';
+import InputReview from './InputReview'
 
 var width = Dimensions.get('window').width;
 
@@ -41,12 +44,28 @@ export default class Product extends React.Component {
             name: this.props.route.params.data_.name,
             img_url: this.props.route.params.data_.img_url,
             brand: this.props.route.params.data_.brand_name,
-            //naturality_score: this.props.route.params.data_.naturality_score,
-            risk_score: this.props.route.params.data_.eco_score,
-            allergy_score: this.props.route.params.data_.safety_score,
             total_score: this.props.route.params.data_.total_score,
-            description: this.props.route.params.data_.description,
             ingredients: this.props.route.params.data_.ingredients,
+
+            showReviews: false,
+            colorsTabsPanel: {
+                ingredientsTop: '#009E4E',
+                ingredientsBackground: '#fff',
+                reviewsTop: '#929292',
+                reviewsBackground: '#F1F1F1'
+            },
+            reviews: [{
+                review: {
+                    text: 'comment text',
+                    score: 3.5,
+                    user_name: 'Ivan Ivanov',
+                    date: '29 нояб. 2020г.',
+                    likes: 123,
+                },
+                like_it: true
+            }],
+            /*reviews: []*/
+            modalVisible: false,
         }
     }
 
@@ -60,9 +79,34 @@ export default class Product extends React.Component {
         })
     }
 
+    showReviews() {
+        this.setState({
+            showReviews: true,
+            colorsTabsPanel: {
+                ingredientsTop: '#929292',
+                ingredientsBackground: '#F1F1F1',
+                reviewsTop: '#009E4E',
+                reviewsBackground: '#fff'
+            }
+        })
+    }
+    hideReviews() {
+        this.setState({
+            showReviews: false,
+            colorsTabsPanel: {
+                ingredientsTop: '#009E4E',
+                ingredientsBackground: '#fff',
+                reviewsTop: '#929292',
+                reviewsBackground: '#F1F1F1'
+            }
+        })
+    }
+
+
     render() {
-        const { img_url,brand, name, total_score, risk_score, allergy_score, ingredients } = this.state
-        console.log(img_url)
+        const { img_url, brand, name, total_score, ingredients, reviews, modalVisible } = this.state
+        const user_raiting = 5;
+        const number_user_scores = 123;
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -74,39 +118,123 @@ export default class Product extends React.Component {
                 </View>
 
                 <View style={styles.body}>
-                    <View style={styles.imageArea}>
-                        {/*https://static.ewg.org/skindeep/img/ewg_missing_product.png*/}
-                        <Image style={styles.image} source={{ uri: `${img_url}` }} />
-                        <View style={styles.scoreStarArea}> 
-                            {StarScore(total_score, styles.scoreArea, 15)}
+                    <View style={styles.topInfoArea}>
+                        <View style={styles.imageAndScore}>
+                            <View style={styles.emptyArea} />
+                            <View style={styles.imageArea}>
+                                <Image style={styles.image} source={{ uri: `${img_url}` }} />
+                            </View>
+                            <View style={styles.scoreArea}>
+                                <Score score={total_score} />
+                            </View>
                         </View>
-                            {/*<Star />
-                            <Star />
-                            <Star />
-                            <Star />
-                            <Star /> */}
-                            {/* <Text style={styles.score}>
-                                {total_score/2}
-                            </Text>
-                        </View> */}
+                        <View style={styles.bottomImageArea}>
+                            <View style={styles.userRaitingArea}>
+                                <UserRaiting score={user_raiting} number={number_user_scores} />
+                            </View>
+                            <View style={styles.addToFavoritArea}>
+                                <TouchableOpacity style={styles.addToFavoritesButton}>
+                                    <SvgXml xml={Heart} />
+                                    <Text style={styles.addToFavoritText}>
+                                        В избранное
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.addReviewArea}>
+                                <TouchableOpacity style={styles.addToFavoritesButton}
+                                    onPress={() => this.setState({
+                                        modalVisible: true,
+                                    })}
+                                >
+                                    <SvgXml xml={ReviewIcon} />
+                                    <Text style={styles.addToFavoritText}>
+                                        Оставить отзыв
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        {/*<View style={styles.scoreStarArea}>
+                            {StarScore(total_score, styles.scoreArea, 15)}
+                        </View>*/}
+
                     </View>
                     <View style={styles.infoArea}>
-                        <Text style={styles.nameText}>
-                            {name}
-                        </Text>
-                        <Text style={styles.brandText}>
-                            {brand}
-                        </Text>
-                        <View style={styles.ingregients}>
-                            <SafeAreaView style={styles.scroll}>
-                                <FlatList
-                                    style={styles.innerScroll}
-                                    data={ingredients}
-                                    key={item => { item[0] }}
-                                    renderItem={renderItem}
-                                />
-                            </SafeAreaView>
+                        <View style={styles.nameWrap}>
+                            <Text style={styles.nameText}>
+                                {name}
+                            </Text>
+                            <Text style={styles.brandText}>
+                                {brand}
+                            </Text>
                         </View>
+                        <View style={styles.tabsArea}>
+                            <TouchableOpacity style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderTopWidth: 3,
+                                borderTopColor: this.state.colorsTabsPanel.ingredientsTop,
+                                backgroundColor: this.state.colorsTabsPanel.ingredientsBackground,
+                                borderBottomRightRadius: 10,
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.colorsTabsPanel.ingredientsBackground
+                            }}
+                                onPress={() => this.hideReviews()}
+                            >
+                                <Text style={styles.tabsText}>
+                                    Ингредиенты
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderTopWidth: 3,
+                                borderTopColor: this.state.colorsTabsPanel.reviewsTop,
+                                backgroundColor: this.state.colorsTabsPanel.reviewsBackground,
+                                borderBottomLeftRadius: 10,
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
+                            }}
+                                onPress={() => this.showReviews()}
+                            >
+                                <Text style={styles.tabsText}>
+                                    Отзывы
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        {!this.state.showReviews && (
+                            <View style={styles.ingregients}>
+                                <SafeAreaView style={styles.scroll}>
+                                    <FlatList
+                                        style={styles.innerScroll}
+                                        data={ingredients}
+                                        key={item => { item[0] }}
+                                        renderItem={renderItem}
+                                    />
+                                </SafeAreaView>
+                            </View>
+                        )}
+                        {this.state.showReviews && (
+                            <View style={styles.reviews}>
+                                {reviews.length === 0 && (
+                                    <View style={styles.wrapEmptyReviewText}>
+                                        <Text style={styles.emptyReviewsText}>
+                                            Отзывы отсутствуют
+                                        </Text>
+                                    </View>
+                                )}
+                                <SafeAreaView style={styles.scroll}>
+                                    <FlatList
+                                        style={styles.innerScroll}
+                                        data={reviews}
+                                        key={item => { item.text }}
+                                        renderItem={renderItemReview}
+                                    />
+                                </SafeAreaView>
+
+                            </View>
+                        )}
                     </View>
                 </View>
 
@@ -128,12 +256,25 @@ export default class Product extends React.Component {
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        console.log("close")
+                    }}
+                >
+                    <InputReview hideModal={() => this.setState({
+                        modalVisible: false,
+                    })} />
+                </Modal>
             </View>
         );
     }
 }
 
-function colorScore(score){
+function colorScore(score) {
     if (0 <= score && score <= 4) {
         return '#FF4D00'
     } else if (5 <= score && score <= 7) {
@@ -158,7 +299,7 @@ const renderItem = ({ item }) => {
                 }
             }>
                 <Text style={styles.ingredientScoreText}>
-                {item[1]}
+                    {item[1]}
                 </Text>
             </View>
             <Text style={styles.ingredientText}>
@@ -168,6 +309,68 @@ const renderItem = ({ item }) => {
     );
 }
 
+const renderItemReview = ({ item }) => {
+    let color_like = '#676767';
+    let background_color = '#fff'
+    if (item.like_it) {
+        background_color = '#FFA21F'
+        color_like = '#fff'
+    }
+    return (
+        <View style={styles.reviewBlock}>
+            <View style={styles.wrapRevewText}>
+                <Text style={styles.textReview}>
+                    {item.review.text}
+                </Text>
+            </View>
+            <View style={styles.bottomReviewBlock}>
+                <StarRating
+                    disabled={false}
+                    maxStars={5}
+                    rating={item.review.score}
+                    starSize={10}
+                    fullStarColor='#FFA21F'
+                    emptyStarColor='#FFA21F'
+                />
+                <View style={styles.userInfoAndLikes}>
+                    <View style={styles.userInfoArea}>
+                        <SvgXml width="30" height="30" xml={profileImageMock} />
+                        <View style={styles.nameAndDateArea}>
+                            <Text style={styles.userNameText}>
+                                {item.review.user_name}
+                            </Text>
+                            <Text style={styles.dateText}>
+                                {item.review.date}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{
+                        margin: 10,
+                        borderWidth: 0.5,
+                        borderColor: color_like,
+                        backgroundColor: background_color,
+                        borderRadius: 5,
+                        padding: 5,
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                    }}>
+                        <SvgXml width="20" height="15" xml={LikeIcon} fill={color_like} />
+                        <Text style={{
+                            fontSize: 9,
+                            fontFamily: 'NotoSanaTamilLight',
+                            color: color_like
+                        }}>
+                            {item.review.likes}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
+}
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -175,9 +378,10 @@ const styles = StyleSheet.create({
         //justifyContent: 'flex-end',
         backgroundColor: 'white',
         alignItems: 'stretch',
+        marginTop: 22,
     },
     header: {
-        flex: 1,
+        flex: 0.7,
         backgroundColor: '#fff',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
@@ -200,15 +404,58 @@ const styles = StyleSheet.create({
     },
     /*header*/
     backButton: {
-        marginTop: 15
+        alignSelf: 'flex-start'
     },
     /*body*/
-    imageArea: {
+    topInfoArea: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: 'stretch',
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
+    },
+    imageAndScore: {
+        flex: 3,
+        flexDirection: 'row',
+    },
+    emptyArea: {
+        flex: 1,
+    },
+    imageArea: {
+        flex: 1,
+        padding: 10
+    },
+    scoreArea: {
+        flex: 1,
+        flexDirection: 'row-reverse'
+    },
+    bottomImageArea: {
+        flex: 1,
+        flexDirection: 'row',
+        paddingBottom: 5
+    },
+    userRaitingArea: {
+        flex: 1
+    },
+    addToFavoritArea: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-end'
+    },
+    addReviewArea: {
+        flex: 1,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        paddingRight: 10,
+    },
+    addToFavoritText: {
+        color: '#FFA21F',
+        fontSize: 10,
+        fontFamily: 'NotoSanaTamilLight'
+    },
+    addToFavoritesButton: {
+        backgroundColor: 'white',
+        alignItems: 'center'
     },
     scoreStarArea: {
         width: width,
@@ -217,16 +464,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
     image: {
-        height: 150,
-        width: 150,
+        height: 140,
+        width: 140,
         borderRadius: 20,
-    },
-    scoreArea: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        
-        padding: 10,
-        backgroundColor: '#fff',
     },
     score: {
         color: '#FFA21F',
@@ -252,8 +492,35 @@ const styles = StyleSheet.create({
         marginLeft: 25,
         color: '#606060',
     },
+    nameWrap: {
+        paddingBottom: 10
+    },
+    tabsArea: {
+        flexDirection: 'row',
+        height: 30,
+    },
+    tab: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRightWidth: 0.5,
+        borderColor: '#929292',
+        borderTopWidth: 3,
+        borderTopColor: '#009E4E',
+        borderBottomWidth: 0,
+        backgroundColor: '#F1F1F1'
+    },
+    tabsText: {
+        color: '#4F4F4F',
+        fontFamily: 'NotoSanaTamilLight',
+        fontSize: 12,
+    },
+    ingredientsAndReview: {
+        flex: 2,
+        alignItems: 'stretch',
+    },
     ingregients: {
-        marginTop: 25
+        marginTop: 10
     },
     scroll: {
         alignItems: 'stretch',
@@ -263,7 +530,6 @@ const styles = StyleSheet.create({
     },
     ingredientBlock: {
         borderBottomWidth: 0.5,
-        borderTopWidth: 0.5,
         borderColor: '#929292',
         padding: 10,
         flexDirection: 'row',
@@ -280,6 +546,82 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#fff',
         fontFamily: 'NotoSanaTamilLight',
+    },
+
+    reviews: {
+        marginTop: 10
+    },
+    reviewBlock: {
+
+    },
+    wrapRevewText: {
+        flex: 2,
+        padding: 20
+    },
+    textReview: {
+        fontFamily: 'NotoSanaTamilLight',
+        color: '#676767',
+        fontSize: 15
+    },
+    bottomReviewBlock: {
+        flex: 1,
+        alignItems: 'flex-start',
+        padding: 5,
+        paddingLeft: 20,
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#929292',
+
+    },
+    userInfoAndLikes: {
+        flexDirection: 'row',
+        marginTop: 5,
+    },
+    userInfoArea: {
+        flex: 1,
+        flexDirection: 'row',
+        margin: 0,
+        marginLeft: 0,
+
+        alignItems: 'center'
+    },
+    nameAndDateArea: {
+        margin: 10,
+    },
+    userNameText: {
+        color: '#009E4E',
+        fontFamily: 'NotoSanaTamilLight',
+        fontSize: 9,
+    },
+    dateText: {
+        fontSize: 7,
+        fontFamily: 'NotoSanaTamilLight',
+        color: '#676767'
+    },
+    likesArea: {
+        margin: 10,
+        borderWidth: 0.5,
+        borderColor: '#676767',
+        borderRadius: 5,
+        padding: 5,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    likesText: {
+        fontSize: 9,
+        fontFamily: 'NotoSanaTamilLight',
+        color: '#676767'
+    },
+    emptyReviewsText: {
+        color: '#979797',
+        fontSize: 24,
+        fontFamily: 'NotoSanaTamilLight',
+    },
+    wrapEmptyReviewText: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 30,
+        marginTop: 100,
     },
 
     /*buttom*/

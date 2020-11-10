@@ -150,33 +150,53 @@ export default class MainPage extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      navigation: this.props.navigation,
-      assetsLoaded: false,
-      token: null,
-      data: [
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-      },
-      ],
-      isDataLoaded: false,
-      isEmptyList: true,
-      storageHistory: [],
+      this.state = {
+        navigation: this.props.navigation,
+        assetsLoaded: false,
+        token: null,
+        data: [
+          {
+            "name": "Aussie aussome volume",
+            "brand_name": "Aussie",
+            "img_url": 'https://reactjs.org/logo-og.png',
+            "description": "",
+            "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+            "eco_score": 10,
+            "safety_score": 10,
+            "zoo_score": 2,
+            "total_score": 6
+        },
+        ],
+        isDataLoaded: false,
+        isEmptyList: true,
+        storageHistory: [],
+        count: false,
+        isUpdated: false,
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this);
     this.handleData = this.handleData.bind(this);
-    this.initHistory = this.initHistory.bind(this);
+    //this.initHistory = this.initHistory.bind(this);
+    this.handleCount = this.handleCount.bind(this);
+    this.handleCount1 = this.handleCount1.bind(this)
+  }
+
+  handleCount(data) {
+    console.log('handleCount')
+    /*let prevCount = this.state.count;
+    setTimeout( () => {
+      this.setState({count: !prevCount})
+      console.log('sets')
+    }, 500)*/
+    this.setState({storageHistory: data})
+  }
+
+  handleCount1() {
+    const prev = this.state.count;
+    this.setState({
+      count: !prev
+    })
   }
 
   handleData = async () => {
@@ -199,19 +219,6 @@ export default class MainPage extends React.Component {
           });
         }
         this.setState({ data: data });
-        this.initHistory(JSON.stringify(
-          [{
-            "name": "Aussie aussome volume",
-            "brand_name": "Aussie",
-            "img_url": 'https://reactjs.org/logo-og.png',
-            "description": "",
-            "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-            "eco_score": 10,
-            "safety_score": 10,
-            "zoo_score": 2,
-            "total_score": 6
-        },]
-        ));
       })
       // .then((data) => {
         
@@ -221,31 +228,31 @@ export default class MainPage extends React.Component {
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
-  async initHistory(data) {
-   
-    //await AsyncStorage.removeItem('history');
-    await AsyncStorage.setItem('history', data)
-  }
+ 
 
   async loadHistory() {
     let history = null
+    //await AsyncStorage.removeItem('history');
     try{
-      //history = await AsyncStorage.getItem('history');
       await AsyncStorage.getItem('history').then(
         (resp) => {
-          //console.log('getItem',JSON.parse(resp));
-          this.setState({storageHistory: JSON.parse(resp)});
-          //console.log('loadStory',this.state.storageHistory);
+          console.log('getItem'/*,JSON.parse(resp)*/);
+          history = JSON.parse(resp);
+          this.setState({storageHistory: history});
         }
-
       )
     } catch (e) {
-      console.log('load history e',e)
+      console.log(e)
     }
-    console.log('load history',this.state.storageHistory);
+   /* if (history!==null){
+      this.setState({storageHistory: history});
+      //console.log('loadStory',this.state.storageHistory);
+    }*/
   }
 
   async componentDidMount() {
+    console.log('main did vount')
+    //AsyncStorage.removeItem('history');
       let token = null
       try {
         token = await AsyncStorage.getItem('token');
@@ -258,11 +265,7 @@ export default class MainPage extends React.Component {
           token: token
         })
       }
-    // if (token !== null) {
-    //   await this.handleData()
-    //   console.log('data loading')
-    // }
-    await this.handleData();
+    
     await this.loadHistory();
   //   /* Загрузка шрифтов */
     await Font.loadAsync({
@@ -293,15 +296,22 @@ export default class MainPage extends React.Component {
       console.log(e)
     } 
   }
-  // async componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.data !== this.state.data) {
-  //     this.handleData();
-  //     console.log('updated')
-  //   }
-  // } 
+  handleUpdate() {
+    let isUpd = this.state.isUpdated
+    this.setState({isUpdated: !isUpd})
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log('updating')
+    console.log('prev count', prevState.count)
+    console.log('CURENT COUNT', this.state.count)
+    if (prevState.count !== this.state.count) {
+      this.loadHistory();
+      console.log('updated')
+    }
+  } 
 
   render() {
-    const { assetsLoaded } = this.state;
+    const { assetsLoaded, storageHistory } = this.state;
 
     if (assetsLoaded) {
 
@@ -314,7 +324,7 @@ export default class MainPage extends React.Component {
             </View>
             <TouchableOpacity 
               style={styles.searchArea}
-              onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut})}>
+              onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut, handleCount1: this.handleCount1})}>
               <SearchButton />
             </TouchableOpacity>
           </View>
@@ -344,9 +354,13 @@ export default class MainPage extends React.Component {
           )}
           {this.state.token !== null && ( */}
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.storageHistory}/>
-              {/* <Text>{HistoryStore.clientId}</Text> */}
-              {/* <Text>{HistoryStore.data}</Text> */}
+              <ProductList 
+              token={this.state.token} 
+              navigation={this.state.navigation}
+              data={storageHistory}
+              isUpdated={this.state.isUpdated}
+              handleUpdate={()=>this.handleUpdate()}
+              />
             </View>
           {/* )} */}
 
@@ -357,7 +371,7 @@ export default class MainPage extends React.Component {
               <Text style={styles.buttonTextTarget}>Домой</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Scanner')}
+              onPress={() => this.props.navigation.navigate('Scanner', {handleCount: this.handleCount})}
             >
               <ScanButton />
               <Text style={styles.buttonText} >Сканировать</Text>

@@ -50,11 +50,9 @@ export default class AddPhotoButton extends React.Component {
                 if(!result.cancelled) {
                     this.setState({
                         uri: result.uri,
+                        photoisLoaded: true
                     })
                     this.getUploadUrl(result.uri)
-                    this.setState({
-                        loadingPhoto: true
-                    })
                 }
             }
         }
@@ -128,10 +126,6 @@ export default class AddPhotoButton extends React.Component {
         })
         this.props.setUrl(uri_image)
         this.setState({photo_url: uri_image})
-        this.setState({photoisLoaded: true})
-        this.setState({
-            loadingPhoto: false
-        })
     }
 
     render() {
@@ -141,7 +135,7 @@ export default class AddPhotoButton extends React.Component {
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
                     {(!this.state.photoisLoaded || submited) && <AddPhoto />}
-                    {(this.state.photoisLoaded && !submited) && <Image style={styles.image} source={{ uri: `${this.state.photo_url}` }}/>}
+                    {(this.state.photoisLoaded && !submited) && <Image style={styles.image} source={{ uri: `${this.state.uri}` }}/>}
                 </TouchableOpacity>
                 <AwesomeAlert
                             show={this.state.loadingPhoto}

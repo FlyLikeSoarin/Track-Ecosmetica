@@ -153,7 +153,7 @@ export default class ProductList extends React.Component {
 
   initData = () => {
     console.log('init', this.state.data.length)
-    //this.setState({isEmptyList:(this.state.data.length === 0)})
+    this.setState({isEmptyList:(this.state.data.length === 0)})
   }
 
 
@@ -203,6 +203,7 @@ export default class ProductList extends React.Component {
   // }
 
   async componentDidMount() {
+    console.log('product list did mount')
 
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
@@ -218,26 +219,34 @@ export default class ProductList extends React.Component {
     });*/
     //this.handleData();
   }
-
-  /*async componentDidUpdate(prevProps, prevState) {
-    if (prevState.data !== this.state.data) {
-      this.handleData();
+  async componentDidUpdate(prevProps, prevState) {
+    // if (prevState.data !== this.state.data) {
+    //   //this.handleData();
+    //   console.log("update history", this.state.data)
+    // } 
+    console.log('product list updating')
+    if (prevState.isUpdated!==this.state.isUpdated) {
+      this.setState({data:this.state.data})
     }
-  } */
+  } 
+  handleUpdate() {
+    let isUpd = this.state.isUpdated
+    this.setState({isUpdated: !isUpd})
+  }
 
   render() {
-    //const { assetsLoaded } = this.state;
+    console.log('productlist', this.state.data)
 
     //if (assetsLoaded) {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            {this.state.isEmptyList && <EmtyHistory navigation={this.state.navigation}/>}
-            {!this.state.isEmptyList && (<ItemList 
+            {/*this.state.isEmptyList && <EmtyHistory navigation={this.state.navigation}/>*/}
+          <ItemList 
             data={this.state.data} 
             renderItem={this.renderItem} 
             isEmpty={this.state.isEmptyList}
-            navigation={this.state.navigation} />)}
+            navigation={this.state.navigation} />
           </View>
         </View>
       );

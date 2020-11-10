@@ -6,8 +6,8 @@ import * as Font from 'expo-font';
 import star from '../../assets/svg/star.svg';
 
 Font.loadAsync({
-            'Forum': require('../../assets/fonts/Forum.ttf')
-        });
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+});
 
 
 const styles = StyleSheet.create({
@@ -15,14 +15,42 @@ const styles = StyleSheet.create({
     },
     star: {
     },
-    score: {
-    }
+    ingredientScoreText: {
+        fontSize: 20,
+        color: '#fff',
+        fontFamily: 'NotoSanaTamilLight',
+    },
 })
 
-export default function Star(props){
+function colorScore(score){
+    if (0 <= score && score <= 4) {
+        return '#FF4D00'
+    } else if (5 <= score && score <= 7) {
+        return '#FFA21F'
+    } else if (8 <= score && score <= 10) {
+        return '#009E4E'
+    } else {
+        return '#C4C4C4'
+    }
+}
+
+export default function Score(props){
     return(
-        <View style={styles.starArea}>
-            <SvgXml style={styles.star} width="15" height="15" fill={props.fill} xml={star} />
+        <View style={
+            {
+                backgroundColor: colorScore(props.score),
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 100,
+                width: 45,
+                height: 45,
+                marginTop: 10,
+                marginRight: 20
+            }
+        }>
+            <Text style={styles.ingredientScoreText}>
+            {props.score}
+            </Text>
         </View>
     )
 } 

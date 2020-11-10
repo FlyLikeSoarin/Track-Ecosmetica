@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
@@ -22,7 +22,8 @@ export default class BarcodeScannerComponent extends React.Component {
       scannedQRCode: false,
       data: null,
       token: null,
-      fallServer: false
+      fallServer: false,
+      history: [],
     };
   }
 
@@ -47,6 +48,13 @@ export default class BarcodeScannerComponent extends React.Component {
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
+    try{
+      let history = await AsyncStorage.getItem('history');
+      this.setState({history: JSON.parse(history)})
+      //console.log('get history from async in scanner', history)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   getPermissionsAsync = async () => {
@@ -191,6 +199,12 @@ handlerBack() {
             this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
           } 
           else {
+            const oldHistory = (this.state.history==null)?[]:this.state.history;
+            const newHistory = oldHistory.concat([ans]);
+            //console.log('newHistory', newHistory)
+            AsyncStorage.setItem('history', JSON.stringify(newHistory))
+            this.props.route.params.handleCount(newHistory)
+            //this.state.navigation.navigate('Home')
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
           }
         }

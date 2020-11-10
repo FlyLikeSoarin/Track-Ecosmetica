@@ -15,6 +15,5 @@ const styles = StyleSheet.create({
   back: {
       marginLeft: 20,
       marginRight: 20,
-      margin: 10
   }
 })

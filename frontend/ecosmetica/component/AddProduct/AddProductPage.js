@@ -129,47 +129,48 @@ export default class ProductNotFound extends React.Component {
         const token = this.state.token
         const a = this.state.ingredients.split(', ')
         const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
-        //console.log(this.state.url_loaded_photo)
-        await fetch(`${URL}/product/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            body: JSON.stringify({
-                code: this.state.barcode,
-                name: this.state.name,
-                brand_name: this.state.brand,
-                ingredients: array_ingredients,
+        console.log(this.state.url_loaded_photo)
+        if (this.state.url_loaded_photo != '' || this.state.uri === '') {
+            await fetch(`${URL}/product/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify({
+                    code: this.state.barcode,
+                    name: this.state.name,
+                    brand_name: this.state.brand,
+                    ingredients: array_ingredients,
+                    description: '',
+                    img_url: this.state.url_loaded_photo,
+                })
+            })
+                .then((resp) => {
+                    //console.log('submit product')
+                    console.log(resp.status)
+                    return resp.json()
+                })
+                .then((ans) => {
+                    console.log(ans)
+                    let arr = JSON.parse(ans.ingredients)
+                    ans.ingredients = arr
+                    this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode })
+                })
+                .catch((e) => {
+                    console.log(e)
+                    this.setState({ fallServer: true })
+                })
+            this.setState({
+                barcode: '',
+                name: '',
+                brand: '',
+                ingredients: '',
                 description: '',
-                img_url: this.state.url_loaded_photo,
+                url_loaded_photo: '',
+                submited: true
             })
-        })
-            .then((resp) => {
-                //console.log('submit product')
-                //console.log(resp.status)
-                return resp.json()
-            })
-            .then((ans) => {
-                console.log(ans)
-                let arr = JSON.parse(ans.ingredients)
-                ans.ingredients = arr
-                this.state.navigation.navigate('Product', {type: this.state.type, data_: ans, barcode: this.state.barcode})
-            })
-            .catch((e) => {
-                console.log(e)
-                this.setState({fallServer: true})
-            })
-        this.setState({
-            barcode: '',
-            name: '',
-            brand: '',
-            ingredients: '',
-            description: '',
-            url_loaded_photo: '',
-            submited: true
-        })
-
+        }
     }
 
     async pickImage() {
@@ -238,9 +239,9 @@ export default class ProductNotFound extends React.Component {
                         ans_str += ans[i] + ", ";
                     }
                     this.hideAlertDetecting()
-                    setTimeout( () =>this.setState({ 
-                        base64: '', 
-                        uri: '' ,
+                    setTimeout(() => this.setState({
+                        base64: '',
+                        uri: '',
                         ingredients: ans_str
                     }), 500)
                 } else {
@@ -313,7 +314,7 @@ export default class ProductNotFound extends React.Component {
                     style={styles.body}
                 >
                     <View style={styles.imageArea}>
-                        <AddPhotoButton setUrl={this.setUrl} submited={submited}/>
+                        <AddPhotoButton setUrl={this.setUrl} submited={submited} />
                     </View>
                     <View style={styles.bodySroll}>
                         <View style={styles.inputsArea}>
@@ -376,7 +377,7 @@ export default class ProductNotFound extends React.Component {
                 </KeyboardAvoidingView>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.state.navigation.navigate('Home')}>
+                        onPress={() => this.props.navigation.navigate('Home')}>
                         <HomeButton fill='#929292' />
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
@@ -387,7 +388,7 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile')}
+                        onPress={() => this.props.navigation.navigate('Profile', {token: this.state.token})}
                     >
                         <ProfileButton />
                         <Text style={styles.buttonText}>Профиль</Text>
