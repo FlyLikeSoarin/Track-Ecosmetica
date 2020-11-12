@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const EmptyHistory = ({navigation}) => {
+const EmptyHistory = ({navigation, updateHistory}) => {
     React.useEffect(() => {
         async function loadFont() {
           await Font.loadAsync({
@@ -74,7 +74,7 @@ const EmptyHistory = ({navigation}) => {
           <View style={styles.textContainer}>
             <Text style={styles.text}>У вас пока нет отсканированных продуктов</Text>
             <TouchableOpacity style={styles.scanButton}
-              onPress={() => navigation.navigate('Scanner')}
+              onPress={() => navigation.navigate('Scanner', {updateHistory : updateHistory})}
             >
               <Text style={styles.scanButtonText} >Сканировать</Text>
             </TouchableOpacity>

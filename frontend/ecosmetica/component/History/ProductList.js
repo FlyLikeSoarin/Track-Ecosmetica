@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
 
 const URL = 'http://185.148.82.169:8005/';
 
-const ItemList = ({ data, renderItem, isEmpty, navigation }) => {
+const ItemList = ({ data, renderItem, isEmpty, navigation, updateHistory }) => {
   if (isEmpty)
-    return (<EmtyHistory navigation={navigation}/>)
+    return (<EmtyHistory navigation={navigation} updateHistory={updateHistory}/>)
   else
     return (
       <SafeAreaView style={styles.container}>
@@ -203,7 +203,7 @@ export default class ProductList extends React.Component {
   // }
 
   async componentDidMount() {
-    console.log('product list did mount')
+    //console.log('product list did mount')
 
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
@@ -215,7 +215,7 @@ export default class ProductList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('product list updating')
+    //console.log('product list updating')
     if (prevProps.data !== this.props.data) {
       this.setState({
         data: this.props.data,
@@ -230,7 +230,7 @@ export default class ProductList extends React.Component {
   }
 
   render() {
-    console.log('render productlist', this.state.data)
+    //console.log('render productlist', this.state.data)
 
     //if (assetsLoaded) {
       return (
@@ -241,7 +241,8 @@ export default class ProductList extends React.Component {
             data={this.state.data} 
             renderItem={this.renderItem} 
             isEmpty={this.state.isEmptyList}
-            navigation={this.state.navigation} />
+            navigation={this.state.navigation}
+            updateHistory={this.props.updateHistory} />
           </View>
         </View>
       );

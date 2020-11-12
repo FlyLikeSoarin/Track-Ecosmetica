@@ -195,13 +195,13 @@ export default class MainPage extends React.Component {
     console.log('clear history')
     try {
       await AsyncStorage.removeItem('history');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
     }
     this.setState({
       storageHistory: []
     })
-  
+
   }
 
   handleData = async () => {
@@ -301,14 +301,14 @@ export default class MainPage extends React.Component {
     this.setState({ isUpdated: !isUpd })
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log('updating')
+    //console.log('updating')
     /*if (prevState.storageHistory !== this.state.storageHistory) {
       console.log('updated')
     }*/
   }
 
   render() {
-    console.log('render main page', this.state.storageHistory)
+    //console.log('render main page', this.state.storageHistory)
     const { assetsLoaded, storageHistory, showIntroWindows } = this.state;
 
     if (assetsLoaded) {
@@ -333,6 +333,7 @@ export default class MainPage extends React.Component {
                 data={this.state.storageHistory}
                 isUpdated={this.state.isUpdated}
                 handleUpdate={() => this.handleUpdate()}
+                updateHistory={this.updateHistory}
               />
             </View>
 
