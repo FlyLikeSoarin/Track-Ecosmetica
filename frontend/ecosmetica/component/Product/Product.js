@@ -241,7 +241,7 @@ export default class Product extends React.Component {
                                 onPress={() => this.hideReviews()}
                             >
                                 <Text style={styles.tabsText}>
-                                    Ингредиенты
+                                    Ингридиенты
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={{
@@ -298,7 +298,9 @@ export default class Product extends React.Component {
                 </View>
 
                 <View style={styles.bottom}>
-                    <TouchableOpacity style={styles.buttonArea}>
+                    <TouchableOpacity style={styles.buttonArea}
+                    onPress={() => this.props.navigation.navigate('Home')}
+                    >
                         <HomeButton fill='#929292' />
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>

@@ -343,7 +343,8 @@ export default class MainPage extends React.Component {
 
             {/* Footer */}
             <View style={styles.buttonMenuContainer}>
-              <TouchableOpacity style={styles.buttonArea}>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Home')}>
                 <HomeButton fill='#009E4E' />
                 <Text style={styles.buttonTextTarget}>Домой</Text>
               </TouchableOpacity>
