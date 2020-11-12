@@ -322,10 +322,21 @@ export default class Profile extends React.Component {
           console.log('user')
           console.log(ans)
           this.setState({first_name: ans.first_name, last_name: ans.last_name})
-          console.log(this.state.first_name)
+          const username = ans.first_name + ' ' + ans.last_name
+          try {
+            AsyncStorage.removeItem('username');
+          } catch(e) {
+            console.log(e)
+          }
+          try {
+            AsyncStorage.setItem('username', username)
+          } catch(e) {
+            console.log(e)
+          }
         })
     }
   }
+
 
   setToken(token) {
     this.setState({

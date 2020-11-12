@@ -20,6 +20,7 @@ import Heart from '../../assets/svg/heart.svg'
 import ReviewIcon from '../../assets/svg/review.svg'
 import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
+import fillHeart from '../../assets/svg/fill-heart.svg'
 
 import Score from './Score'
 import Back from '../Button/BackButton'
@@ -68,6 +69,8 @@ export default class Product extends React.Component {
             }],
             /*reviews: []*/
             modalVisible: false,
+            username: '',
+            isFavorite: false
         }
 
         this.setReviews = this.setReviews.bind(this)
@@ -95,6 +98,14 @@ export default class Product extends React.Component {
             })
 
         }
+        let username = ''
+        try{
+            username = await AsyncStorage.getItem('username')
+            console.log(username)
+        } catch(a) {
+            console.log(a)
+        }
+        this.setState({ username : username })
 
         /*await fetch(`${URL}/product/review/?code=${this.state.barcode}`, {
              method: 'GET',
@@ -121,7 +132,7 @@ export default class Product extends React.Component {
         let review = {
             text: textReview,
             score: rating,
-            user_name: 'Tanya',
+            user_name: this.state.username,
             date: day + '.' + month + '.' + year,
             likes: 0
         }
@@ -158,12 +169,19 @@ export default class Product extends React.Component {
         })
     }
 
+    addToFavorites() {
+        const prevIsFavoite = this.state.isFavorite
+        this.setState({
+            isFavorite: !prevIsFavoite
+        })
+    }
+
 
     render() {
         let {
             img_url, brand, name,
             total_score, ingredients, reviews,
-            modalVisible, token, barcode } = this.state
+            modalVisible, token, barcode, isFavorite } = this.state
         const user_raiting = 5;
         const number_user_scores = 123;
         if (img_url == "") {
@@ -195,8 +213,11 @@ export default class Product extends React.Component {
                                 <UserRaiting score={user_raiting} number={number_user_scores} />
                             </View>
                             <View style={styles.addToFavoritArea}>
-                                <TouchableOpacity style={styles.addToFavoritesButton}>
-                                    <SvgXml xml={Heart} />
+                                <TouchableOpacity style={styles.addToFavoritesButton}
+                                    onPress={() => this.addToFavorites()}
+                                >   
+                                {!isFavorite && (<SvgXml xml={Heart} />)}
+                                { isFavorite && <SvgXml xml={fillHeart} />}
                                     <Text style={styles.addToFavoritText}>
                                         В избранное
                                     </Text>
@@ -301,7 +322,9 @@ export default class Product extends React.Component {
                 </View>
 
                 <View style={styles.bottom}>
-                    <TouchableOpacity style={styles.buttonArea}>
+                    <TouchableOpacity style={styles.buttonArea}
+                        onPress={() => this.props.navigation.navigate('Home')}
+                    >
                         <HomeButton fill='#929292' />
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
@@ -312,7 +335,7 @@ export default class Product extends React.Component {
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile')}
+                        onPress={() => this.props.navigation.navigate('Profile', {logOut: ()=>{console.log('logout')}, token: this.state.token})}
                     >
                         <ProfileButton />
                         <Text style={styles.buttonText}>Профиль</Text>
@@ -393,7 +416,7 @@ function IngregientBlock({ item }){
             </TouchableOpacity>
             {showInfo && (
                 <View style={{
-                    height: 100,
+                    
                     backgroundColor: colorBackgroundInfo(item[1]),
                     alignSelf: 'stretch',
                     padding: 10,
