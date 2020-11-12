@@ -160,12 +160,15 @@ export default class Product extends React.Component {
 
 
     render() {
-        const {
+        let {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode } = this.state
         const user_raiting = 5;
         const number_user_scores = 123;
+        if (img_url == "") {
+            img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
+        }
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -350,26 +353,64 @@ function colorScore(score) {
     }
 }
 
+function colorBackgroundInfo(score) {
+    if (0 <= score && score <= 4) {
+        return '#FFD5C2'
+    } else if (5 <= score && score <= 7) {
+        return '#FFEDD3'
+    } else if (8 <= score && score <= 10) {
+        return '#E3FFF1'
+    } else {
+        return '#F1F1F1'
+    }
+}
+
+
+function IngregientBlock({ item }){
+    const [showInfo, setShowInfo] = React.useState(false);
+    const description = "some text"
+    return (
+        <View style={styles.wrapIngredientBlock}>
+            <TouchableOpacity style={styles.ingredientBlock}
+                onPress={() => { setShowInfo(!showInfo) }}
+            >
+                <View style={
+                    {
+                        backgroundColor: colorScore(item[1]),
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 100
+                    }
+                }>
+                    <Text style={styles.ingredientScoreText}>
+                        {item[1]}
+                    </Text>
+                </View>
+                <Text style={styles.ingredientText}>
+                    {item[0]}
+                </Text>
+            </TouchableOpacity>
+            {showInfo && (
+                <View style={{
+                    height: 100,
+                    backgroundColor: colorBackgroundInfo(item[1]),
+                    alignSelf: 'stretch',
+                    padding: 10,
+                    marginTop: 5
+                }}>
+                    <Text style={styles.ingredientText}>
+                        {description}
+                    </Text>
+                </View>
+            )}
+        </View>
+    );
+}
+
 const renderItem = ({ item }) => {
     return (
-        <View style={styles.ingredientBlock}>
-            <View style={
-                {
-                    backgroundColor: colorScore(item[1]),
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 100
-                }
-            }>
-                <Text style={styles.ingredientScoreText}>
-                    {item[1]}
-                </Text>
-            </View>
-            <Text style={styles.ingredientText}>
-                {item[0]}
-            </Text>
-        </View>
+        <IngregientBlock item={item}/>
     );
 }
 
@@ -420,7 +461,7 @@ const renderItemReview = ({ item }) => {
                             flexDirection: 'row',
                             justifyContent: 'center',
                         }}
-                        
+
                     >
                         <SvgXml width="20" height="15" xml={LikeIcon} fill={color_like} />
                         <Text style={{
@@ -595,12 +636,23 @@ const styles = StyleSheet.create({
     innerScroll: {
         marginBottom: 100
     },
-    ingredientBlock: {
+    wrapIngredientBlock: {
         borderBottomWidth: 0.5,
         borderColor: '#929292',
         padding: 10,
-        flexDirection: 'row',
+
+        flexDirection: 'column',
         alignItems: 'center',
+    },
+    ingredientBlock: {
+        flexDirection: 'row',
+    },
+    ingredientInfoBlock: {
+        height: 100,
+        backgroundColor: 'yellow',
+        alignSelf: 'stretch',
+        padding: 10,
+        marginTop: 5
     },
     ingredientText: {
         flex: 16,

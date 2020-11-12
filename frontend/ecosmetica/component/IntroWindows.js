@@ -9,10 +9,10 @@ import {
 import { SvgXml } from 'react-native-svg';
 
 import ImageWindow1 from '../assets/svg/intro-window1.svg'
-import SadBoy from '../assets/svg/sed-boy.svg'
+import SadBoy from '../assets/svg/sed-girl.svg'
 import ImageWindow2 from '../assets/svg/intro-window2.svg'
-import ImageWindow3 from '../assets/svg/intro-window3.svg'
-import Logo from '../assets/svg/logo.svg'
+import ImageWindow3 from '../assets/svg/intro-window3_3.svg'
+import Logo from '../assets/svg/logo_1.svg'
 
 
 const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
@@ -34,6 +34,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
     return (
         <View style={styles.body}>
             {showWindow1 && (<View style={styles.container}>
+                <View style={styles.emptyArea} />
                 <View style={styles.imageWrap}>
                     <SvgXml xml={ImageWindow1} />
                 </View>
@@ -73,6 +74,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
             </View>)}
             {showWindow2 && (
                 <View style={styles.container}>
+                    <View style={styles.emptyArea} />
                     <View style={styles.imageWrap}>
                         <SvgXml xml={SadBoy} />
                     </View>
@@ -105,6 +107,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
             )}
             {showWindow3 && (
                 <View style={styles.container}>
+                    <View style={styles.emptyArea} />
                     <View style={styles.imageWrap}>
                         <SvgXml xml={ImageWindow2} />
                     </View>
@@ -138,6 +141,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
             )}
             {showWindow4 && (
                 <View style={styles.container}>
+                    <View style={styles.emptyArea} />
                     <View style={styles.imageWrap}>
                         <SvgXml xml={ImageWindow3} />
                     </View>
@@ -170,6 +174,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
             )}
             {showWindow5 && (
                 <View style={styles.container}>
+                    <View style={styles.emptyArea} />
                     <View style={styles.imageWrap}>
                         <SvgXml xml={Logo} />
                     </View>
@@ -215,13 +220,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'stretch',
     },
+    emptyArea: {
+        flex: 0.5
+    },
     container: {
         flex: 1
     },
     imageWrap: {
         flex: 1,
         alignItems: 'center',
-        paddingTop: 150,
+        justifyContent: 'center'
     },
     textWrap: {
         flex: 1,
