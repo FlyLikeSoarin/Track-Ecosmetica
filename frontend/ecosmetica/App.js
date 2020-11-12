@@ -45,7 +45,7 @@ function Search({ navigation, route }) {
         onPress={() => navigation.navigate('Home')}
       />
       <Button title='logout' onPress={() => route.params.logOut()} />
-      <Button title='update' onPress={() => route.params.handleCount1()} />
+      <Button title='очистить историю' onPress={() => route.params.clearHistory()} />
     </View>
   );
 };

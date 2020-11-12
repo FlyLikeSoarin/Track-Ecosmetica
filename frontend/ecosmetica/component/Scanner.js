@@ -203,7 +203,8 @@ handlerBack() {
             const newHistory = oldHistory.concat([ans]);
             //console.log('newHistory', newHistory)
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
-            this.props.route.params.handleCount(newHistory)
+            console.log(newHistory)
+            this.props.route.params.updateHistory(newHistory)
             //this.state.navigation.navigate('Home')
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
           }

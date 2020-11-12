@@ -212,22 +212,17 @@ export default class ProductList extends React.Component {
    this.initData();
    console.log(this.state.isEmptyList)
    console.log(this.state.data);
-
-    /* Кастомизация хедера */
-    /*this.state.navigation.setOptions({
-      headerShown: false
-    });*/
-    //this.handleData();
   }
-  async componentDidUpdate(prevProps, prevState) {
-    // if (prevState.data !== this.state.data) {
-    //   //this.handleData();
-    //   console.log("update history", this.state.data)
-    // } 
+
+  componentDidUpdate(prevProps, prevState) {
     console.log('product list updating')
-    if (prevState.isUpdated!==this.state.isUpdated) {
-      this.setState({data:this.state.data})
+    if (prevProps.data !== this.props.data) {
+      this.setState({
+        data: this.props.data,
+        isEmptyList: this.props.data.length == 0
+      })
     }
+    //console.log(this.state.data)
   } 
   handleUpdate() {
     let isUpd = this.state.isUpdated
@@ -235,7 +230,7 @@ export default class ProductList extends React.Component {
   }
 
   render() {
-    console.log('productlist', this.state.data)
+    console.log('render productlist', this.state.data)
 
     //if (assetsLoaded) {
       return (

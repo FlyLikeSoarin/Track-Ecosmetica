@@ -181,25 +181,27 @@ export default class MainPage extends React.Component {
     this.logOut = this.logOut.bind(this);
     this.handleData = this.handleData.bind(this);
     //this.initHistory = this.initHistory.bind(this);
-    this.handleCount = this.handleCount.bind(this);
-    this.handleCount1 = this.handleCount1.bind(this)
+    this.updateHistory = this.updateHistory.bind(this);
+    this.clearHistory = this.clearHistory.bind(this)
   }
 
-  handleCount(data) {
-    console.log('handleCount')
-    /*let prevCount = this.state.count;
-    setTimeout( () => {
-      this.setState({count: !prevCount})
-      console.log('sets')
-    }, 500)*/
+  updateHistory(data) {
+    console.log('update histroy')
+    console.log(data)
     this.setState({ storageHistory: data })
   }
 
-  handleCount1() {
-    const prev = this.state.count;
+  async clearHistory() {
+    console.log('clear history')
+    try {
+      await AsyncStorage.removeItem('history');
+    } catch(e) {
+      console.log(e)
+    }
     this.setState({
-      count: !prev
+      storageHistory: []
     })
+  
   }
 
   handleData = async () => {
@@ -235,11 +237,10 @@ export default class MainPage extends React.Component {
 
   async loadHistory() {
     let history = null
-    //await AsyncStorage.removeItem('history');
     try {
       await AsyncStorage.getItem('history').then(
         (resp) => {
-          console.log('getItem'/*,JSON.parse(resp)*/);
+          console.log('getItem');
           history = JSON.parse(resp);
           this.setState({ storageHistory: history });
         }
@@ -247,10 +248,6 @@ export default class MainPage extends React.Component {
     } catch (e) {
       console.log(e)
     }
-    /* if (history!==null){
-       this.setState({storageHistory: history});
-       //console.log('loadStory',this.state.storageHistory);
-     }*/
   }
 
   async componentDidMount() {
@@ -305,15 +302,13 @@ export default class MainPage extends React.Component {
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('updating')
-    console.log('prev count', prevState.count)
-    console.log('CURENT COUNT', this.state.count)
-    if (prevState.count !== this.state.count) {
-      this.loadHistory();
+    /*if (prevState.storageHistory !== this.state.storageHistory) {
       console.log('updated')
-    }
+    }*/
   }
 
   render() {
+    console.log('render main page', this.state.storageHistory)
     const { assetsLoaded, storageHistory, showIntroWindows } = this.state;
 
     if (assetsLoaded) {
@@ -327,7 +322,7 @@ export default class MainPage extends React.Component {
               </View>
               <TouchableOpacity
                 style={styles.searchArea}
-                onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, handleCount1: this.handleCount1 })}>
+                onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, clearHistory: () => this.clearHistory() })}>
                 <SearchButton />
               </TouchableOpacity>
             </View>
@@ -335,7 +330,7 @@ export default class MainPage extends React.Component {
               <ProductList
                 token={this.state.token}
                 navigation={this.state.navigation}
-                data={storageHistory}
+                data={this.state.storageHistory}
                 isUpdated={this.state.isUpdated}
                 handleUpdate={() => this.handleUpdate()}
               />
@@ -348,7 +343,7 @@ export default class MainPage extends React.Component {
                 <Text style={styles.buttonTextTarget}>Домой</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonArea}
-                onPress={() => this.props.navigation.navigate('Scanner', { handleCount: this.handleCount })}
+                onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.updateHistory })}
               >
                 <ScanButton />
                 <Text style={styles.buttonText} >Сканировать</Text>
