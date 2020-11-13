@@ -131,7 +131,32 @@ class ProductRetrieveCreateView(APIView):
         if request.auth is not None:
             add_to_history(product=barcode.product, user=request.user)
         product_serializer = ProductReadSerializer(product)
-        return Response(product_serializer.data)
+        data = product_serializer.data
+
+        try:
+            ingredients = json.loads(data['ingredients'])
+            data['ingredients'] = []
+            for ingredient in ingredients:
+                object = Ingredient.objects.filter(
+                    Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
+                ).first()
+                if object is None:
+                    continue
+                data['ingredients'].append(IngredientReadSerializer(object).data)
+        except:
+            data['ingredients'] = []
+
+        try:
+            if request.auth is None:
+                raise ObjectDoesNotExist()
+            favorite = Favorite.objects.get(user=request.user, product=product)
+            in_favorite = favorite.in_favorite
+        except ObjectDoesNotExist:
+            in_favorite = False
+        finally:
+            data['favorite'] = in_favorite
+
+        return Response(data)
 
 
 class ReviewCreateListView(APIView):
