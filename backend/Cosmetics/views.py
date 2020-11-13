@@ -104,6 +104,7 @@ class ProductRetrieveCreateView(APIView):
             product.brand_name = data['brand_name']
             product.description = data['description']
             product.ingredients = data['ingredients']
+            product.img_url = data['img_url']
             product.save()
             barcode.product=product
             barcode.save()
@@ -112,7 +113,8 @@ class ProductRetrieveCreateView(APIView):
                 name = data['name'],
                 brand_name = data['brand_name'],
                 description = data['description'],
-                ingredients = data['ingredients'])
+                ingredients = data['ingredients'],
+                img_url = data['img_url'])
             barcode = Barcode.objects.create(
                 code=data['code'],
                 code_format=data['code_format'],
