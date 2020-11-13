@@ -78,7 +78,7 @@ export default class ProductNotFound extends React.Component {
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => this.props.navigation.navigate('Profile')}
                     >
-                        <ProfileButton />
+                        <ProfileButton fill='#929292'/>
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
