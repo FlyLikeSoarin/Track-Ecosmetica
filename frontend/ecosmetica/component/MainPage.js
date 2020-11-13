@@ -237,6 +237,7 @@ export default class MainPage extends React.Component {
 
   async loadHistory() {
     let history = null
+    //await AsyncStorage.removeItem('history')
     try {
       await AsyncStorage.getItem('history').then(
         (resp) => {
@@ -252,7 +253,7 @@ export default class MainPage extends React.Component {
 
   async componentDidMount() {
     console.log('main did vount')
-    //AsyncStorage.removeItem('history');
+    AsyncStorage.removeItem('history');
     let token = null
     try {
       token = await AsyncStorage.getItem('token');
