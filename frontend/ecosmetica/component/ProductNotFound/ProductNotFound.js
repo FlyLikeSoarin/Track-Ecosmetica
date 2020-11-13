@@ -50,7 +50,7 @@ export default class ProductNotFound extends React.Component {
                             Штрих-код не найден
                         </Text>
                         <Text style={styles.smallText}>
-                            Помогите нам добавить этот продукт в нашу базу
+                            Добавьте этот продукт в нашу базу, чтобы получить информацию об ингридиентах в его составе
                         </Text>
                     </View>
                     <View style={styles.buttonAddArea}>
@@ -58,7 +58,7 @@ export default class ProductNotFound extends React.Component {
                             <View style={styles.buttonAdd}>
                                 <Text style={styles.buttonAddText}>
                                     Добавить
-                            </Text>
+                                </Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -122,14 +122,14 @@ const styles = StyleSheet.create({
     },
     /* body */
     imageArea: {
-        flex: 1,
+        flex: 1.6,
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
     },
     infoArea: {
-        flex: 1,
+        flex: 1.8,
         padding: 25,
         paddingRight: 80,
         alignItems: 'center'
@@ -143,13 +143,13 @@ const styles = StyleSheet.create({
     bigText: {
         color: '#929292',
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 40,
+        fontSize: 24,
     },
     smallText: {
-        marginTop: 40,
+        marginTop: 20,
         color: '#929292',
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 20,
+        fontSize: 16,
     },
     /**  buttonAddArea **/
     buttonAdd: {
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         justifyContent: 'center',
-        marginLeft: 90,
-        marginRight: 90
+        marginLeft: 60,
+        marginRight: 60
     },
     buttonAddText: {
         color: '#fff',

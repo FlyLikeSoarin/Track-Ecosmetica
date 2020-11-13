@@ -50,6 +50,9 @@ export default class Product extends React.Component {
             total_score: this.props.route.params.data_.total_score,
             ingredients: this.props.route.params.data_.ingredients,
             product: this.props.route.params.data_,
+            isFavorite: this.props.route.params.data_.favorite,
+            userScore: this.props.route.params.data_.user_score,
+            countScores: 0,
 
             showReviews: false,
             colorsTabsPanel: {
@@ -71,7 +74,6 @@ export default class Product extends React.Component {
             /*reviews: []*/
             modalVisible: false,
             username: '',
-            isFavorite: false,
             token: null
         }
 
@@ -227,7 +229,7 @@ export default class Product extends React.Component {
               console.log(ans)
           })
           .catch(() => {
-              console.log("fail get reviews")
+              console.log("fail add to favorite")
           })
     }
 
@@ -249,8 +251,8 @@ export default class Product extends React.Component {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode, isFavorite } = this.state
-        const user_raiting = 5;
-        const number_user_scores = 123;
+        const user_raiting = this.state.userScore;
+        const number_user_scores = this.state.countScores;
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
@@ -474,7 +476,8 @@ function colorBackgroundInfo(score) {
 
 function IngregientBlock({ item }){
     const [showInfo, setShowInfo] = React.useState(false);
-    const description = "some text"
+    const description = item.description;
+    const ingredient_name = item.inci_name;
     return (
         <View style={styles.wrapIngredientBlock}>
             <TouchableOpacity style={styles.ingredientBlock}
@@ -482,7 +485,7 @@ function IngregientBlock({ item }){
             >
                 <View style={
                     {
-                        backgroundColor: colorScore(item[1]),
+                        backgroundColor: '#fff', //colorScore(item[1]),
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -490,23 +493,32 @@ function IngregientBlock({ item }){
                     }
                 }>
                     <Text style={styles.ingredientScoreText}>
-                        {item[1]}
+                        {/*item[1]*/}
                     </Text>
                 </View>
                 <Text style={styles.ingredientText}>
-                    {item[0]}
+                    {ingredient_name}
                 </Text>
             </TouchableOpacity>
             {showInfo && (
                 <View style={{
                     
-                    backgroundColor: colorBackgroundInfo(item[1]),
+                    backgroundColor: '#F1F1F1',//colorBackgroundInfo(item[1]),
                     alignSelf: 'stretch',
                     padding: 10,
                     marginTop: 5
                 }}>
                     <Text style={styles.ingredientText}>
-                        {description}
+                        {item.cosmetics_info_description}
+                    </Text>
+                    <Text style={styles.ingredientText}>
+                        {item.cosmetics_info_scientific_facts}
+                    </Text>
+                    <Text style={styles.ingredientText}>
+                        {item.cosmetics_info_safety_info}
+                    </Text>
+                    <Text style={styles.ingredientText}>
+                        {item.cosmetics_info_resources}
                     </Text>
                 </View>
             )}

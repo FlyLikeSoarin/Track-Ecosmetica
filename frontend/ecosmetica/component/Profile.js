@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
 tabsArea: {
   flexDirection: 'row',
-  height: 50,
+  height: 40,
   //flex: 1,
 },
 ingregients: {
@@ -248,6 +248,29 @@ favouritesWrap:{
 listWrap: {
   flex: 1,
   flexDirection: 'column',
+},
+buttonTextTarget: {
+  color: '#009E4E',
+  fontSize: 10,
+  fontFamily: 'NotoSanaTamilLight',
+  textAlign: 'center',
+  justifyContent: 'center',
+},
+emptyReviewsText: {
+  color: '#979797',
+  fontSize: 18,
+  fontFamily: 'NotoSanaTamilLight',
+},
+wrapEmptyReviewText: {
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 40,
+  //marginTop: 100,
+},
+tabsText: {
+  color: '#4F4F4F',
+  fontFamily: 'NotoSanaTamilLight',
+  fontSize: 12,
 },
 });
 
@@ -289,39 +312,39 @@ export default class Profile extends React.Component {
 
       token: this.props.route.params.token,
       favourites: [
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },
+        // {
+        //   "name": "Aussie aussome volume",
+        //   "brand_name": "Aussie",
+        //   "img_url": 'https://reactjs.org/logo-og.png',
+        //   "description": "",
+        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+        //   "eco_score": 10,
+        //   "safety_score": 10,
+        //   "zoo_score": 2,
+        //   "total_score": 6
+        // },
+        // {
+        //   "name": "Aussie aussome volume",
+        //   "brand_name": "Aussie",
+        //   "img_url": 'https://reactjs.org/logo-og.png',
+        //   "description": "",
+        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+        //   "eco_score": 10,
+        //   "safety_score": 10,
+        //   "zoo_score": 2,
+        //   "total_score": 6
+        // },
+        // {
+        //   "name": "Aussie aussome volume",
+        //   "brand_name": "Aussie",
+        //   "img_url": 'https://reactjs.org/logo-og.png',
+        //   "description": "",
+        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+        //   "eco_score": 10,
+        //   "safety_score": 10,
+        //   "zoo_score": 2,
+        //   "total_score": 6
+        // },
       ],
       isUpdated: false,
       isInputIngsShown: false,
@@ -361,7 +384,7 @@ export default class Profile extends React.Component {
       headerTintColor: '#929292',
       headerTitleStyle: {
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: 18,
         fontFamily: 'NotoSanaTamilLight'
       },
       headerLeft: () => (
@@ -515,7 +538,7 @@ export default class Profile extends React.Component {
   };
 
   render() {
-    const { first_name, last_name, ingridients } = this.state
+    const { first_name, last_name, ingridients, favourites } = this.state
     return (
       <View style={styles.containerScreen}>
         {this.state.token === null && (
@@ -590,13 +613,19 @@ export default class Profile extends React.Component {
               </View>
                 {!this.state.showIngridients && (
                 <View style={styles.ingregients}>
+                  {favourites.length === 0 && (
+                    <View style={styles.wrapEmptyReviewText}>
+                      <Text style={styles.emptyReviewsText}>
+                      Отсканируйте штрих-код продукта, чтобы добавить его в избранное
+                      </Text>
+                    </View>
+                  )}
                   <SafeAreaView style={styles.scroll}>
-                  <FlatList
-                                    data={this.state.favourites}
-                                    renderItem={this.renderItem}
-                                    keyExtractor={(item, index) => { return(item.name+index) }}
-                  />
-                                      
+                    <FlatList
+                      data={favourites}
+                      renderItem={this.renderItem}
+                      keyExtractor={(item, index) => { return(item.name+index) }}
+                    />                   
                   </SafeAreaView>
                 </View>
                 )}
@@ -627,8 +656,6 @@ export default class Profile extends React.Component {
                                 </SafeAreaView>
                             </View>
                         )}
-            
-            {/* </View>                         */}
             </View>
         </View>)}
         {/*FOOTER*/ }
@@ -646,7 +673,7 @@ export default class Profile extends React.Component {
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Profile')}>
             <ProfileButton fill='#009E4E' />
-            <Text style={styles.buttonText}>Профиль</Text>
+            <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>
         </View>
     </View>
