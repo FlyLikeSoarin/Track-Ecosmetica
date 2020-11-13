@@ -390,7 +390,7 @@ export default class ProductNotFound extends React.Component {
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => this.props.navigation.navigate('Profile', {token: this.state.token})}
                     >
-                        <ProfileButton />
+                        <ProfileButton  fill='#929292'/>
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
@@ -506,17 +506,18 @@ const styles = StyleSheet.create({
     title: {
         flex: 1,
         marginTop: 15,
+        marginRight: 20,
         alignItems: "center",
         justifyContent: 'center',
     },
     titleText: {
-        fontSize: 22,
+        fontSize: 16,
         fontFamily: 'NotoSansTamilLight',
         color: '#929292',
     },
     /* body */
     imageArea: {
-        flex: 1,
+        flex: 0.8,
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor: '#929292',
@@ -568,8 +569,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         justifyContent: 'center',
-        marginLeft: 90,
-        marginRight: 90
+        marginLeft: 60,
+        marginRight: 60
     },
     buttonAddText: {
         color: '#fff',
