@@ -160,18 +160,19 @@ export default class ProductList extends React.Component {
   //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
 
   renderItem = ({ item }) => {
-    //let array_ing = JSON.parse(item.ingredients)
+    console.log("//////////////////////////")
+    console.log(item)
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
+        onPress={() => this.props.navigation.navigate('Product', { data_: item.product, barcode: item.barcode })}
       >
         <View>
           <Product
-            title={item.name}
-            key={item.name}
-            image={item.img_url}
-            lable={item.brand_name}
-            metric1={item.total_score} />
+            title={item.product.name}
+            key={item.barcode}
+            image={item.product.img_url}
+            lable={item.product.brand_name}
+            metric1={item.product.total_score} />
         </View>
       </TouchableOpacity>
     )

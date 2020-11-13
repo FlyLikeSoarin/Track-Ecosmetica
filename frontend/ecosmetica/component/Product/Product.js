@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 import Heart from '../../assets/svg/heart.svg'
 import ReviewIcon from '../../assets/svg/review.svg'
@@ -59,18 +60,19 @@ export default class Product extends React.Component {
             },
             reviews: [{
                 review: {
-                    text: 'comment text',
-                    score: 3.5,
-                    user_name: 'Ivan Ivanov',
+                    review: 'comment text',
+                    reting: 3.5,
+                    user: 'Ivan Ivanov',
                     date: '29 нояб. 2020г.',
-                    likes: 123,
+                    //likes: 123,
                 },
                 like_it: true
             }],
             /*reviews: []*/
             modalVisible: false,
             username: '',
-            isFavorite: false
+            isFavorite: false,
+            token: null
         }
 
         this.setReviews = this.setReviews.bind(this)
@@ -107,7 +109,7 @@ export default class Product extends React.Component {
         }
         this.setState({ username : username })
 
-        /*await fetch(`${URL}/product/review/?code=${this.state.barcode}`, {
+        await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
              method: 'GET',
              headers: {'Content-Type': 'application/json'}
            })
@@ -116,34 +118,62 @@ export default class Product extends React.Component {
            })
            .then((ans) => {
                console.log(ans)
+               this.setState({
+                   reviews: ans
+               })
            })
            .catch(() => {
                console.log("fail get reviews")
-           })*/
+           })
 
     }
 
-    setReviews(rating, textReview) {
+    async setReviews(rating, textReview) {
         let day = new Date().getDate()
         let month = new Date().getMonth()
         let year = new Date().getFullYear()
 
         let oldReviews = this.state.reviews
         let review = {
-            text: textReview,
-            score: rating,
-            user_name: this.state.username,
+            review: textReview,
+            reting: rating,
+            user: this.state.username,
             date: day + '.' + month + '.' + year,
-            likes: 0
+            //likes: 0
         }
         console.log(review)
         oldReviews = oldReviews.concat({
             review: review,
-            like_it: false
+            //like_it: false
         })
         this.setState({
             reviews: oldReviews
         })
+        const token = this.state.token
+        console.log(token)
+
+        await fetch(`${URL}/product/review/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            },
+            body: {
+                'title': '',
+                'review': textReview,
+                'rating': rating
+            }
+          })
+          .then((resp) => {
+              console.log(resp.status)
+              return resp.json()
+          })
+          .then((ans) => {
+              console.log(ans)
+          })
+          .catch(() => {
+              console.log("fail get reviews")
+          })
     }
 
     showReviews() {
@@ -169,11 +199,48 @@ export default class Product extends React.Component {
         })
     }
 
-    addToFavorites() {
+    async addToFavorites() {
         const prevIsFavoite = this.state.isFavorite
         this.setState({
             isFavorite: !prevIsFavoite
         })
+        let body = {}
+        if (prevIsFavoite) {
+            body = {
+                in_favorite: false
+            }
+        }
+        console.log('barcode', this.state.barcode)
+        await fetch(`${URL}/product/make_favorite/code=${this.state.barcode}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.state.token}`,
+            },
+            body: body
+          })
+          .then((resp) => {
+              console.log(resp.status)
+              return resp.json()
+          })
+          .then((ans) => {
+              console.log(ans)
+          })
+          .catch(() => {
+              console.log("fail get reviews")
+          })
+    }
+
+    handleAddReview() {
+        if (this.state.token != null) {
+            this.setState({
+                modalVisible: true,
+            })
+        } else {
+            this.setState({
+                showAuthError: true
+            })
+        }
     }
 
 
@@ -225,9 +292,7 @@ export default class Product extends React.Component {
                             </View>
                             <View style={styles.addReviewArea}>
                                 <TouchableOpacity style={styles.addToFavoritesButton}
-                                    onPress={() => this.setState({
-                                        modalVisible: true,
-                                    })}
+                                    onPress={() => this.handleAddReview()}
                                 >
                                     <SvgXml xml={ReviewIcon} />
                                     <Text style={styles.addToFavoritText}>
@@ -342,6 +407,24 @@ export default class Product extends React.Component {
                     </TouchableOpacity>
                 </View>
 
+                <AwesomeAlert
+                    show={this.state.showAuthError}
+                    showProgress={false}
+                    title="Ошибка авторизации"
+                    message="Отзывы могут оставлять только авторизованные пользователи"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="OK"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.setState({
+                            showAuthError: false
+                        })
+                    }}
+                />
+
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -440,22 +523,22 @@ const renderItem = ({ item }) => {
 const renderItemReview = ({ item }) => {
     let color_like = '#676767';
     let background_color = '#fff'
-    if (item.like_it) {
+    /*if (item.like_it) {
         background_color = '#FFA21F'
         color_like = '#fff'
-    }
+    }*/
     return (
         <View style={styles.reviewBlock}>
             <View style={styles.wrapRevewText}>
                 <Text style={styles.textReview}>
-                    {item.review.text}
+                    {item.review.review}
                 </Text>
             </View>
             <View style={styles.bottomReviewBlock}>
                 <StarRating
                     disabled={false}
                     maxStars={5}
-                    rating={item.review.score}
+                    rating={item.review.reting}
                     starSize={10}
                     fullStarColor='#FFA21F'
                     emptyStarColor='#FFA21F'
@@ -465,14 +548,14 @@ const renderItemReview = ({ item }) => {
                         <SvgXml width="30" height="30" xml={profileImageMock} />
                         <View style={styles.nameAndDateArea}>
                             <Text style={styles.userNameText}>
-                                {item.review.user_name}
+                                {item.review.user}
                             </Text>
                             <Text style={styles.dateText}>
                                 {item.review.date}
                             </Text>
                         </View>
                     </View>
-                    <TouchableOpacity
+                    {/*<TouchableOpacity
                         style={{
                             margin: 10,
                             borderWidth: 0.5,
@@ -494,7 +577,7 @@ const renderItemReview = ({ item }) => {
                         }}>
                             {item.review.likes}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>*/}
                 </View>
             </View>
         </View>

@@ -63,32 +63,6 @@ export default class Product extends React.Component {
                 showAlertZeroRating: true
             });
         } else {
-            //console.log(this.state.token)
-            //console.log(this.state.product)
-            token = this.state.token
-            product = this.state.product
-            await fetch(`${URL}/product/review/?product=${product}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                },
-                body: JSON.stringify({
-                    review: this.state.reviewText,
-                    rating: this.state.rating,
-                    title: ''
-                })
-            })
-                .then((resp) => {
-                    status = resp.status
-                    console.log(status)
-                    return resp.json()
-                })
-                .then((ans) => {
-                    console.log(ans)
-                })
-                .catch(() => {
-                })
             this.props.setReviews(this.state.rating, this.state.reviewText)
             this.props.hideModal();
         }

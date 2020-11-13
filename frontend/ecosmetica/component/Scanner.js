@@ -200,10 +200,13 @@ handlerBack() {
           } 
           else {
             const oldHistory = (this.state.history==null)?[]:this.state.history;
-            const newHistory = oldHistory.concat([ans]);
-            //console.log('newHistory', newHistory)
+            const newHistory = oldHistory.concat([{
+              product: ans,
+              barcode: data
+            }]);
+            console.log('newHistory', newHistory)
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
-            console.log(newHistory)
+            //console.log(newHistory)
             this.props.route.params.updateHistory(newHistory)
             //this.state.navigation.navigate('Home')
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});

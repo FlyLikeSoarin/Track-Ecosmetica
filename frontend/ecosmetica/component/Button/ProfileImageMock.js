@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     }
 })
 
+
 export default function ProfileImageMock(){
     return(
         <View style={styles.image}>
