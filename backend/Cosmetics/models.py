@@ -33,6 +33,7 @@ class Product(models.Model):
     zoo_score = models.IntegerField(default=-1)
     total_score = models.IntegerField(default=-1)
     user_score = models.IntegerField(default=-1)
+    review_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -77,6 +78,7 @@ class Review(models.Model):
     title = models.TextField(blank=True)
     review = models.TextField(blank=True)
     rating = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.title} (Rating: {self.rating})'

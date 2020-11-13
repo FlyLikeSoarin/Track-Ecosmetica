@@ -67,18 +67,18 @@ class ProductRetrieveCreateView(APIView):
         product_serializer = ProductReadSerializer(barcode.product)
         data = product_serializer.data
 
-        # try:
-        ingredients = json.loads(data['ingredients'])
-        data['ingredients'] = []
-        for ingredient in ingredients:
-            object = Ingredient.objects.filter(
-                Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
-            ).first()
-            if object is None:
-                continue
-            data['ingredients'].append(IngredientReadSerializer(object).data)
-        # except:
-        #     data['ingredients'] = []
+        try:
+            ingredients = json.loads(data['ingredients'])
+            data['ingredients'] = []
+            for ingredient in ingredients:
+                object = Ingredient.objects.filter(
+                    Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
+                ).first()
+                if object is None:
+                    continue
+                data['ingredients'].append(IngredientReadSerializer(object).data)
+        except:
+            data['ingredients'] = []
 
         try:
             if request.auth is None:
@@ -164,6 +164,7 @@ class ReviewCreateListView(APIView):
 
         scores = Review.objects.filter(product=product).values_list('rating', flat=True)
         product.user_score = sum(scores) / len(scores)
+        product.review_count = len(scores)
         product.save()
 
         return Response(ReviewReadSerializer(review).data)
@@ -172,6 +173,20 @@ class ReviewCreateListView(APIView):
 class FavoriteCreateView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        product_ids = Favorite.objects.filter(user=request.user.id).values_list('product', flat=True)
+        products = Product.objects.filter(name__in=list(product_ids))
+        result = []
+        for product in products:
+            product_serializer = ProductReadSerializer(product)
+            data = product_serializer.data
+            try:
+                data['ingredients'] = json.loads(data['ingredients'])
+            except:
+                pass
+            result.append(data)
+        return Response(result)
 
     def post(self, request):
         if 'code' in request.query_params:
@@ -184,8 +199,8 @@ class FavoriteCreateView(APIView):
         serializer.is_valid(raise_exception=True)
 
         Favorite.objects.update_or_create(
-            product=product.name,
-            user=request.user.id,
+            product=product,
+            user=request.user,
             defaults={
                 'in_favorite': serializer.validated_data['in_favorite']
             }
