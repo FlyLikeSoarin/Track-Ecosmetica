@@ -265,7 +265,7 @@ export default class Product extends React.Component {
                                 onPress={() => this.hideReviews()}
                             >
                                 <Text style={styles.tabsText}>
-                                    Ингредиенты
+                                    Ингридиенты
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={{

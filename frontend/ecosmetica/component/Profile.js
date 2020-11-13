@@ -9,6 +9,7 @@ import {
   FlatList,
   AsyncStorage,
   Dimensions,
+  TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
@@ -19,6 +20,8 @@ import HomeButton from './Button/HomeButton'
 import ScanButton from './Button/ScanButton'
 import ProfileButton from './Button/ProfileButton'
 import BackButton from './Button/BackButton'
+import ProductList from './History/ProductList'
+import Product from './History/Product'
 
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
     flex: 10,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    //backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
   },
   registrButton: {
     backgroundColor: '#009E4E',
@@ -63,7 +66,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSanaTamilLight',
   },
   header: {
-    flex: 0.5,
+    flex: 0.7,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
     justifyContent: 'flex-end',
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    //alignItems: 'center',
   },
   imageWrap: {
     marginVertical: 10,
@@ -203,10 +206,49 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-  test1: {
-    flex: 1,
-    backgroundColor: '#929292'
-  }
+tabsArea: {
+  flexDirection: 'row',
+  height: 50,
+  //flex: 1,
+},
+ingregients: {
+  flex:2,
+  flexDirection:'column',
+  marginTop: 10,
+},
+scroll: {
+    alignItems: 'stretch',
+},
+innerScroll: {
+    marginBottom: 100
+},
+ingredientBlock: {
+    borderBottomWidth: 0.5,
+    borderColor: '#929292',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+},
+ingredientText: {
+    flex: 16,
+    fontFamily: 'NotoSanaTamilLight',
+    fontSize: 15,
+    color: '#676767',
+    paddingLeft: 10
+},
+ingredientScoreText: {
+    fontSize: 15,
+    //color: '#fff',
+    fontFamily: 'NotoSanaTamilLight',
+},
+favouritesWrap:{
+  flex:1,
+  flexDirection: 'column',
+},
+listWrap: {
+  flex: 1,
+  flexDirection: 'column',
+},
 });
 
 
@@ -235,7 +277,54 @@ export default class Profile extends React.Component {
       first_name: 'Имя',
       last_name: 'Фамилия',
 
+      showIngridients: false,
+      ingridients: ['igrd1', 'ingd2', 'ingrd3'],
+
+      colorsTabsPanel: {
+        ingredientsTop: '#009E4E',
+        ingredientsBackground: '#fff',
+        reviewsTop: '#929292',
+        reviewsBackground: '#F1F1F1'
+    },
+
       token: this.props.route.params.token,
+      favourites: [
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
+      ],
+      isUpdated: false,
+      isInputIngsShown: false,
     };
     this.setToken = this.setToken.bind(this);
   }
@@ -288,6 +377,7 @@ export default class Profile extends React.Component {
         </TouchableOpacity>
       )
     });
+    
     setTimeout(() => {
       this.setState({ assetsLoaded: true });
       //console.log('profile')
@@ -334,6 +424,19 @@ export default class Profile extends React.Component {
             console.log(e)
           }
         })
+
+        await fetch(`${URL}product/history/`, {
+          method: 'GET',
+          headers: header
+        })
+          .then((resp) => {
+            console.log(resp.status)
+            return resp.json()
+          })
+          .then((data) => {
+            console.log(data)
+            this.setState({ favourites: data });
+          })
     }
   }
 
@@ -366,8 +469,53 @@ export default class Profile extends React.Component {
     this.state.navigation.navigate('Profile')
   }
 
+  showIngridients() {
+    this.setState({
+      showIngridients: true,
+        colorsTabsPanel: {
+            ingredientsTop: '#929292',
+            ingredientsBackground: '#F1F1F1',
+            reviewsTop: '#009E4E',
+            reviewsBackground: '#fff'
+        }
+    })
+  }
+  hideIngridients() {
+    this.setState({
+      showIngridients: false,
+        colorsTabsPanel: {
+            ingredientsTop: '#009E4E',
+            ingredientsBackground: '#fff',
+            reviewsTop: '#929292',
+            reviewsBackground: '#F1F1F1'
+        }
+    })
+  }
+
+  handleUpdate() {
+    let isUpd = this.state.isUpdated
+    this.setState({ isUpdated: !isUpd })
+  }
+
+  renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        //onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
+      >
+        <View>
+          <Product
+            title={item.name}
+            key={item.name}
+            image={item.img_url}
+            lable={item.brand_name}
+            metric1={item.total_score} />
+        </View>
+      </TouchableOpacity>
+    )
+  };
+
   render() {
-    const { first_name, last_name } = this.state
+    const { first_name, last_name, ingridients } = this.state
     return (
       <View style={styles.containerScreen}>
         {this.state.token === null && (
@@ -402,36 +550,85 @@ export default class Profile extends React.Component {
               </View>
             </View>
             <View style={styles.bodyProfile}>
-              <View style={styles.infoWrap}>
-                {(this.state.bathScore !== '') && (
-                  <View>
-                    <View style={styles.bathScoreWrap}>
-                      <Text style={styles.textScore}>Оценка ванной</Text>
-                      <View style={styles.imageScore}>
-                        <Star width='40' height='40' fill='#009E4E' />
-                        <Text style={styles.textScoreNumber}>{this.state.bathScore}</Text>
-                      </View>
-                    </View>
-                    <ButtonTemplate
-                      title='Оценить заново'
-                      style={styles.buttonAddAfter}
-                      styleText={styles.buttonTextAfter}
-                      onPress={() => this.setState({ bathScore: 9 })} />
-                  </View>)}
-                {(this.state.bathScore == '') &&
-                  <ButtonTemplate
-                    title='Оценить ванную'
-                    style={styles.buttonAddBefore}
-                    styleText={styles.buttonTextBefore}
-                    onPress={() => this.setState({ bathScore: 10 })} />}
+              <View style={styles.tabsArea}>
+                <TouchableOpacity 
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderTopWidth: 3,
+                    borderTopColor: this.state.colorsTabsPanel.ingredientsTop,
+                    backgroundColor: this.state.colorsTabsPanel.ingredientsBackground,
+                    borderBottomRightRadius: 10,
+                    borderBottomWidth: 1,
+                    borderBottomColor: this.state.colorsTabsPanel.ingredientsBackground
+                  }}
+                    onPress={() => this.hideIngridients()}
+                >
+                  <Text style={styles.tabsText}>
+                    Избранное
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderTopWidth: 3,
+                    borderTopColor: this.state.colorsTabsPanel.reviewsTop,
+                    backgroundColor: this.state.colorsTabsPanel.reviewsBackground,
+                    borderBottomLeftRadius: 10,
+                    borderBottomWidth: 1,
+                    borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
+                }}
+                  onPress={() => this.showIngridients()}
+                >
+                  <Text style={styles.tabsText}>
+                    Нежелательные ингридиенты
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.infoWrap}>
-                <ButtonTemplate
-                  title='Исключить ингридиент'
-                  style={styles.buttonAddBefore}
-                  styleText={styles.buttonTextBefore}
-                  onPress={() => this.state.navigation.navigate('AddIngridient')} />
-              </View>
+                {!this.state.showIngridients && (
+                <View style={styles.ingregients}>
+                  <SafeAreaView style={styles.scroll}>
+                  <FlatList
+                                    data={this.state.favourites}
+                                    renderItem={this.renderItem}
+                                    keyExtractor={(item, index) => { return(item.name+index) }}
+                  />
+                                      
+                  </SafeAreaView>
+                </View>
+                )}
+                        {this.state.showIngridients && (
+                            <View style={styles.reviews}>
+                                {ingridients.length === 0 && (
+                                    <View style={styles.wrapEmptyReviewText}>
+                                        <Text style={styles.emptyReviewsText}>
+                                        Нажмите на кнопку, чтобы выбрать нежелательные ингридиенты
+                                        </Text>
+                                    </View>
+                                )}
+                                <SafeAreaView style={styles.scroll}>
+                                    <FlatList
+                                        style={styles.innerScroll}
+                                        data={ingridients}
+                                        key={item => { item.text }}
+                                        renderItem={renderItemIngridient}
+                                    />
+                                  <View style={styles.infoWrap}>
+                                    {this.state.isInputIngsShown&&<TextInput></TextInput>}
+                                    <ButtonTemplate
+                                      title='Исключить ингридиент'
+                                      style={styles.buttonAddBefore}
+                                      styleText={styles.buttonTextBefore}
+                                      onPress={() => this.setState({isInputIngsShown: true})} />
+                                  </View>
+                                </SafeAreaView>
+                            </View>
+                        )}
+            
+            {/* </View>                         */}
             </View>
         </View>)}
         {/*FOOTER*/ }
@@ -455,3 +652,13 @@ export default class Profile extends React.Component {
     </View>
   )}
 }
+
+const renderItemIngridient=({item}) => {
+  return (
+    <View style={styles.ingredientBlock}>
+      <Text style={styles.ingredientText}>
+        {item}
+      </Text>
+    </View>)
+}
+
