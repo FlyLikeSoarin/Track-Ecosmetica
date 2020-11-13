@@ -357,7 +357,7 @@ export default class MainPage extends React.Component {
               <TouchableOpacity style={styles.buttonArea}
                 onPress={() => this.props.navigation.navigate('Profile', { logOut: this.logOut, token: this.state.token })}
               >
-                <ProfileButton />
+                <ProfileButton  fill='#929292'/>
                 <Text style={styles.buttonText}>Профиль</Text>
               </TouchableOpacity>
             </View>

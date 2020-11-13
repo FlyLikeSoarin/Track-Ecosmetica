@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
     imageWrap: {
         flex: 1,
         alignItems: 'center',
-        paddingTop: 150,
+        paddingTop: 85,
     },
     textWrap: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 40,
+        paddingTop: 100,
     },
     textSmallWrap: {
         flexDirection: 'row'
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingRight: 40,
         paddingLeft: 40,
+        paddingVertical: 20,
     },
     beginButton: {
         backgroundColor: '#009E4E',

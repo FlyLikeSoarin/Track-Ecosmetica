@@ -249,6 +249,13 @@ listWrap: {
   flex: 1,
   flexDirection: 'column',
 },
+buttonTextTarget: {
+  color: '#009E4E',
+  fontSize: 10,
+  fontFamily: 'NotoSanaTamilLight',
+  textAlign: 'center',
+  justifyContent: 'center',
+},
 });
 
 
@@ -635,7 +642,7 @@ export default class Profile extends React.Component {
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Profile')}>
             <ProfileButton fill='#009E4E' />
-            <Text style={styles.buttonText}>Профиль</Text>
+            <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>
         </View>
     </View>

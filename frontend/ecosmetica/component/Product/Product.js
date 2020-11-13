@@ -17,6 +17,7 @@ import { SvgXml } from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 
 import Heart from '../../assets/svg/heart.svg'
+//import HeartFill from '../../assets/svg/heart_fill.svg'
 import ReviewIcon from '../../assets/svg/review.svg'
 import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
@@ -369,7 +370,7 @@ const renderItem = ({ item }) => {
                 </Text>
             </View>
             <Text style={styles.ingredientText}>
-                {item[0]}
+                {item[0].toUpperCase()}
             </Text>
         </View>
     );
@@ -477,14 +478,14 @@ const styles = StyleSheet.create({
     },
     /*body*/
     topInfoArea: {
-        flex: 1,
+        flex: 1.2,
         alignItems: 'stretch',
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
     },
     imageAndScore: {
-        flex: 3,
+        flex: 2,
         flexDirection: 'row',
     },
     emptyArea: {
@@ -550,14 +551,14 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 20,
+        fontSize: 14,
         marginLeft: 25,
         color: '#4F4F4F',
         marginTop: 10
     },
     brandText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 14,
+        fontSize: 12,
         marginLeft: 25,
         color: '#606060',
     },
@@ -605,7 +606,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     ingredientText: {
-        flex: 16,
+        flex: 12,
         fontFamily: 'NotoSanaTamilLight',
         fontSize: 15,
         color: '#676767',
