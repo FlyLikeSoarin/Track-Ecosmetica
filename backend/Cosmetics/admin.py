@@ -30,3 +30,4 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('inci_name', 'description')
+    ordering = ('inci_name',)

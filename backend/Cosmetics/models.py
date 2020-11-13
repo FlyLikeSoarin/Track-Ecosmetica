@@ -32,6 +32,7 @@ class Product(models.Model):
     safety_score = models.IntegerField(default=-1)
     zoo_score = models.IntegerField(default=-1)
     total_score = models.IntegerField(default=-1)
+    user_score = models.IntegerField(default=-1)
 
     def __str__(self):
         return self.name
@@ -43,28 +44,29 @@ class Ingredient(models.Model):
     cas_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
     ec_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
     description = models.TextField()
-    restrictions = models.ForeignKey('Cosmetics.Restriction', on_delete=models.SET_NULL, null=True)
-    functions = models.ForeignKey('Cosmetics.Function', on_delete=models.SET_NULL, null=True)
 
+    # CasDNA information
+    cos_dna_url = models.TextField(blank=True)
+    cos_dna_description = models.TextField(blank=True)
+    cos_dna_safety_score = models.CharField(blank=True, max_length=25)
 
-class Function(models.Model):
-    name = models.CharField(max_length=250)
-    description = models.TextField()
+    # CosmeticsInfo information
+    cosmetics_info_url = models.TextField(blank=True)
+    cosmetics_info_scientific_facts = models.TextField(blank=True)
+    cosmetics_info_safety_info = models.TextField(blank=True)
+    cosmetics_info_more_safety_info = models.TextField(blank=True)
+    cosmetics_info_scientific_info = models.TextField(blank=True)
+    cosmetics_info_resources = models.TextField(blank=True)
+    cosmetics_info_description = models.TextField(blank=True)
+    def __str__(self):
+        return [i for i in [self.inci_name, self.inn_name] if i!=''][0]
 
-
-class Restriction(models.Model):
-    name = models.CharField(max_length=250)
-
-
-class Abbreviation(models.Model):
-    pass
 
 
 class History(models.Model):
     product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
     user = models.ForeignKey('Users.User', on_delete=models.CASCADE, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-
     def __str__(self):
         return f'{str(self.user)} viewed {str(self.product)} at {str(self.timestamp)}'
 
@@ -78,3 +80,39 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.title} (Rating: {self.rating})'
+
+class Favorite(models.Model):
+    class Meta:
+        indexes = [models.Index(fields=['user', 'product']),]
+        constraints = [
+            UniqueConstraint(fields=['user', 'product'], name='favorite_unique_user_product')
+        ]
+
+    product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
+    user = models.ForeignKey('Users.User', on_delete=models.CASCADE)
+    in_favorite = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} {} {} to favorite'.format(
+            str(user),
+            'added' if in_favorite else 'not added',
+            str(product),
+        )
+
+# class ReviewLike(models.Model):
+#     class Meta:
+#         indexes = [models.Index(fields=['user', 'review']),]
+#         constraints = [
+#             UniqueConstraint(fields=['user', 'review'], name='review_like_unique_user_review')
+#         ]
+#
+#     review = models.ForeignKey('Cosmetics.Review', on_delete=models.CASCADE)
+#     user = models.ForeignKey('Users.User', on_delete=models.CASCADE)
+#     likes = models.models.BooleanField(default=False)
+#
+#     def __str__(self):
+#         return '{} {} {} to favorite'.format(
+#             str(user),
+#             'liked' if in_favorite else 'not liked',
+#             str(review),
+#         )

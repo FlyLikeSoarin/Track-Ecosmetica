@@ -1,18 +1,21 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import CreateAPIView
 
 from .serializers import BarcodeSerializer, IngredientImageSerializer
 from .serializers import ProductWriteSerializer, ProductReadSerializer
 from .serializers import ReviewWriteSerializer, ReviewReadSerializer
-from .models import Barcode, Product, History, Review, Ingredient
-from .web import get_product_or_fetch, severity_to_score
+from .serializers import IngredientReadSerializer, FavoriteSerializer
+from .models import Barcode, Product, History, Review, Ingredient, Favorite
+from .webscrapers.ewg_scraper import get_product_or_fetch, severity_to_score
 from .analyze_ingredients import process_base64
 from .utils import add_to_history
 
@@ -60,23 +63,33 @@ class ProductRetrieveCreateView(APIView):
             add_to_history(product=barcode.product, user=request.user)
 
         product = barcode.product
-        # ewg_product = get_product_or_fetch(product.name, product.brand_name)
-        # if ewg_product != False:
-        #     product.ingredients = json.dumps(ewg_product['ingredient'])
-        #     product.ingredients = json.dumps(ewg_product['ingredient'])
-        #     product.eco_score = severity_to_score(ewg_product['gauges'][0][1])
-        #     product.safety_score = severity_to_score(ewg_product['gauges'][1][1])
-        #     product.zoo_score = severity_to_score(ewg_product['gauges'][2][1])
-        #     product.total_score = str(11 - int(ewg_product['score']))
-        #     product.img_url = ewg_product['img_uri']
-        #     product.save()
 
         product_serializer = ProductReadSerializer(barcode.product)
         data = product_serializer.data
+
+        # try:
+        ingredients = json.loads(data['ingredients'])
+        data['ingredients'] = []
+        for ingredient in ingredients:
+            object = Ingredient.objects.filter(
+                Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
+            ).first()
+            if object is None:
+                continue
+            data['ingredients'].append(IngredientReadSerializer(object).data)
+        # except:
+        #     data['ingredients'] = []
+
         try:
-            data['ingredients'] = json.loads(data['ingredients'])
-        except:
-            pass
+            if request.auth is None:
+                raise ObjectDoesNotExist()
+            favorite = Favorite.objects.get(user=request.user, product=product)
+            in_favorite = favorite.in_favorite
+        except ObjectDoesNotExist:
+            in_favorite = False
+        finally:
+            data['favorite'] = in_favorite
+
         return Response(data)
 
     def post(self, request):
@@ -90,6 +103,7 @@ class ProductRetrieveCreateView(APIView):
             product.name = data['name']
             product.brand_name = data['brand_name']
             product.description = data['description']
+            product.ingredients = data['ingredients']
             product.save()
             barcode.product=product
             barcode.save()
@@ -107,12 +121,12 @@ class ProductRetrieveCreateView(APIView):
         if 'img_url' in data and data['img_url'] != '':
             product.img_url = data['img_url']
 
-        try:
-            ingredients = json.loads(data['ingredients'])
-            product.ingredients = json.dumps(list(zip(ingredients, [-1] * len(ingredients))))
-        except:
-            raise ValidationError('Ingredients is not a valid JSON')
-        product.save()
+        # try:
+        #     ingredients = json.loads(data['ingredients'])
+        #     product.ingredients = json.dumps(list(zip(ingredients, [-1] * len(ingredients))))
+        # except:
+        #     raise ValidationError('Ingredients is not a valid JSON')
+        # product.save()
 
         if request.auth is not None:
             add_to_history(product=barcode.product, user=request.user)
@@ -146,10 +160,37 @@ class ReviewCreateListView(APIView):
         serializer = ReviewWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
-        review = Review.objects.create(**data, user=request.user, product=product)
+        review, _ = Review.objects.update_or_create(user=request.user, product=product, defaults=data)
 
+        scores = Review.objects.filter(product=product).values_list('rating', flat=True)
+        product.user_score = sum(scores) / len(scores)
+        product.save()
 
         return Response(ReviewReadSerializer(review).data)
+
+
+class FavoriteCreateView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if 'code' in request.query_params:
+            barcode = get_object_or_404(Barcode, code=request.query_params['code'])
+            product = barcode.product
+        elif 'product' in request.query_params:
+            product = get_object_or_404(Product, product=request.query_params['product'])
+
+        serializer = FavoriteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        Favorite.objects.update_or_create(
+            product=product.name,
+            user=request.user.id,
+            defaults={
+                'in_favorite': serializer.validated_data['in_favorite']
+            }
+        )
+        return Response(serializer.validated_data)
 
 
 class AnalyzeIngredientImageView(APIView):
