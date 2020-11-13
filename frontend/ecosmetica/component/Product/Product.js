@@ -52,7 +52,7 @@ export default class Product extends React.Component {
             product: this.props.route.params.data_,
             isFavorite: this.props.route.params.data_.favorite,
             userScore: this.props.route.params.data_.user_score,
-            countScores: 0,
+            countScores: this.props.route.params.data_.review_count,
 
             showReviews: false,
             colorsTabsPanel: {
@@ -61,16 +61,23 @@ export default class Product extends React.Component {
                 reviewsTop: '#929292',
                 reviewsBackground: '#F1F1F1'
             },
-            reviews: [{
-                review: {
-                    review: 'comment text',
-                    reting: 3.5,
-                    user: 'Ivan Ivanov',
-                    date: '29 нояб. 2020г.',
+            reviews: [
+                {
+                    //review: 'comment text',
+                    //rating: 3.5,
+                    //user: 'Ivan Ivanov',
+                    //date: '29 нояб. 2020г.',
                     //likes: 123,
+                    "id": 6,
+                    "product": "Conditioner with hemp oil",
+                    "rating": 3,
+                    "review": "ир",
+                    "timestamp": "2020-11-13T12:24:27.550687Z".slice(0, 11),
+                    "title": "",
+                    "user": "name",
                 },
-                like_it: true
-            }],
+
+            ],
             /*reviews: []*/
             modalVisible: false,
             username: '',
@@ -137,34 +144,44 @@ export default class Product extends React.Component {
 
         let oldReviews = this.state.reviews
         let review = {
-            review: textReview,
-            reting: rating,
-            user: this.state.username,
-            date: day + '.' + month + '.' + year,
-            //likes: 0
+            "id": 0,
+            "product": "",
+            "rating": rating,
+            "review": textReview,
+            "timestamp": year + '-' + month + '-' + day + 'T12:24:27.550687Z', //"2020-11-13T12:24:27.550687Z",
+            "title": "",
+            "user_full_name": this.state.username,
         }
         console.log(review)
-        oldReviews = oldReviews.concat({
-            review: review,
-            //like_it: false
-        })
+        oldReviews = oldReviews.concat([review])
+
+        const old_number_reviews = this.state.countScores;
+        const old_user_score = this.state.userScore;
+        const new_user_score = ((old_user_score * old_number_reviews) + rating) / (old_number_reviews + 1)
         this.setState({
-            reviews: oldReviews
+            reviews: oldReviews,
+            countScores: old_number_reviews + 1,
+            userScore: new_user_score
         })
         const token = this.state.token
         console.log(token)
-
-        await fetch(`${URL}/product/review/`, {
+        console.log(JSON.stringify({
+            title: '',
+            review: textReview,
+            rating: rating
+        }))
+        console.log("barcode", this.state.barcode)
+        await fetch(`${URL}/product/review/?code=${this.state.barcode}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-type': 'application/json',
                 'Authorization': `Token ${token}`,
             },
-            body: {
-                'title': '',
-                'review': textReview,
-                'rating': rating
-            }
+            body: JSON.stringify({
+                title: '',
+                review: textReview,
+                rating: rating
+            })
           })
           .then((resp) => {
               console.log(resp.status)
@@ -213,7 +230,7 @@ export default class Product extends React.Component {
             }
         }
         console.log('barcode', this.state.barcode)
-        await fetch(`${URL}/product/make_favorite/code=${this.state.barcode}`, {
+        await fetch(`${URL}/product/make_favorite/?code=${this.state.barcode}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -247,12 +264,18 @@ export default class Product extends React.Component {
 
 
     render() {
+        console.log("user score", this.state.userScore)
+        console.log("count", this.state.countScores)
         let {
             img_url, brand, name,
             total_score, ingredients, reviews,
-            modalVisible, token, barcode, isFavorite } = this.state
-        const user_raiting = this.state.userScore;
-        const number_user_scores = this.state.countScores;
+            modalVisible, token, barcode, isFavorite, countScores } = this.state
+        let user_raiting = this.state.userScore;
+        if (user_raiting == -1) {
+            user_raiting = 0
+        }
+        const user_scores = this.state.userScore;
+        total_score = 8
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
@@ -279,7 +302,7 @@ export default class Product extends React.Component {
                         </View>
                         <View style={styles.bottomImageArea}>
                             <View style={styles.userRaitingArea}>
-                                <UserRaiting score={user_raiting} number={number_user_scores} />
+                                <UserRaiting score={user_scores} number={countScores} />
                             </View>
                             <View style={styles.addToFavoritArea}>
                                 <TouchableOpacity style={styles.addToFavoritesButton}
@@ -378,7 +401,7 @@ export default class Product extends React.Component {
                                     <FlatList
                                         style={styles.innerScroll}
                                         data={reviews}
-                                        key={item => { item.text }}
+                                        key={item => { item.id }}
                                         renderItem={renderItemReview}
                                     />
                                 </SafeAreaView>
@@ -511,15 +534,15 @@ function IngregientBlock({ item }){
                     <Text style={styles.ingredientText}>
                         {item.cosmetics_info_description}
                     </Text>
-                    <Text style={styles.ingredientText}>
+                    {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_scientific_facts}
-                    </Text>
+            </Text>*/}
                     <Text style={styles.ingredientText}>
                         {item.cosmetics_info_safety_info}
                     </Text>
-                    <Text style={styles.ingredientText}>
+                    {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_resources}
-                    </Text>
+        </Text>*/}
                 </View>
             )}
         </View>
@@ -539,18 +562,20 @@ const renderItemReview = ({ item }) => {
         background_color = '#FFA21F'
         color_like = '#fff'
     }*/
+    let date = item.timestamp;
+    date = date.slice(0, 10)
     return (
         <View style={styles.reviewBlock}>
             <View style={styles.wrapRevewText}>
                 <Text style={styles.textReview}>
-                    {item.review.review}
+                    {item.review}
                 </Text>
             </View>
             <View style={styles.bottomReviewBlock}>
                 <StarRating
                     disabled={false}
                     maxStars={5}
-                    rating={item.review.reting}
+                    rating={item.rating}
                     starSize={10}
                     fullStarColor='#FFA21F'
                     emptyStarColor='#FFA21F'
@@ -560,10 +585,10 @@ const renderItemReview = ({ item }) => {
                         <SvgXml width="30" height="30" xml={profileImageMock} />
                         <View style={styles.nameAndDateArea}>
                             <Text style={styles.userNameText}>
-                                {item.review.user}
+                                {item.user_full_name}
                             </Text>
                             <Text style={styles.dateText}>
-                                {item.review.date}
+                                {date}
                             </Text>
                         </View>
                     </View>

@@ -127,15 +127,17 @@ export default class ProductNotFound extends React.Component {
 
     async handleSubmit() {
         const token = this.state.token
+        
         const a = this.state.ingredients.split(', ')
         const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
         console.log(this.state.url_loaded_photo)
+        let serverCode;
         if (this.state.url_loaded_photo != '' || this.state.uri === '') {
             await fetch(`${URL}/product/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
+                    //'Authorization': `Token ${token}`,
                 },
                 body: JSON.stringify({
                     code: this.state.barcode,
@@ -149,13 +151,18 @@ export default class ProductNotFound extends React.Component {
                 .then((resp) => {
                     //console.log('submit product')
                     console.log(resp.status)
+                    serverCode = resp.status
                     return resp.json()
                 })
                 .then((ans) => {
                     console.log(ans)
-                    let arr = JSON.parse(ans.ingredients)
-                    ans.ingredients = arr
-                    this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode })
+                    if (serverCode >= 200 && serverCode < 300) {
+                        this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode })
+                    } else {
+                        this.setState({
+                            error: true
+                        })
+                    }
                 })
                 .catch((e) => {
                     console.log(e)
@@ -170,6 +177,8 @@ export default class ProductNotFound extends React.Component {
                 url_loaded_photo: '',
                 submited: true
             })
+        } else {
+
         }
     }
 
