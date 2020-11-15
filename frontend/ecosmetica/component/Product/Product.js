@@ -22,6 +22,7 @@ import ReviewIcon from '../../assets/svg/review.svg'
 import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
+//import bookmark from '../../assets/svg/bookmark.svg'
 
 import Score from './Score'
 import Back from '../Button/BackButton'
@@ -427,7 +428,7 @@ export default class Product extends React.Component {
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => this.props.navigation.navigate('Profile', {logOut: ()=>{console.log('logout')}, token: this.state.token})}
                     >
-                        <ProfileButton />
+                        <ProfileButton fill='#929292'/>
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
@@ -659,14 +660,14 @@ const styles = StyleSheet.create({
     },
     /*body*/
     topInfoArea: {
-        flex: 1,
+        flex: 1.2,
         alignItems: 'stretch',
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
     },
     imageAndScore: {
-        flex: 3,
+        flex: 2,
         flexDirection: 'row',
     },
     emptyArea: {
@@ -732,14 +733,14 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 20,
+        fontSize: 14,
         marginLeft: 25,
         color: '#4F4F4F',
         marginTop: 10
     },
     brandText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 14,
+        fontSize: 12,
         marginLeft: 25,
         color: '#606060',
     },
@@ -779,26 +780,15 @@ const styles = StyleSheet.create({
     innerScroll: {
         marginBottom: 100
     },
-    wrapIngredientBlock: {
+    ingredientBlock: {
         borderBottomWidth: 0.5,
         borderColor: '#929292',
         padding: 10,
-
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
     },
-    ingredientBlock: {
-        flexDirection: 'row',
-    },
-    ingredientInfoBlock: {
-        height: 100,
-        backgroundColor: 'yellow',
-        alignSelf: 'stretch',
-        padding: 10,
-        marginTop: 5
-    },
     ingredientText: {
-        flex: 16,
+        flex: 12,
         fontFamily: 'NotoSanaTamilLight',
         fontSize: 15,
         color: '#676767',

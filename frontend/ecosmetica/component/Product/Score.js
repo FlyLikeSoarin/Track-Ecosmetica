@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import * as Font from 'expo-font';
 
-import star from '../../assets/svg/star.svg';
+import bookmark from '../../assets/svg/bookmark.svg';
 
 Font.loadAsync({
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
     ingredientScoreText: {
         fontSize: 20,
-        color: '#fff',
+        color: '#fff',//'#323131',
         fontFamily: 'NotoSanaTamilLight',
     },
 })
@@ -34,6 +34,10 @@ function colorScore(score){
     }
 }
 
+function Bookmark() {
+
+}
+
 export default function Score(props){
     return(
         <View style={
@@ -44,10 +48,11 @@ export default function Score(props){
                 borderRadius: 100,
                 width: 45,
                 height: 45,
-                marginTop: 10,
-                marginRight: 20
+                marginTop: 20,
+                marginRight: 15
             }
         }>
+            {/* <SvgXml xml={bookmark} fill='#C4C4C4'/> */}
             <Text style={styles.ingredientScoreText}>
             {props.score}
             </Text>

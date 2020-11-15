@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 });
 
 const RenderImage = ({image}) => {
-  console.log(image)
+  //console.log(image)
   if (image!=='') return <Image style={styles.image} source={{uri: image}}></Image>
   else return <Image style={styles.image} source={ImageProductMock}></Image>   
 }
