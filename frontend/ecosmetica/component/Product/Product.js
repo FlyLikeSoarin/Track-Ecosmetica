@@ -18,7 +18,8 @@ import StarRating from 'react-native-star-rating';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 import Heart from '../../assets/svg/heart.svg'
-import ReviewIcon from '../../assets/svg/review.svg'
+//import ReviewIcon from '../../assets/svg/review.svg'
+import ReviewIcon from '../../assets/svg/comment-white-oval-bubble.svg'
 import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
@@ -320,7 +321,7 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.handleAddReview()}
                                 >
-                                    <SvgXml xml={ReviewIcon} />
+                                    <SvgXml xml={ReviewIcon} width={18} height={18} fill='#FFA21F'/>
                                     <Text style={styles.addToFavoritText}>
                                         Оставить отзыв
                                     </Text>
@@ -783,14 +784,14 @@ const styles = StyleSheet.create({
     ingredientBlock: {
         borderBottomWidth: 0.5,
         borderColor: '#929292',
-        padding: 10,
+        padding: 6,
         flexDirection: 'row',
         alignItems: 'center',
     },
     ingredientText: {
-        flex: 12,
+        flex: 14,
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 15,
+        fontSize: 12,
         color: '#676767',
         paddingLeft: 10
     },
