@@ -5,9 +5,12 @@ import {
     View, 
     StyleSheet, 
     Image, 
+    ImageBackground
 } from 'react-native';
+import { SvgXml } from 'react-native-svg';
 import ImageProductMock from '../../static/bottleMock.jpg'
 import StarScore from './StarScore'
+import Bookmark from '../../assets/svg/bookmark_6.svg';
   
 const styles = StyleSheet.create({
     product: {
@@ -72,12 +75,52 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
+    metricText: {
+      zIndex: 1,
+    },
+    metricImage: {
+      position: 'absolute',
+      top: -4,
+      left: -14,
+      //backgroundColor: 'red'
+    },
+    scoreWrap: {
+      //backgroundColor: 'green'
+    }
 });
 
 const RenderImage = ({image}) => {
   //console.log(image)
   if (image!=='') return <Image style={styles.image} source={{uri: image}}></Image>
   else return <Image style={styles.image} source={ImageProductMock}></Image>   
+}
+
+function colorScore(score){
+  if (0 <= score && score <= 4) {
+      return '#FF4D00'
+  } else if (5 <= score && score <= 7) {
+      return '#FFA21F'
+  } else if (8 <= score && score <= 10) {
+      return '#009E4E'
+  } else {
+      return '#C4C4C4'
+  }
+}
+
+const ImageScore = ({image, score}) => {
+
+  let localScore = 0
+  if (score>=0) localScore = score
+  return(
+    <View style={styles.scoreWrap}>
+      <View style={styles.metricImage}>
+        <SvgXml xml={image} width={40} height={40} fill={colorScore(score)}/>
+      </View>
+      <View style={styles.metricText}>
+        <Text style={{color: '#323131'}}>{localScore}</Text>
+      </View>
+    </View>
+  )
 }
 
 const Product = ({title, image, lable, metric1}) => {
@@ -92,7 +135,7 @@ const Product = ({title, image, lable, metric1}) => {
     loadFont()
   }, []);
 
-    return (
+  return (
         <View style={styles.product}>
           <View style={styles.productImage}>
             <RenderImage image={image}/>
@@ -104,6 +147,7 @@ const Product = ({title, image, lable, metric1}) => {
             </View>          
             {StarScore(metric1, styles.metrics, 20)}
           </View>
+            <ImageScore image={Bookmark} score={metric1}/>
         </View>
     )
 }

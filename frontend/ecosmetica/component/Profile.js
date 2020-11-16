@@ -23,6 +23,8 @@ import BackButton from './Button/BackButton'
 import ProductList from './History/ProductList'
 import Product from './History/Product'
 
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
 
@@ -312,44 +314,73 @@ export default class Profile extends React.Component {
 
       token: this.props.route.params.token,
       favourites: [
-        // {
-        //   "name": "Aussie aussome volume",
-        //   "brand_name": "Aussie",
-        //   "img_url": 'https://reactjs.org/logo-og.png',
-        //   "description": "",
-        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-        //   "eco_score": 10,
-        //   "safety_score": 10,
-        //   "zoo_score": 2,
-        //   "total_score": 6
-        // },
-        // {
-        //   "name": "Aussie aussome volume",
-        //   "brand_name": "Aussie",
-        //   "img_url": 'https://reactjs.org/logo-og.png',
-        //   "description": "",
-        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-        //   "eco_score": 10,
-        //   "safety_score": 10,
-        //   "zoo_score": 2,
-        //   "total_score": 6
-        // },
-        // {
-        //   "name": "Aussie aussome volume",
-        //   "brand_name": "Aussie",
-        //   "img_url": 'https://reactjs.org/logo-og.png',
-        //   "description": "",
-        //   "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-        //   "eco_score": 10,
-        //   "safety_score": 10,
-        //   "zoo_score": 2,
-        //   "total_score": 6
-        // },
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
+        {
+          "name": "Aussie aussome volume",
+          "brand_name": "Aussie",
+          "img_url": 'https://reactjs.org/logo-og.png',
+          "description": "",
+          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+          "eco_score": 10,
+          "safety_score": 10,
+          "zoo_score": 2,
+          "total_score": 6
+        },
       ],
       isUpdated: false,
       isInputIngsShown: false,
     };
     this.setToken = this.setToken.bind(this);
+  }
+
+  handleData = async () => {
+    await fetch(`${URL}product/history/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      },
+    })
+      .then((resp) => {
+        console.log(resp.status)
+        return resp.json()
+      })
+      .then((data) => {
+        console.log(data)
+        if (data.length !== 0) {
+          this.setState({
+            isEmptyList: false
+          });
+        }
+        this.setState({ favourites: data });
+      })
+    // .then((data) => {
+
+    // })
+    // this.setState({ isDataLoaded: true });
+    //this.initHistory();
+    setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
   async componentDidMount() {
@@ -373,6 +404,25 @@ export default class Profile extends React.Component {
       })
 
     }
+
+    // await fetch(`${URL}product/history/`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Token ${this.state.token}`,
+    //   },
+    // })
+    //   .then((resp) => {
+    //     console.log(resp.status)
+    //     return resp.json()
+    //   })
+    //   .then((data) => {
+    //     console.log(data)
+    //     this.setState({ favourites: data });
+    //   })
+    //   .catch(e=>
+    //     console.log('profile catch', e))
+    this.handleData();
 
     this.state.navigation.setOptions({
       headerTitle: 'Профиль',
@@ -447,19 +497,10 @@ export default class Profile extends React.Component {
             console.log(e)
           }
         })
+        .catch(e=>console.log(e))
 
-        await fetch(`${URL}product/history/`, {
-          method: 'GET',
-          headers: header
-        })
-          .then((resp) => {
-            console.log(resp.status)
-            return resp.json()
-          })
-          .then((data) => {
-            console.log(data)
-            this.setState({ favourites: data });
-          })
+
+          
     }
   }
 

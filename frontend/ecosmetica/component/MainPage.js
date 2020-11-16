@@ -267,6 +267,7 @@ export default class MainPage extends React.Component {
     }
 
     await this.loadHistory();
+    this.handleData();
     //   /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
