@@ -5,12 +5,14 @@ import {
     View, 
     StyleSheet, 
     Image, 
-    ImageBackground
+    TouchableOpacity
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import ImageProductMock from '../../static/bottleMock.jpg'
 import StarScore from './StarScore'
 import Bookmark from '../../assets/svg/bookmark_6.svg';
+import Heart from '../../assets/svg/heart.svg'
+import fillHeart from '../../assets/svg/fill-heart.svg'
   
 const styles = StyleSheet.create({
     product: {
@@ -77,16 +79,30 @@ const styles = StyleSheet.create({
     },
     metricText: {
       zIndex: 1,
+      paddingLeft:6,
     },
     metricImage: {
       position: 'absolute',
-      top: -4,
-      left: -14,
+      top: -6,
+      left: -8,
       //backgroundColor: 'red'
     },
     scoreWrap: {
       //backgroundColor: 'green'
-    }
+    },
+    addToFavoritesButton: {
+      backgroundColor: 'white',
+      flexDirection: 'row',
+      //justifyContent: 'center',
+      alignItems: 'center'
+  },
+  addToFavoritText: {
+    color: '#FFA21F',
+    fontSize: 14,
+    padding: 16,
+    fontFamily: 'NotoSanaTamilLight',
+    fontWeight: 'bold'
+},
 });
 
 const RenderImage = ({image}) => {
@@ -123,7 +139,39 @@ const ImageScore = ({image, score}) => {
   )
 }
 
-const Product = ({title, image, lable, metric1}) => {
+const addToFavorites = async ({barcode, favorite, token}) => {
+  const prevIsFavoite = favorite
+  //const isFavorite = !prevIsFavoite
+  // this.setState({
+  //     isFavorite: !prevIsFavoite
+  // })
+  let body = {}
+  if (prevIsFavoite) {
+      body = {
+          in_favorite: false
+      }
+  }
+  await fetch(`${URL}/product/make_favorite/?code=${barcode}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+      },
+      body: body
+    })
+    .then((resp) => {
+        console.log(resp.status)
+        return resp.json()
+    })
+    .then((ans) => {
+        console.log(ans)
+    })
+    .catch(() => {
+        console.log("fail add to favorite")
+    })
+}
+
+const Product = ({title, image, lable, metric1, favorite, barcode, isAddFovoriteShown}) => {
 
   React.useEffect(() => {
     async function loadFont() {
@@ -145,9 +193,21 @@ const Product = ({title, image, lable, metric1}) => {
               <Text style={styles.titleText}>{title}</Text> 
               <Text style={styles.lableText}>{lable}</Text>
             </View>          
-            {StarScore(metric1, styles.metrics, 20)}
+            {/* {StarScore(metric1, styles.metrics, 20)} */}
+            {isAddFovoriteShown&&(
+              <TouchableOpacity style={styles.addToFavoritesButton}
+                onPress={() => addToFavorites(barcode, favorite, token)}
+              >   
+                {!favorite && (<SvgXml xml={Heart} width={26} height={26}/>)}
+                { favorite && <SvgXml xml={fillHeart} width={26} height={26}/>}
+                <Text style={styles.addToFavoritText}>
+                Добавить в избранное
+                </Text>
+            </TouchableOpacity>)}
           </View>
+          <View style={{flex: 0.3}}>
             <ImageScore image={Bookmark} score={metric1}/>
+          </View>
         </View>
     )
 }

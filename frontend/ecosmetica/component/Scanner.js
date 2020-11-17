@@ -200,10 +200,19 @@ handlerBack() {
           } 
           else {
             const oldHistory = (this.state.history==null)?[]:this.state.history;
-            const newHistory = oldHistory.concat([{
+            const newProduct = [{
               product: ans,
               barcode: data
-            }]);
+            }];
+            let isDubbled=false;
+            for (let i=0; i<oldHistory.length;i++) {
+                if (newProduct[0]===oldHistory[i]) {
+                  isDubbled=true;
+                  //break;
+                }
+            }
+            let newHistory=oldHistory;
+            if (!isDubbled) newHistory = newProduct.concat(oldHistory);
             console.log('newHistory', newHistory)
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
             //console.log(newHistory)
