@@ -4,16 +4,18 @@ import {
     Text,
     View,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
-import ImageWindow1 from '../assets/svg/intro-window1.svg'
+import ImageWindow1 from '../assets/svg/intro-window1_1.svg'
 import SadBoy from '../assets/svg/sed-girl.svg'
 import ImageWindow2 from '../assets/svg/intro-window2.svg'
 import ImageWindow3 from '../assets/svg/intro-window3_3.svg'
-import Logo from '../assets/svg/logo_1.svg'
+import Logo from '../assets/svg/logo.svg'
 
+var width = Dimensions.get('window').width;
 
 const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
     React.useEffect(() => {
@@ -36,7 +38,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
             {showWindow1 && (<View style={styles.container}>
                 <View style={styles.emptyArea} />
                 <View style={styles.imageWrap}>
-                    <SvgXml xml={ImageWindow1} />
+                    <SvgXml xml={ImageWindow1} width={width - 60} />
                 </View>
                 <View style={styles.textWrap}>
                     <View style={styles.textSmallWrap}>
@@ -81,7 +83,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
                     <View style={styles.textWrap}>
                         <Text style={styles.textInfo}>
                             Узнайте, как влияют на организм
-                            ингредиенты,входящие в состав вашей
+                            ингредиенты, входящие в состав вашей
                             косметики или средства гигиены
                     </Text>
                     </View>
@@ -189,6 +191,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
                         <TouchableOpacity style={styles.beginButton}
                             onPress={() => {
                                 setShowWindow5(false)
+                                hideIntroWindows()
                                 navigation.navigate('Registr', {setToken: setToken})
                             }}
                         >
@@ -203,7 +206,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
                             }}
                         >
                             <Text style={styles.howItWorcksText}>
-                                Продлжить без регистрации
+                                Продолжить без регистрации
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -235,7 +238,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 100,
+        paddingRight: 30,
+        paddingLeft: 30,
     },
     textSmallWrap: {
         flexDirection: 'row'

@@ -6,6 +6,9 @@ import {
   View, 
   StyleSheet, 
 } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+
+import Logo from '../assets/svg/logo.svg'
 
 const LoadingScreen = ({navigation}) => {
 
@@ -19,12 +22,7 @@ const LoadingScreen = ({navigation}) => {
     }, [navigation])
     return(
         <View style={styles.body}>
-            <View style={styles.bigTextWrap}>
-              <Text style={styles.bigTextStart}>Eco</Text>
-              <Text style={styles.bigTextEnd}>smetica</Text>
-            </View>
-            <View style={styles.textFakeWrap}>
-            </View>
+            <SvgXml xml={Logo} />
         </View>
     )
 }

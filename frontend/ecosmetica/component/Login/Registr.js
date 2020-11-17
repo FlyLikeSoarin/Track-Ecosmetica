@@ -10,10 +10,12 @@ import {
     StatusBar,
     ActivityIndicator,
     AsyncStorage,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    SafeAreaView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
 import AwesomeAlert from 'react-native-awesome-alerts';
+import InputScrollView from 'react-native-input-scroll-view'
 
 /*Buttons*/
 import BackButton from '../Button/BackButton'
@@ -39,7 +41,8 @@ export default class Registr extends React.Component {
             fallServer: false,
             userExist: false,
             icon: 'ios-eye-off',
-            secure: true
+            secure: true,
+            showLengthAlert: false,
         };
 
         this.handlerEmail = this.handlerEmail.bind(this)
@@ -73,9 +76,9 @@ export default class Registr extends React.Component {
                 fontFamily: 'NotoSanaTamilLight'
             },
             headerLeft: () => (
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.buttonBack}
-                    onPress={() => this.state.navigation.navigate('Profile')}>
+                    onPress={() => this.state.navigation.navigate('Home')}>
                     <BackButton />
                 </TouchableOpacity>
             ),
@@ -117,7 +120,7 @@ export default class Registr extends React.Component {
     async handlerRegister() {
         var success = false
         var token = null
-        if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password) {
+        if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password && this.state.password.length >= 5) {
             await fetch(`${URL}/auth/`, {
                 method: 'POST',
                 headers: {
@@ -148,6 +151,7 @@ export default class Registr extends React.Component {
                     if (success) {
                         token = ans.Token;
                         //console.log(ans.Token)
+                        this.state.navigation.navigate('Profile', { logOut: ()=>console.log("заглушка выхода на стр регистрации"), token: token })
                         this.setState({
                             email: '',
                             password: '',
@@ -155,15 +159,13 @@ export default class Registr extends React.Component {
                             first_name: '',
                             last_name: '',
                         })
-                        this.state.navigation.navigate('Home')
-
                     } else {
                         console.log('fail')
                     }
                 })
                 .catch((err) => {
                     this.showAlertServer()
-                  }) 
+                })
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);
@@ -171,7 +173,10 @@ export default class Registr extends React.Component {
         } else {
             if (this.state.password !== this.state.repeated_password) {
                 this.showAlertDifferentPasswords();
-            } else {
+            } else if (this.state.password.length < 5){
+                this.showAlertLengthPassword()
+            } 
+            else {
                 this.showAlertSubmitEmpty()
             }
         }
@@ -225,71 +230,82 @@ export default class Registr extends React.Component {
         });
     }
 
+    showAlertLengthPassword = () => {
+        this.setState({
+            showLengthAlert: true
+        })
+    }
+
     render() {
         const { assetsLoaded, submitEmptyField, PasswordsDifferent, fallServer, userExist } = this.state;
 
         if (assetsLoaded) {
 
             return (
-                <View style={styles.container}>
+                <SafeAreaView style={styles.container}>
                     <View style={styles.inputsArea}>
-                        <TextInput style={styles.input}
-                            value={this.state.email}
-                            onChangeText={this.handlerEmail}
-                            placeholder='Email'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                        />
-                        <View style={styles.passwordInput}>
-                            <TextInput style={styles.passwordInputArea}
-                                value={this.state.password}
-                                onChangeText={this.handlerPassword}
-                                placeholder='Password'
+                        <InputScrollView
+                            ref={ref => { this.scrollView = ref }}
+                            onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                            <TextInput style={styles.input}
+                                value={this.state.email}
+                                onChangeText={this.handlerEmail}
+                                placeholder='Email'
+                                placeholderTextColor="#8B8B8B"
+                                autoCapitalize="none"
+                            />
+                            <View style={styles.passwordInput}>
+                                <TextInput style={styles.passwordInputArea}
+                                    value={this.state.password}
+                                    onChangeText={this.handlerPassword}
+                                    placeholder='Пароль'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    secureTextEntry={this.state.secure}
+                                />
+                                <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
+                            </View>
+                            <TextInput style={styles.input}
+                                value={this.state.repeated_password}
+                                onChangeText={this.handlerRepeatedPassword}
+                                placeholder='Повторите пароль'
                                 placeholderTextColor="#8B8B8B"
                                 autoCapitalize="none"
                                 secureTextEntry={this.state.secure}
                             />
-                            <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
-                        </View>
-                        <TextInput style={styles.input}
-                            value={this.state.repeated_password}
-                            onChangeText={this.handlerRepeatedPassword}
-                            placeholder='Repeat Password'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                            secureTextEntry={this.state.secure}
-                        />
-                        <TextInput style={styles.inputName}
-                            value={this.state.first_name}
-                            onChangeText={this.handlerFirstName}
-                            placeholder='Имя'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                        />
-                        <TextInput style={styles.input}
-                            value={this.state.last_name}
-                            onChangeText={this.handlerLastName}
-                            placeholder='Фамилия'
-                            placeholderTextColor="#8B8B8B"
-                            autoCapitalize="none"
-                        />
+                            <TextInput style={styles.inputName}
+                                value={this.state.first_name}
+                                onChangeText={this.handlerFirstName}
+                                placeholder='Имя'
+                                placeholderTextColor="#8B8B8B"
+                                autoCapitalize="none"
+                            />
+                            <TextInput style={styles.input}
+                                value={this.state.last_name}
+                                onChangeText={this.handlerLastName}
+                                placeholder='Фамилия'
+                                placeholderTextColor="#8B8B8B"
+                                autoCapitalize="none"
+                            />
 
-
+                        </InputScrollView>
                     </View>
+                
+
+                        <View style={styles.buttonArea}>
+                            <TouchableOpacity onPress={() => this.handlerRegister()}>
+                                <View style={styles.bottom}>
+                                    <Text style={styles.bottomText}>
+                                        Зарегистрироваться
+                                </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     <KeyboardAvoidingView
                         behavior={Platform.OS == "ios" ? "padding" : "height"}
                         style={styles.buttonKeyboardAvoidArea}
+                        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
                     >
-
-                    <View style={styles.buttonArea}>
-                        <TouchableOpacity onPress={() => this.handlerRegister()}>
-                            <View style={styles.bottom}>
-                                <Text style={styles.bottomText}>
-                                    Зарегистрироваться
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
                     </KeyboardAvoidingView>
 
                     {/* Alerts */}
@@ -353,7 +369,24 @@ export default class Registr extends React.Component {
                             this.hideAlertUserExists();
                         }}
                     />
-                </View >
+                    <AwesomeAlert
+                        show={this.state.showLengthAlert}
+                        showProgress={false}
+                        title="Длина пароля должна составлять не менее 5 символов"
+                        message=""
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={false}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText="OK"
+                        confirmButtonColor="#009E4E"
+                        onConfirmPressed={() => {
+                            this.setState({
+                                showLengthAlert: false
+                            });
+                        }}
+                    />
+                </SafeAreaView >
             );
         }
         else {
@@ -369,7 +402,8 @@ export default class Registr extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#fff'
     },
     inputsArea: {
         flex: 2,
@@ -378,14 +412,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     buttonArea: {
-        flex: 1,
+        flex: 0.2,
         justifyContent: 'flex-end',
         alignItems: 'stretch',
         backgroundColor: '#fff',
-        marginBottom: 67
+        marginBottom: 20
     },
     buttonKeyboardAvoidArea: {
-        flex: 1,
+        //height: 20,
         backgroundColor: '#fff'
     },
     text: {

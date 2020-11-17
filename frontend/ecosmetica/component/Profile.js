@@ -23,6 +23,8 @@ import BackButton from './Button/BackButton'
 import ProductList from './History/ProductList'
 import Product from './History/Product'
 
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
 
@@ -353,6 +355,35 @@ export default class Profile extends React.Component {
     this.setToken = this.setToken.bind(this);
   }
 
+  handleData = async () => {
+    /*await fetch(`${URL}product/history/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      },
+    })
+      .then((resp) => {
+        console.log(resp.status)
+        return resp.json()
+      })
+      .then((data) => {
+        console.log(data)
+        if (data.length !== 0) {
+          this.setState({
+            isEmptyList: false
+          });
+        }
+        this.setState({ favourites: data });
+      })*/
+    // .then((data) => {
+
+    // })
+    // this.setState({ isDataLoaded: true });
+    //this.initHistory();
+    setTimeout(() => this.setState({ assetsLoaded: true }), 500)
+  }
+
   async componentDidMount() {
     console.log('cmponentDodMount')
     console.log(this.state.token)
@@ -372,8 +403,28 @@ export default class Profile extends React.Component {
         token: token,
         iconLogoutColor: '#C4C4C4'
       })
-
     }
+
+    this.loadUserInfo() 
+
+    // await fetch(`${URL}product/history/`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Token ${this.state.token}`,
+    //   },
+    // })
+    //   .then((resp) => {
+    //     console.log(resp.status)
+    //     return resp.json()
+    //   })
+    //   .then((data) => {
+    //     console.log(data)
+    //     this.setState({ favourites: data });
+    //   })
+    //   .catch(e=>
+    //     console.log('profile catch', e))
+    this.handleData();
 
     this.state.navigation.setOptions({
       headerTitle: 'Профиль',
@@ -413,60 +464,47 @@ export default class Profile extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     console.log('profileDidUpdate')
     if (prevState.token !== this.state.token) {
-      let header = null
-      if (this.state.token === null) {
-        header = {
-          'Content-Type': 'application/json',
-        }
-      } else {
-        header = {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${this.state.token}`,
-        }
-      }
-  
-      await fetch(`${URL}/user/`, {
-        method: 'GET',
-        headers: header
-      })
-        .then((resp) => {
-          return resp.json()
-        })
-        .then((ans) => {
-          console.log('user')
-          console.log(ans)
-          this.setState({first_name: ans.first_name, last_name: ans.last_name})
-          const username = ans.first_name + ' ' + ans.last_name
-          try {
-            AsyncStorage.removeItem('username');
-          } catch(e) {
-            console.log(e)
-          }
-          try {
-            AsyncStorage.setItem('username', username)
-          } catch(e) {
-            console.log(e)
-          }
-        })
-
-        await fetch(`${URL}product/history/`, {
-          method: 'GET',
-          headers: header
-        })
-          .then((resp) => {
-            console.log(resp.status)
-            return resp.json()
-          })
-          .then((data) => {
-            console.log(data)
-            if (data.length !== 0) {
-              this.setState({
-                isEmptyList: false
-              });
-            }
-            this.setState({ favourites: data });
-          })
+      this.loadUserInfo() 
     }
+  }
+
+  async loadUserInfo() {
+    let header = null
+    if (this.state.token === null) {
+      header = {
+        'Content-Type': 'application/json',
+      }
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      }
+    }
+
+  await fetch(`${URL}/user/`, {
+    method: 'GET',
+    headers: header
+  })
+    .then((resp) => {
+      return resp.json()
+    })
+    .then((ans) => {
+      console.log('user')
+      console.log(ans)
+      this.setState({first_name: ans.first_name, last_name: ans.last_name})
+      const username = ans.first_name + ' ' + ans.last_name
+      try {
+        AsyncStorage.removeItem('username');
+      } catch(e) {
+        console.log(e)
+      }
+      try {
+        AsyncStorage.setItem('username', username)
+      } catch(e) {
+        console.log(e)
+      }
+    })
+    .catch(e=>console.log(e))
   }
 
 
