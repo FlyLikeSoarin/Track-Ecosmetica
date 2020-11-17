@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
@@ -89,7 +89,7 @@ handlerBack() {
       return <Text>No access to camera</Text>;
     }
     return (
-      <View
+      <SafeAreaView
         style={{
           flex: 1,
           flexDirection: 'column',
@@ -127,7 +127,7 @@ handlerBack() {
                                 this.hideAlertServer();
                             }}
                         />
-      </View>
+      </SafeAreaView>
     );
   }
 

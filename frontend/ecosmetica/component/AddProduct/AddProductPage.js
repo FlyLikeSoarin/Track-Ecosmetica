@@ -10,7 +10,8 @@ import {
     Dimensions,
     AsyncStorage,
     Platform,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    SafeAreaView
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
@@ -127,7 +128,7 @@ export default class ProductNotFound extends React.Component {
 
     async handleSubmit() {
         const token = this.state.token
-        
+
         const a = this.state.ingredients.split(', ')
         const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
         console.log(this.state.url_loaded_photo)
@@ -215,13 +216,21 @@ export default class ProductNotFound extends React.Component {
         let status;
         const token = this.state.token
         //console.log(token)
+        let header = null
+        if (token === null) {
+            header = {
+                'Content-Type': 'application/json',
+            }
+        } else {
+            header = {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        }
         let ans_str = '';
         await fetch(`${URL}/product/analyze_image/`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
+            headers: header,
             body: JSON.stringify({
                 content: base64_photo
             })
@@ -305,7 +314,7 @@ export default class ProductNotFound extends React.Component {
         console.log('ingredients_detecting', ingredients_detecting)
         console.log('text_not_detected', text_not_detected)
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -397,9 +406,9 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile', {token: this.state.token})}
+                        onPress={() => this.props.navigation.navigate('Profile', { token: this.state.token })}
                     >
-                        <ProfileButton  fill='#929292'/>
+                        <ProfileButton fill='#929292' />
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
@@ -472,7 +481,7 @@ export default class ProductNotFound extends React.Component {
                         this.hideAlertNotDetected();
                     }}
                 />
-            </View>
+            </SafeAreaView>
         )
     }
 }

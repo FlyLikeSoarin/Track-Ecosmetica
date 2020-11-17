@@ -8,10 +8,14 @@ const styles = StyleSheet.create({
     }
 })
 
-export default function CrossButton(){
-    return(
+export default function CrossButton(props) {
+    let colorFill = props.fill;
+    if (colorFill === null) {
+        colorFill = '#fff'
+    }
+    return (
         <View style={styles.cross}>
-            <SvgXml width="25" height="25" xml={Cross} />
+            <SvgXml width="25" height="25" xml={Cross} fill={colorFill} />
         </View>
     )
 } 

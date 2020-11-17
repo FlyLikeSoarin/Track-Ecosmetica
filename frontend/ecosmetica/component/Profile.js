@@ -435,7 +435,7 @@ export default class Profile extends React.Component {
       },
       headerTintColor: '#929292',
       headerTitleStyle: {
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         fontSize: 18,
         fontFamily: 'NotoSanaTamilLight'
       },
@@ -584,7 +584,7 @@ export default class Profile extends React.Component {
   render() {
     const { first_name, last_name, ingridients, favourites } = this.state
     return (
-      <View style={styles.containerScreen}>
+      <SafeAreaView style={styles.containerScreen}>
         {this.state.token === null && (
           <View style={styles.body}>
             <View style={styles.productImage}>
@@ -720,7 +720,7 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>
         </View>
-    </View>
+    </SafeAreaView>
   )}
 }
 

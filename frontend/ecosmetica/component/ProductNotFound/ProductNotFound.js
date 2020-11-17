@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import Back from '../Button/BackButton';
 import Balm from './Balm';
@@ -33,7 +33,7 @@ export default class ProductNotFound extends React.Component {
     render() {
         const { type, data } = this.state
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -82,7 +82,7 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }

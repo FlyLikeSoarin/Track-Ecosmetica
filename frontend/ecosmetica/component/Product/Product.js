@@ -34,6 +34,7 @@ import StarScore from '../History/StarScore'
 import UserRaiting from './UserRaiting'
 import ProfileImageMock from '../Button/ProfileImageMock';
 import InputReview from './InputReview'
+import InfoScore from './InfoScore'
 
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005';
@@ -82,11 +83,13 @@ export default class Product extends React.Component {
             ],
             /*reviews: []*/
             modalVisible: false,
+            modalScoreInfoVisible: false,
             username: '',
-            token: null
+            token: null,
         }
 
         this.setReviews = this.setReviews.bind(this)
+        this.hideModalScoreInfo = this.hideModalScoreInfo.bind(this)
     }
 
     async componentDidMount() {
@@ -264,6 +267,12 @@ export default class Product extends React.Component {
         }
     }
 
+    hideModalScoreInfo() {
+        this.setState({
+            modalScoreInfoVisible: false
+        })
+    }
+
 
     render() {
         console.log("user score", this.state.userScore)
@@ -271,7 +280,8 @@ export default class Product extends React.Component {
         let {
             img_url, brand, name,
             total_score, ingredients, reviews,
-            modalVisible, token, barcode, isFavorite, countScores } = this.state
+            modalVisible, token, barcode, isFavorite, countScores,
+            modalScoreInfoVisible } = this.state
         let user_raiting = this.state.userScore;
         if (user_raiting == -1) {
             user_raiting = 0
@@ -282,7 +292,7 @@ export default class Product extends React.Component {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -298,13 +308,15 @@ export default class Product extends React.Component {
                             <View style={styles.imageArea}>
                                 <Image style={styles.image} source={{ uri: `${img_url}` }} />
                             </View>
-                            <View style={styles.scoreArea}>
+                            <TouchableOpacity style={styles.scoreArea}
+                                onPress={() => this.setState({ modalScoreInfoVisible: true })}
+                            > 
                                 <Score score={total_score} />
-                            </View>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.bottomImageArea}>
                             <View style={styles.userRaitingArea}>
-                                <UserRaiting score={user_scores} number={countScores} />
+                                <UserRaiting score={user_raiting} number={countScores} />
                             </View>
                             <View style={styles.addToFavoritArea}>
                                 <TouchableOpacity style={styles.addToFavoritesButton}
@@ -357,7 +369,7 @@ export default class Product extends React.Component {
                                 onPress={() => this.hideReviews()}
                             >
                                 <Text style={styles.tabsText}>
-                                    Ингридиенты
+                                    Ингредиенты
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={{
@@ -469,7 +481,20 @@ export default class Product extends React.Component {
                         setReviews={this.setReviews}
                     />
                 </Modal>
-            </View>
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalScoreInfoVisible}
+                    onRequestClose={() => {
+                        console.log("close")
+                    }}
+                >
+                    <InfoScore hideModalScoreInfo={() => this.setState({
+                        modalScoreInfoVisible: false
+                    })}/>
+                </Modal>
+            </SafeAreaView>
         );
     }
 }
@@ -501,7 +526,10 @@ function colorBackgroundInfo(score) {
 
 function IngregientBlock({ item }){
     const [showInfo, setShowInfo] = React.useState(false);
-    const description = item.description;
+    let description = item.cosmetics_info_description;
+    if (description === "") {
+        description = "Информация отсутствует"
+    }
     const ingredient_name = item.inci_name;
     return (
         <View style={styles.wrapIngredientBlock}>
@@ -534,7 +562,7 @@ function IngregientBlock({ item }){
                     marginTop: 5
                 }}>
                     <Text style={styles.ingredientText}>
-                        {item.cosmetics_info_description}
+                        {description}
                     </Text>
                     {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_scientific_facts}
@@ -680,7 +708,7 @@ const styles = StyleSheet.create({
     },
     scoreArea: {
         flex: 1,
-        flexDirection: 'row-reverse'
+        flexDirection: 'row-reverse',
     },
     bottomImageArea: {
         flex: 1,
@@ -688,7 +716,9 @@ const styles = StyleSheet.create({
         paddingBottom: 5
     },
     userRaitingArea: {
-        flex: 1
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end'
     },
     addToFavoritArea: {
         flex: 1,

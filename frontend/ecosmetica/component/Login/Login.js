@@ -63,8 +63,8 @@ export default class Login extends React.Component {
             },
             headerTintColor: '#929292',
             headerTitleStyle: {
-                fontWeight: 'bold',
-                fontSize: 24,
+                //fontWeight: 'bold',
+                fontSize: 18,
                 fontFamily: 'NotoSanaTamilLight'
             },
             headerLeft: () => (

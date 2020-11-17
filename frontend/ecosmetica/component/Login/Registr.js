@@ -57,32 +57,33 @@ export default class Registr extends React.Component {
         /* Загрузка шрифтов */
         await Font.loadAsync({
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
-        });
+        })
+            .then(() => {
+                /* Кастомизация хедера */
+                this.state.navigation.setOptions({
+                    headerTitle: 'Регистрация',
+                    headerStyle: {
+                        backgroundColor: '#fff',
+                        borderBottomColor: '#929292',
+                        borderBottomWidth: 0.5
+                    },
+                    headerTintColor: '#929292',
+                    headerTitleStyle: {
+                        //fontWeight: 'bold',
+                        fontSize: 18,
+                        fontFamily: 'NotoSanaTamilLight'
+                    },
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            style={styles.buttonBack}
+                            onPress={() => this.state.navigation.navigate('Home')}>
+                            <BackButton />
+                        </TouchableOpacity>
+                    ),
+                });
+            })
 
         this.setState({ assetsLoaded: true });
-
-        /* Кастомизация хедера */
-        this.state.navigation.setOptions({
-            headerTitle: 'Регистрация',
-            headerStyle: {
-                backgroundColor: '#fff',
-                borderBottomColor: '#929292',
-                borderBottomWidth: 0.5
-            },
-            headerTintColor: '#929292',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-                fontSize: 24,
-                fontFamily: 'NotoSanaTamilLight'
-            },
-            headerLeft: () => (
-                <TouchableOpacity
-                    style={styles.buttonBack}
-                    onPress={() => this.state.navigation.navigate('Home')}>
-                    <BackButton />
-                </TouchableOpacity>
-            ),
-        });
     }
 
     changeIcon() {
@@ -151,7 +152,7 @@ export default class Registr extends React.Component {
                     if (success) {
                         token = ans.Token;
                         //console.log(ans.Token)
-                        this.state.navigation.navigate('Profile', { logOut: ()=>console.log("заглушка выхода на стр регистрации"), token: token })
+                        this.state.navigation.navigate('Profile', { logOut: () => console.log("заглушка выхода на стр регистрации"), token: token })
                         this.setState({
                             email: '',
                             password: '',
@@ -173,9 +174,9 @@ export default class Registr extends React.Component {
         } else {
             if (this.state.password !== this.state.repeated_password) {
                 this.showAlertDifferentPasswords();
-            } else if (this.state.password.length < 5){
+            } else if (this.state.password.length < 5) {
                 this.showAlertLengthPassword()
-            } 
+            }
             else {
                 this.showAlertSubmitEmpty()
             }
@@ -290,17 +291,17 @@ export default class Registr extends React.Component {
 
                         </InputScrollView>
                     </View>
-                
 
-                        <View style={styles.buttonArea}>
-                            <TouchableOpacity onPress={() => this.handlerRegister()}>
-                                <View style={styles.bottom}>
-                                    <Text style={styles.bottomText}>
-                                        Зарегистрироваться
+
+                    <View style={styles.buttonArea}>
+                        <TouchableOpacity onPress={() => this.handlerRegister()}>
+                            <View style={styles.bottom}>
+                                <Text style={styles.bottomText}>
+                                    Зарегистрироваться
                                 </Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                     <KeyboardAvoidingView
                         behavior={Platform.OS == "ios" ? "padding" : "height"}
                         style={styles.buttonKeyboardAvoidArea}

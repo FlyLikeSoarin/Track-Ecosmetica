@@ -58,7 +58,7 @@ export default class Product extends React.Component {
     }
 
     async handleSend() {
-        if (this.state.rating === 0) {
+        if (this.state.rating === 0 || this.state.reviewText === '') {
             this.setState({
                 showAlertZeroRating: true
             });
@@ -97,6 +97,7 @@ export default class Product extends React.Component {
                 <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={styles.body}
+                    keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 20}
                 >
                     <View style={styles.ratingArea}>
                         <StarRating
@@ -129,7 +130,7 @@ export default class Product extends React.Component {
                 <AwesomeAlert
                     show={this.state.showAlertZeroRating}
                     title=""
-                    message="Пожалуйста, добавте оценку"
+                    message="Пожалуйста, добавте оценку и отзыв"
                     closeOnTouchOutside={false}
                     closeOnHardwareBackPress={false}
                     showCancelButton={false}
@@ -169,7 +170,8 @@ const styles = StyleSheet.create({
     submitReviewText: {
         color: '#fff',
         fontFamily: 'NotoSanaTamilBold',
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     body: {
         flex: 6,
@@ -184,12 +186,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingLeft: 20,
         paddingRight: 20,
-        paddingTop: 20
+        marginTop: 20,
     },
     inputText: {
         paddingLeft: 20,
         paddingRight: 20,
-        flex: 1
+        paddingTop: 5,
+        flex: 1,
+        textAlignVertical: 'top'
     },
     numberSymbolsArea: {
         flex: 1,
