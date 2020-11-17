@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 export default function UserRaiting(props){
     const score = props.score;
     const number_scores = props.number;
-    console.log(props)
+    //console.log(props)
     
     return(
         <View style={styles.container}>

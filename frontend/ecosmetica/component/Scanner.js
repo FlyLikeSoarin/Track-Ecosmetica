@@ -152,6 +152,7 @@ handlerBack() {
       }
     }
     console.log('scanner')
+    console.log(data)
     await fetch(`${URL}/product/?code=${data}`, {
         method: 'GET',
         headers: header

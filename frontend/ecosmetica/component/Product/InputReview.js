@@ -84,7 +84,7 @@ export default class Product extends React.Component {
                     }}/>
                     <TouchableOpacity style={styles.closeButton}
                         onPress={() => this.props.hideModal()}>
-                        <CrossButton />
+                        <CrossButton fill="#fff"/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.submitButton}
                         onPress={() => this.handleSend()}

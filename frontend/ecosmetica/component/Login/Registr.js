@@ -151,6 +151,7 @@ export default class Registr extends React.Component {
                 .then((ans) => {
                     if (success) {
                         token = ans.Token;
+                        
                         //console.log(ans.Token)
                         this.state.navigation.navigate('Profile', { logOut: () => console.log("заглушка выхода на стр регистрации"), token: token })
                         this.setState({
@@ -170,6 +171,7 @@ export default class Registr extends React.Component {
             if (token !== null) {
                 this.props.route.params.setToken(token)
                 await AsyncStorage.setItem('token', token);
+                //await AsyncStorage.setItem('id_user', id_user)
             }
         } else {
             if (this.state.password !== this.state.repeated_password) {

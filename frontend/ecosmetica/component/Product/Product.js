@@ -86,6 +86,8 @@ export default class Product extends React.Component {
             modalScoreInfoVisible: false,
             username: '',
             token: null,
+            id_user: null,
+            userMakedReview: false
         }
 
         this.setReviews = this.setReviews.bind(this)
@@ -104,7 +106,6 @@ export default class Product extends React.Component {
         let token = null
         try {
             token = await AsyncStorage.getItem('token');
-            console.log('Profile', token)
         } catch (e) {
             console.log(e)
         }
@@ -112,34 +113,67 @@ export default class Product extends React.Component {
             this.setState({
                 token: token,
             })
-
+            this.loadUserData(token)
         }
-        let username = ''
-        try{
-            username = await AsyncStorage.getItem('username')
-            console.log(username)
-        } catch(a) {
-            console.log(a)
-        }
-        this.setState({ username : username })
 
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
-             method: 'GET',
-             headers: {'Content-Type': 'application/json'}
-           })
-           .then((resp) => {
-               return resp.json()
-           })
-           .then((ans) => {
-               console.log(ans)
-               this.setState({
-                   reviews: ans
-               })
-           })
-           .catch(() => {
-               console.log("fail get reviews")
-           })
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then((resp) => {
+                return resp.json()
+            })
+            .then((ans) => {
+                console.log(ans)
+                this.setState({
+                    reviews: ans
+                })
+                this.checkUserMakedReview(ans)
+            })
+            .catch(() => {
+                console.log("fail get reviews")
+            })
 
+    }
+
+    checkUserMakedReview(reviews) {
+        //console.log(reviews)
+        //console.log("чек ревью", this.state.id_user)
+        if (this.state.id_user !== null) {
+            const id_user = this.state.id_user
+            for (var i = 0; i < reviews.length; ++i) {
+                const item = reviews[i]
+                //console.log(item)
+                if (item.user == id_user) {
+                    this.setState({
+                        userMakedReview: true
+                    })
+                }
+            }
+        }
+    }
+
+    async loadUserData(token) {
+        await fetch(`${URL}/user/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            }
+        })
+            .then((resp) => {
+                return resp.json()
+            })
+            .then((ans) => {
+                console.log('user')
+                console.log(ans)
+                const username = ans.first_name + ' ' + ans.last_name
+                this.setState({
+                    username: username,
+                    id_user: ans.id
+                })
+            })
+            .catch(e => console.log(e))
     }
 
     async setReviews(rating, textReview) {
@@ -156,6 +190,7 @@ export default class Product extends React.Component {
             "timestamp": year + '-' + month + '-' + day + 'T12:24:27.550687Z', //"2020-11-13T12:24:27.550687Z",
             "title": "",
             "user_full_name": this.state.username,
+            "user": this.state.id_user
         }
         console.log(review)
         oldReviews = oldReviews.concat([review])
@@ -166,7 +201,8 @@ export default class Product extends React.Component {
         this.setState({
             reviews: oldReviews,
             countScores: old_number_reviews + 1,
-            userScore: new_user_score
+            userScore: new_user_score,
+            userMakedReview: true
         })
         const token = this.state.token
         console.log(token)
@@ -187,17 +223,17 @@ export default class Product extends React.Component {
                 review: textReview,
                 rating: rating
             })
-          })
-          .then((resp) => {
-              console.log(resp.status)
-              return resp.json()
-          })
-          .then((ans) => {
-              console.log(ans)
-          })
-          .catch(() => {
-              console.log("fail get reviews")
-          })
+        })
+            .then((resp) => {
+                console.log(resp.status)
+                return resp.json()
+            })
+            .then((ans) => {
+                console.log(ans)
+            })
+            .catch(() => {
+                console.log("fail get reviews")
+            })
     }
 
     showReviews() {
@@ -242,27 +278,31 @@ export default class Product extends React.Component {
                 'Authorization': `Token ${this.state.token}`,
             },
             body: body
-          })
-          .then((resp) => {
-              console.log(resp.status)
-              return resp.json()
-          })
-          .then((ans) => {
-              console.log(ans)
-          })
-          .catch(() => {
-              console.log("fail add to favorite")
-          })
+        })
+            .then((resp) => {
+                console.log(resp.status)
+                return resp.json()
+            })
+            .then((ans) => {
+                console.log(ans)
+            })
+            .catch(() => {
+                console.log("fail add to favorite")
+            })
     }
 
     handleAddReview() {
-        if (this.state.token != null) {
+        if (this.state.token != null && !this.state.userMakedReview) {
             this.setState({
                 modalVisible: true,
             })
-        } else {
+        } else if (this.state.token === null) {
             this.setState({
                 showAuthError: true
+            })
+        } else {
+            this.setState({
+                showAuthError2: true
             })
         }
     }
@@ -275,8 +315,6 @@ export default class Product extends React.Component {
 
 
     render() {
-        console.log("user score", this.state.userScore)
-        console.log("count", this.state.countScores)
         let {
             img_url, brand, name,
             total_score, ingredients, reviews,
@@ -310,7 +348,7 @@ export default class Product extends React.Component {
                             </View>
                             <TouchableOpacity style={styles.scoreArea}
                                 onPress={() => this.setState({ modalScoreInfoVisible: true })}
-                            > 
+                            >
                                 <Score score={total_score} />
                             </TouchableOpacity>
                         </View>
@@ -321,9 +359,9 @@ export default class Product extends React.Component {
                             <View style={styles.addToFavoritArea}>
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.addToFavorites()}
-                                >   
-                                {!isFavorite && (<SvgXml xml={Heart} />)}
-                                { isFavorite && <SvgXml xml={fillHeart} />}
+                                >
+                                    {!isFavorite && (<SvgXml xml={Heart} />)}
+                                    {isFavorite && <SvgXml xml={fillHeart} />}
                                     <Text style={styles.addToFavoritText}>
                                         В избранное
                                     </Text>
@@ -333,7 +371,7 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.handleAddReview()}
                                 >
-                                    <SvgXml xml={ReviewIcon} width={18} height={18} fill='#FFA21F'/>
+                                    <SvgXml xml={ReviewIcon} width={18} height={18} fill='#FFA21F' />
                                     <Text style={styles.addToFavoritText}>
                                         Оставить отзыв
                                     </Text>
@@ -439,9 +477,9 @@ export default class Product extends React.Component {
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile', {logOut: ()=>{console.log('logout')}, token: this.state.token})}
+                        onPress={() => this.props.navigation.navigate('Profile', { logOut: () => { console.log('logout') }, token: this.state.token })}
                     >
-                        <ProfileButton fill='#929292'/>
+                        <ProfileButton fill='#929292' />
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
@@ -460,6 +498,24 @@ export default class Product extends React.Component {
                     onConfirmPressed={() => {
                         this.setState({
                             showAuthError: false
+                        })
+                    }}
+                />
+
+                <AwesomeAlert
+                    show={this.state.showAuthError2}
+                    showProgress={false}
+                    title="Отзыв уже есть"
+                    message="Отзывы могут оставлять только авторизованные пользователи"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="OK"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.setState({
+                            showAuthError2: false
                         })
                     }}
                 />
@@ -492,7 +548,7 @@ export default class Product extends React.Component {
                 >
                     <InfoScore hideModalScoreInfo={() => this.setState({
                         modalScoreInfoVisible: false
-                    })}/>
+                    })} />
                 </Modal>
             </SafeAreaView>
         );
@@ -524,7 +580,7 @@ function colorBackgroundInfo(score) {
 }
 
 
-function IngregientBlock({ item }){
+function IngregientBlock({ item }) {
     const [showInfo, setShowInfo] = React.useState(false);
     let description = item.cosmetics_info_description;
     if (description === "") {
@@ -555,7 +611,7 @@ function IngregientBlock({ item }){
             </TouchableOpacity>
             {showInfo && (
                 <View style={{
-                    
+
                     backgroundColor: '#F1F1F1',//colorBackgroundInfo(item[1]),
                     alignSelf: 'stretch',
                     padding: 10,
@@ -581,7 +637,7 @@ function IngregientBlock({ item }){
 
 const renderItem = ({ item }) => {
     return (
-        <IngregientBlock item={item}/>
+        <IngregientBlock item={item} />
     );
 }
 

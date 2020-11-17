@@ -4,7 +4,8 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    Image
+    Image,
+    Dimensions
 } from 'react-native';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
@@ -16,6 +17,7 @@ const ALBUM_ID = '275534485'
 const GROUP_ID = '199800692'
 const ACCESS_USER_TOKEN = '0022f51f57789b918c35ca1f6e3853b8ec6f6b79bdfca2b821dde1d21a84f0802620d8f504b508baf6e82'
 
+var width = Dimensions.get('window').width;
 
 export default class AddPhotoButton extends React.Component {
     constructor(props) {

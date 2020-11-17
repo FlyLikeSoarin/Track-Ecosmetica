@@ -438,7 +438,7 @@ export default class ProductNotFound extends React.Component {
                     show={fallServer}
                     showProgress={false}
                     title="Сервер недоступен"
-                    message="Повторите поытку через некоторе время"
+                    message="Повторите попытку через некоторе время"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={false}
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
-        paddingTop: 10,
+        //paddingTop: 10,
     },
     body: {
         flex: 10,
@@ -519,17 +519,17 @@ const styles = StyleSheet.create({
     },
     /* header */
     backButton: {
-        marginTop: 15
+        //marginTop: 15
     },
     title: {
         flex: 1,
-        marginTop: 15,
+        //marginTop: 15,
         marginRight: 20,
         alignItems: "center",
         justifyContent: 'center',
     },
     titleText: {
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: 'NotoSansTamilLight',
         color: '#929292',
     },
