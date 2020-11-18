@@ -85,10 +85,15 @@ class ProductRetrieveCreateView(APIView):
                 raise ObjectDoesNotExist()
             favorite = Favorite.objects.get(user=request.user, product=product)
             in_favorite = favorite.in_favorite
+            is_reviewed = Review.objects.filter(
+                user=request.user, product=product
+            ).exists()
         except ObjectDoesNotExist:
             in_favorite = False
+            is_reviewed = False
         finally:
             data['favorite'] = in_favorite
+            data['is_reviewed'] = is_reviewed
 
         return Response(data)
 
