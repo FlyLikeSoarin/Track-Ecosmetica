@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
  */ 
 export default function UserRaiting(props){
     const score = props.score;
+    console.log("score", score)
     const round_score = Number((score).toFixed(1)); 
     const number_scores = props.number;
     //console.log(props)

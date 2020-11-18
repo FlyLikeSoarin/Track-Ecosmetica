@@ -203,7 +203,11 @@ export default class Product extends React.Component {
             }
             const sum = old_number_reviews * old_user_score - this.state.prevReview.rating
             old_number_reviews -= 1
-            old_user_score = sum / old_number_reviews
+            if (old_number_reviews !== 0){
+                old_user_score = sum / old_number_reviews
+            } else {
+                old_user_score = 0
+            }
         }
         console.log(oldReviews)
 

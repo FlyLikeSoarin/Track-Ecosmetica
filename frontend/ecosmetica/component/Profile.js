@@ -316,7 +316,7 @@ export default class Profile extends React.Component {
 
       token: this.props.route.params.token,
       favourites: [
-        {
+       /* {
           "name": "Aussie aussome volume",
           "brand_name": "Aussie",
           "img_url": 'https://reactjs.org/logo-og.png',
@@ -348,7 +348,7 @@ export default class Profile extends React.Component {
           "safety_score": 10,
           "zoo_score": 2,
           "total_score": 6
-        },
+        },*/
       ],
       isUpdated: false,
       isInputIngsShown: false,
