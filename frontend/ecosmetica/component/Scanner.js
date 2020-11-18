@@ -206,15 +206,16 @@ handlerBack() {
               barcode: data
             }];
             let isDubbled=false;
-            for (let i=0; i<oldHistory.length;i++) {
-                if (newProduct[0]===oldHistory[i]) {
-                  isDubbled=true;
-                  //break;
+            for (let i = 0; i < oldHistory.length; i++) {
+                if (newProduct[0].barcode === oldHistory[i].barcode) {
+                  //isDubbled=true;
+                  oldHistory.splice(i, 1);
+                  break;
                 }
             }
-            let newHistory=oldHistory;
-            if (!isDubbled) newHistory = newProduct.concat(oldHistory);
-            console.log('newHistory', newHistory)
+            let newHistory = newProduct.concat(oldHistory);
+            //if (!isDubbled) newHistory = newProduct.concat(oldHistory);
+            //console.log('newHistory', newHistory)
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
             //console.log(newHistory)
             this.props.route.params.updateHistory(newHistory)
