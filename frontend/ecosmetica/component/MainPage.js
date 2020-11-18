@@ -322,7 +322,7 @@ export default class MainPage extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.title}>
-                <Text style={styles.textSmetica}>История сканирований</Text>
+                <Text style={styles.textSmetica}>История</Text>
               </View>
               <TouchableOpacity
                 style={styles.searchArea}

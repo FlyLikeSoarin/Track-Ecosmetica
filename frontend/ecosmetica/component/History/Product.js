@@ -271,8 +271,8 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
             {!favorite2 && (<SvgXml xml={Heart} width={26} height={26} />)}
             {favorite2 && <SvgXml xml={fillHeart} width={26} height={26} />}
             <Text style={styles.addToFavoritText}>
-              Добавить в избранное
-                </Text>
+              в избранное
+            </Text>
           </TouchableOpacity>)}
       </View>
       <View style={{ flex: 0.3 }}>

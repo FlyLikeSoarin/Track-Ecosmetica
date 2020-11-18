@@ -325,7 +325,7 @@ export default class Product extends React.Component {
             user_raiting = 0
         }
         const user_scores = this.state.userScore;
-        total_score = 8
+        if(total_score<0) total_score = 0;
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
