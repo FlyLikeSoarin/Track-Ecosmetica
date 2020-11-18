@@ -23,7 +23,7 @@ Font.loadAsync({
 const URL = 'http://185.148.82.169:8005';
 
 export default class Product extends React.Component {
-    /*props: hideModal, token, barcode, product, setReviews*/
+    /*props: hideModal, token, barcode, product, setReviews, prevReview*/
     constructor(props) {
         super(props);
         this.state = {
@@ -33,7 +33,8 @@ export default class Product extends React.Component {
             reviewText: '',
             showAlertZeroRating: false,
             barcode: this.props.barcode,
-            product: this.props.product
+            product: this.props.product,
+            prevReview: this.props.prevReview 
         }
 
         this.handleReview = this.handleReview.bind(this)
@@ -68,8 +69,19 @@ export default class Product extends React.Component {
         }
     }
 
+    componentDidMount() {
+        const prevReview = this.state.prevReview
+        if (prevReview !== null) {
+            this.setState({
+                reviewText: prevReview.review,
+                rating: prevReview.rating
+            })
+        }
+    }
+
     render() {
-        const { accssedLength, reviewText } = this.state
+        let { accssedLength, reviewText, prevReview } = this.state
+        
         return (
             <View style={styles.container}>
                 <View style={styles.header}>

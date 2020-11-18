@@ -87,7 +87,8 @@ export default class Product extends React.Component {
             username: '',
             token: null,
             id_user: null,
-            userMakedReview: false
+            userMakedReview: false,
+            prevReview: null
         }
 
         this.setReviews = this.setReviews.bind(this)
@@ -115,6 +116,7 @@ export default class Product extends React.Component {
             })
             this.loadUserData(token)
         }
+        
 
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
@@ -136,6 +138,12 @@ export default class Product extends React.Component {
 
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.id_user != this.state.id_user) {
+            this.checkUserMakedReview(this.state.reviews)
+        }
+    }
+
     checkUserMakedReview(reviews) {
         //console.log(reviews)
         //console.log("чек ревью", this.state.id_user)
@@ -146,7 +154,8 @@ export default class Product extends React.Component {
                 //console.log(item)
                 if (item.user == id_user) {
                     this.setState({
-                        userMakedReview: true
+                        userMakedReview: true,
+                        prevReview: item
                     })
                 }
             }
@@ -182,6 +191,23 @@ export default class Product extends React.Component {
         let year = new Date().getFullYear()
 
         let oldReviews = this.state.reviews
+        //console.log("umr", this.state.userMakedReview)
+        //console.log('prev', this.state.prevReview)
+        let old_number_reviews = this.state.countScores;
+        let old_user_score = this.state.userScore;
+        if (this.state.userMakedReview && this.state.prevReview !== null) {
+            const index = oldReviews.indexOf(this.state.prevReview)
+            console.log("id", index)
+            if (index !== -1) {
+                oldReviews.splice(index, 1)
+            }
+            const sum = old_number_reviews * old_user_score - this.state.prevReview.rating
+            old_number_reviews -= 1
+            old_user_score = sum / old_number_reviews
+        }
+        console.log(oldReviews)
+
+
         let review = {
             "id": 0,
             "product": "",
@@ -192,17 +218,16 @@ export default class Product extends React.Component {
             "user_full_name": this.state.username,
             "user": this.state.id_user
         }
-        console.log(review)
+        //console.log(review)
         oldReviews = oldReviews.concat([review])
 
-        const old_number_reviews = this.state.countScores;
-        const old_user_score = this.state.userScore;
         const new_user_score = ((old_user_score * old_number_reviews) + rating) / (old_number_reviews + 1)
         this.setState({
             reviews: oldReviews,
             countScores: old_number_reviews + 1,
             userScore: new_user_score,
-            userMakedReview: true
+            userMakedReview: true,
+            prevReview: review
         })
         const token = this.state.token
         console.log(token)
@@ -292,17 +317,13 @@ export default class Product extends React.Component {
     }
 
     handleAddReview() {
-        if (this.state.token != null && !this.state.userMakedReview) {
+        if (this.state.token != null) {
             this.setState({
                 modalVisible: true,
             })
-        } else if (this.state.token === null) {
-            this.setState({
-                showAuthError: true
-            })
         } else {
             this.setState({
-                showAuthError2: true
+                showAuthError: true
             })
         }
     }
@@ -319,7 +340,7 @@ export default class Product extends React.Component {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode, isFavorite, countScores,
-            modalScoreInfoVisible } = this.state
+            modalScoreInfoVisible, userMakedReview} = this.state
         let user_raiting = this.state.userScore;
         if (user_raiting == -1) {
             user_raiting = 0
@@ -372,9 +393,12 @@ export default class Product extends React.Component {
                                     onPress={() => this.handleAddReview()}
                                 >
                                     <SvgXml xml={ReviewIcon} width={18} height={18} fill='#FFA21F' />
-                                    <Text style={styles.addToFavoritText}>
+                                    {!userMakedReview && <Text style={styles.addToFavoritText}>
                                         Оставить отзыв
-                                    </Text>
+                                    </Text>}
+                                    {userMakedReview && <Text style={styles.addToFavoritText}>
+                                        Изменить отзыв
+                                    </Text>}
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -535,6 +559,7 @@ export default class Product extends React.Component {
                         token={this.state.token}
                         product={this.state.product}
                         setReviews={this.setReviews}
+                        prevReview={this.state.prevReview}
                     />
                 </Modal>
 

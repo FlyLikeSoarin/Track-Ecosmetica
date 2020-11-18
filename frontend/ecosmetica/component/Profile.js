@@ -381,6 +381,26 @@ export default class Profile extends React.Component {
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
+  async loadFavorites(token) {
+    await fetch(`${URL}/product/make_favorite/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      }
+    })
+    .then((resp) => {
+      console.log(resp.status)
+      return resp.json()
+    })
+    .then((ans) => {
+      console.log(ans)
+      this.setState({
+        favourites: ans
+      })
+    })
+  }
+
   async componentDidMount() {
     console.log('cmponentDodMount')
     console.log(this.state.token)
@@ -400,23 +420,7 @@ export default class Profile extends React.Component {
         token: token,
         iconLogoutColor: '#C4C4C4'
       })
-      await fetch(`${URL}/product/make_favorite/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`,
-        }
-      })
-      .then((resp) => {
-        console.log(resp.status)
-        return resp.json()
-      })
-      .then((ans) => {
-        console.log(ans)
-        this.setState({
-          favourites: ans
-        })
-      })
+      this.loadFavorites(token)
     }
 
     this.loadUserInfo() 
