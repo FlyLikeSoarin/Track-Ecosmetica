@@ -277,7 +277,7 @@ export default class Product extends React.Component {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${this.state.token}`,
             },
-            body: body
+            body: JSON.stringify(body)
         })
             .then((resp) => {
                 console.log(resp.status)

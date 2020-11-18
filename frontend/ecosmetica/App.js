@@ -188,7 +188,7 @@ export default class App extends React.Component {
           <Stack.Screen
             name="Home"
             component={MainPage}
-            options={{transitionSpec:{open:{animation:'timing'}}}}
+            // options={{transitionSpec:{open:{animation:'timing'}}}}
           />
           <Stack.Screen name='Profile' component={Profile}  />
           <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />

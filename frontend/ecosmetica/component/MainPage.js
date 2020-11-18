@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
     color: '#009E4E',
   },
   textSmetica: {
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: 'NotoSanaTamilLight',
-    color: '#000',
+    color: '#676767',
   },
   searchArea: {
     alignItems: "center",
@@ -268,7 +268,7 @@ export default class MainPage extends React.Component {
     }
 
     await this.loadHistory();
-    this.handleData();
+    //sthis.handleData();
     //   /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
@@ -277,9 +277,11 @@ export default class MainPage extends React.Component {
 
     /* Кастомизация хедера */
     this.state.navigation.setOptions({
-      headerShown: false,
+      headerShown: false
     });
-    setTimeout(() => this.setState({ assetsLoaded: true }), 1500);
+    
+    setTimeout(() => {
+      this.setState({ assetsLoaded: true })}, 1500);
   }
 
   setToken(token) {
@@ -302,15 +304,16 @@ export default class MainPage extends React.Component {
     let isUpd = this.state.isUpdated
     this.setState({ isUpdated: !isUpd })
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    //console.log('updating')
-    /*if (prevState.storageHistory !== this.state.storageHistory) {
-      console.log('updated')
+  componentDidUpdate(prevProps, prevState) {
+    /*if (prevState.token !== this.state.token) {
+      this.setState({
+        token: this.state.token
+      })
     }*/
   }
 
   render() {
-    //console.log('render main page', this.state.storageHistory)
+    console.log('render main page', this.state.storageHistory)
     const { assetsLoaded, storageHistory, showIntroWindows } = this.state;
 
     if (assetsLoaded) {
@@ -319,8 +322,7 @@ export default class MainPage extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.title}>
-                <Text style={styles.textEco}>Eco</Text>
-                <Text style={styles.textSmetica}>smetica</Text>
+                <Text style={styles.textSmetica}>История сканирований</Text>
               </View>
               <TouchableOpacity
                 style={styles.searchArea}

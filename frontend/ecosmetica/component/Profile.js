@@ -28,6 +28,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
 
+
 const styles = StyleSheet.create({
   containerScreen: {
     flex: 1,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSanaTamilLight',
   },
   header: {
-    flex: 0.7,
+    flex: 0.6,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
     justifyContent: 'flex-end',
@@ -273,6 +274,7 @@ tabsText: {
   color: '#4F4F4F',
   fontFamily: 'NotoSanaTamilLight',
   fontSize: 12,
+  fontWeight: 'bold'
 },
 });
 
@@ -376,11 +378,6 @@ export default class Profile extends React.Component {
         }
         this.setState({ favourites: data });
       })*/
-    // .then((data) => {
-
-    // })
-    // this.setState({ isDataLoaded: true });
-    //this.initHistory();
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
@@ -402,6 +399,23 @@ export default class Profile extends React.Component {
       this.setState({
         token: token,
         iconLogoutColor: '#C4C4C4'
+      })
+      await fetch(`${URL}/product/make_favorite/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        }
+      })
+      .then((resp) => {
+        console.log(resp.status)
+        return resp.json()
+      })
+      .then((ans) => {
+        console.log(ans)
+        this.setState({
+          favourites: ans
+        })
       })
     }
 
@@ -433,7 +447,7 @@ export default class Profile extends React.Component {
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5
       },
-      headerTintColor: '#929292',
+      headerTintColor: '#676767',
       headerTitleStyle: {
         //fontWeight: 'bold',
         fontSize: 18,
@@ -575,7 +589,8 @@ export default class Profile extends React.Component {
             key={item.name}
             image={item.img_url}
             lable={item.brand_name}
-            metric1={item.total_score} />
+            metric1={item.total_score} 
+            isAddFovoriteShown={false}/>
         </View>
       </TouchableOpacity>
     )

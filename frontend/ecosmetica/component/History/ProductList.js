@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const URL = 'http://185.148.82.169:8005/';
+//const URL = 'http://185.148.82.169:8005/';
 
 const ItemList = ({ data, renderItem, isEmpty, navigation, updateHistory }) => {
   if (isEmpty)
@@ -148,16 +148,9 @@ export default class ProductList extends React.Component {
       isEmptyList: true,
       token: this.props.token,
     }
-    this.initData = this.initData.bind(this)
+    //this.initData = this.initData.bind(this)
   }
 
-  initData = () => {
-    console.log('init', this.state.data.length)
-    this.setState({isEmptyList:(this.state.data.length === 0)})
-  }
-
-
-  //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
 
   renderItem = ({ item }) => {
     console.log("//////////////////////////")
@@ -172,7 +165,12 @@ export default class ProductList extends React.Component {
             key={item.barcode}
             image={item.product.img_url}
             lable={item.product.brand_name}
-            metric1={item.product.total_score} />
+            metric1={item.product.total_score} 
+            favorite={item.product.favorite}
+            barcode={item.barcode}
+            token={this.state.token}
+            isAddFovoriteShown={true}
+            />
         </View>
       </TouchableOpacity>
     )
@@ -209,10 +207,6 @@ export default class ProductList extends React.Component {
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
     });
-
-   this.initData();
-   console.log(this.state.isEmptyList)
-   console.log(this.state.data);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -220,7 +214,8 @@ export default class ProductList extends React.Component {
     if (prevProps.data !== this.props.data) {
       this.setState({
         data: this.props.data,
-        isEmptyList: this.props.data.length == 0
+        isEmptyList: this.props.data.length == 0,
+        token: this.props.token
       })
     }
     //console.log(this.state.data)
@@ -231,7 +226,6 @@ export default class ProductList extends React.Component {
   }
 
   render() {
-    //console.log('render productlist', this.state.data)
 
     //if (assetsLoaded) {
       return (
