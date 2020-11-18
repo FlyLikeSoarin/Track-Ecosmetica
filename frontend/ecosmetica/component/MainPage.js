@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: "center",
+    alignItems: 'flex-end',
     borderBottomColor: '#929292',
     borderBottomWidth: 0.5,
     paddingTop: 10,
@@ -34,8 +34,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: "center",
-    marginLeft: 50
+    //alignItems: "center",
+    marginLeft: 50,
+    marginBottom: 5,
   },
   textEco: {
     fontSize: 24,
@@ -49,12 +50,6 @@ const styles = StyleSheet.create({
   },
   searchArea: {
     alignItems: "center",
-  },
-  headerText: {
-    color: '#ffffff',
-    fontSize: 40,
-    fontFamily: 'NotoSanaTamilLight',
-    textAlign: 'center',
   },
   productImage: {
     flex: 4,
@@ -100,14 +95,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#929292',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     justifyContent: 'center',
   },
   buttonTextTarget: {
     color: '#009E4E',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     justifyContent: 'center',
@@ -116,32 +111,32 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-  registrButton: {
-    backgroundColor: '#009E4E',
-    width: width - 60,
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 10,
-    justifyContent: 'center',
-    margin: 5
-  },
-  logInButton: {
-    backgroundColor: '#E5E5E5',
-    width: width - 60,
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 10,
-    justifyContent: 'center',
-    margin: 5
-  },
-  registrText: {
-    color: '#fff',
-    fontFamily: 'NotoSanaTamilLight',
-  },
-  logInText: {
-    color: '#009E4E',
-    fontFamily: 'NotoSanaTamilLight',
-  },
+  // registrButton: {
+  //   backgroundColor: '#009E4E',
+  //   width: width - 60,
+  //   height: 40,
+  //   alignItems: 'center',
+  //   borderRadius: 10,
+  //   justifyContent: 'center',
+  //   margin: 5
+  // },
+  // logInButton: {
+  //   backgroundColor: '#E5E5E5',
+  //   width: width - 60,
+  //   height: 40,
+  //   alignItems: 'center',
+  //   borderRadius: 10,
+  //   justifyContent: 'center',
+  //   margin: 5
+  // },
+  // registrText: {
+  //   color: '#fff',
+  //   fontFamily: 'NotoSanaTamilLight',
+  // },
+  // logInText: {
+  //   color: '#009E4E',
+  //   fontFamily: 'NotoSanaTamilLight',
+  // },
   body: {
     flex: 10
   }
@@ -322,7 +317,7 @@ export default class MainPage extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.title}>
-                <Text style={styles.textSmetica}>История сканирований</Text>
+                <Text style={styles.textSmetica}>История</Text>
               </View>
               <TouchableOpacity
                 style={styles.searchArea}

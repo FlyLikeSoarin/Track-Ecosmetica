@@ -183,8 +183,7 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
                     <View style={styles.textWrap}>
                         <Text style={styles.textInfo}>
                             Создайте аккаунт, чтобы иметь возможность
-                            добавлять продукты в избранное и
-                            исключать нежелательные ингредиенты.
+                            добавлять продукты в избранное
                         </Text>
                     </View>
                     <View style={styles.buttonsArea}>
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
     },
     emptyArea: {
-        flex: 0.5
+        flex: 1
     },
     container: {
         flex: 1
@@ -240,6 +239,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingRight: 30,
         paddingLeft: 30,
+        paddingTop: 55,
     },
     textSmallWrap: {
         flexDirection: 'row'
@@ -247,12 +247,12 @@ const styles = StyleSheet.create({
     textInfo: {
         textAlign: 'center',
         fontFamily: 'NotoSansTamilLight',
-        fontSize: 16
+        fontSize: 20
     },
     ecoText: {
         textAlign: 'center',
         fontFamily: 'NotoSansTamilLight',
-        fontSize: 16,
+        fontSize: 20,
         color: '#009E4E'
     },
     buttonsArea: {

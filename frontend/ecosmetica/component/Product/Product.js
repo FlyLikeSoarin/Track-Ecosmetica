@@ -24,6 +24,7 @@ import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
 //import bookmark from '../../assets/svg/bookmark.svg'
+import ImageProductMock from '../../static/bottleMock.jpg'
 
 import Score from './Score'
 import Back from '../Button/BackButton'
@@ -87,8 +88,7 @@ export default class Product extends React.Component {
             username: '',
             token: null,
             id_user: null,
-            userMakedReview: false,
-            prevReview: null
+            userMakedReview: false
         }
 
         this.setReviews = this.setReviews.bind(this)
@@ -116,7 +116,6 @@ export default class Product extends React.Component {
             })
             this.loadUserData(token)
         }
-        
 
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
@@ -138,12 +137,6 @@ export default class Product extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevState.id_user != this.state.id_user) {
-            this.checkUserMakedReview(this.state.reviews)
-        }
-    }
-
     checkUserMakedReview(reviews) {
         //console.log(reviews)
         //console.log("чек ревью", this.state.id_user)
@@ -154,8 +147,7 @@ export default class Product extends React.Component {
                 //console.log(item)
                 if (item.user == id_user) {
                     this.setState({
-                        userMakedReview: true,
-                        prevReview: item
+                        userMakedReview: true
                     })
                 }
             }
@@ -191,27 +183,6 @@ export default class Product extends React.Component {
         let year = new Date().getFullYear()
 
         let oldReviews = this.state.reviews
-        //console.log("umr", this.state.userMakedReview)
-        //console.log('prev', this.state.prevReview)
-        let old_number_reviews = this.state.countScores;
-        let old_user_score = this.state.userScore;
-        if (this.state.userMakedReview && this.state.prevReview !== null) {
-            const index = oldReviews.indexOf(this.state.prevReview)
-            console.log("id", index)
-            if (index !== -1) {
-                oldReviews.splice(index, 1)
-            }
-            const sum = old_number_reviews * old_user_score - this.state.prevReview.rating
-            old_number_reviews -= 1
-            if (old_number_reviews !== 0){
-                old_user_score = sum / old_number_reviews
-            } else {
-                old_user_score = 0
-            }
-        }
-        console.log(oldReviews)
-
-
         let review = {
             "id": 0,
             "product": "",
@@ -222,16 +193,17 @@ export default class Product extends React.Component {
             "user_full_name": this.state.username,
             "user": this.state.id_user
         }
-        //console.log(review)
+        console.log(review)
         oldReviews = oldReviews.concat([review])
 
+        const old_number_reviews = this.state.countScores;
+        const old_user_score = this.state.userScore;
         const new_user_score = ((old_user_score * old_number_reviews) + rating) / (old_number_reviews + 1)
         this.setState({
             reviews: oldReviews,
             countScores: old_number_reviews + 1,
             userScore: new_user_score,
-            userMakedReview: true,
-            prevReview: review
+            userMakedReview: true
         })
         const token = this.state.token
         console.log(token)
@@ -321,13 +293,17 @@ export default class Product extends React.Component {
     }
 
     handleAddReview() {
-        if (this.state.token != null) {
+        if (this.state.token != null && !this.state.userMakedReview) {
             this.setState({
                 modalVisible: true,
             })
-        } else {
+        } else if (this.state.token === null) {
             this.setState({
                 showAuthError: true
+            })
+        } else {
+            this.setState({
+                showAuthError2: true
             })
         }
     }
@@ -344,13 +320,13 @@ export default class Product extends React.Component {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode, isFavorite, countScores,
-            modalScoreInfoVisible, userMakedReview} = this.state
+            modalScoreInfoVisible } = this.state
         let user_raiting = this.state.userScore;
         if (user_raiting == -1) {
             user_raiting = 0
         }
         const user_scores = this.state.userScore;
-        total_score = 8
+        if(total_score<0) total_score = 0;
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
@@ -385,8 +361,8 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.addToFavorites()}
                                 >
-                                    {!isFavorite && (<SvgXml xml={Heart} />)}
-                                    {isFavorite && <SvgXml xml={fillHeart} />}
+                                    {!isFavorite && (<SvgXml xml={Heart} width={25} height={25} />)}
+                                    {isFavorite && <SvgXml xml={fillHeart} width={25} height={25}/>}
                                     <Text style={styles.addToFavoritText}>
                                         В избранное
                                     </Text>
@@ -396,13 +372,10 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.handleAddReview()}
                                 >
-                                    <SvgXml xml={ReviewIcon} width={18} height={18} fill='#FFA21F' />
-                                    {!userMakedReview && <Text style={styles.addToFavoritText}>
+                                    <SvgXml xml={ReviewIcon} width={25} height={25} fill='#FFA21F' />
+                                    <Text style={styles.addToFavoritText}>
                                         Оставить отзыв
-                                    </Text>}
-                                    {userMakedReview && <Text style={styles.addToFavoritText}>
-                                        Изменить отзыв
-                                    </Text>}
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -563,7 +536,6 @@ export default class Product extends React.Component {
                         token={this.state.token}
                         product={this.state.product}
                         setReviews={this.setReviews}
-                        prevReview={this.state.prevReview}
                     />
                 </Modal>
 
@@ -818,7 +790,8 @@ const styles = StyleSheet.create({
     },
     addToFavoritText: {
         color: '#FFA21F',
-        fontSize: 10,
+        fontSize: 12,
+        fontWeight: 'bold',
         fontFamily: 'NotoSanaTamilLight'
     },
     addToFavoritesButton: {
@@ -849,14 +822,14 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 14,
+        fontSize: 22,
         marginLeft: 25,
         color: '#4F4F4F',
         marginTop: 10
     },
     brandText: {
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 12,
+        fontSize: 16,
         marginLeft: 25,
         color: '#606060',
     },
@@ -881,7 +854,7 @@ const styles = StyleSheet.create({
     tabsText: {
         color: '#4F4F4F',
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 12,
+        fontSize: 16,
     },
     ingredientsAndReview: {
         flex: 2,
@@ -906,7 +879,7 @@ const styles = StyleSheet.create({
     ingredientText: {
         flex: 14,
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 12,
+        fontSize: 14,
         color: '#676767',
         paddingLeft: 10
     },

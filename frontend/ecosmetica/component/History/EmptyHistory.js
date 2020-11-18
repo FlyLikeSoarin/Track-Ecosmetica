@@ -36,22 +36,28 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        fontSize: 20,
+        fontSize: 28,
         color: '#676767',
         padding: 50,
         fontFamily: 'NotoSanaTamilLight',
     },
+    buttonsArea: {
+      flex: 0.6,
+      alignItems: 'stretch',
+      justifyContent: 'flex-start',
+      paddingRight: 60,
+      paddingLeft: 60,
+      paddingVertical: 20,
+  },
     scanButton: {
       backgroundColor: '#009E4E',
-      width: 250,//scrWidth - 60,
-      height: 40,
-      alignItems: 'center',
-      borderRadius: 10,
-      justifyContent: 'center',
-      margin: 5
+      borderRadius: 25,
+      padding: 10,
+      alignItems: 'center'
     },
     scanButtonText: {
       color: '#fff',
+      fontSize: 18,
       fontFamily: 'NotoSanaTamilLight',
     },
 });
@@ -71,8 +77,8 @@ const EmptyHistory = ({navigation, updateHistory}) => {
           <View style={styles.imageContainer}>
             <Image style={styles.image} source={EmptyHistoryImage}/>
           </View>
-          <View style={styles.textContainer}>
             <Text style={styles.text}>У вас пока нет отсканированных продуктов</Text>
+            <View style={styles.buttonsArea}>
             <TouchableOpacity style={styles.scanButton}
               onPress={() => navigation.navigate('Scanner', {updateHistory : updateHistory})}
             >

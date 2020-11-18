@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   image: {
-    height: 120,
-    width: 120,
+    height: 100,
+    width: 100,
     borderRadius: 20
   },
   lableText: {
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#606060',
     fontFamily: 'NotoSanaTamilLight',
+    fontSize: 14,
   },
   metrics: {
     flex: 1,

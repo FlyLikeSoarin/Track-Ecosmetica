@@ -73,10 +73,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderBottomColor: '#C4C4C4',
-    borderTopColor: '#C4C4C4',
+    //borderBottomWidth: 1,
+    //borderTopWidth: 1,
+    //borderBottomColor: '#C4C4C4',
+    //borderTopColor: '#C4C4C4',
   },
   body: {
     flex: 10,
@@ -195,8 +195,8 @@ const styles = StyleSheet.create({
     color: '#9ae7af',
   },
   img: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
   },
   buttonText: {
     color: '#929292',
@@ -273,7 +273,7 @@ wrapEmptyReviewText: {
 tabsText: {
   color: '#4F4F4F',
   fontFamily: 'NotoSanaTamilLight',
-  fontSize: 12,
+  fontSize: 16,
   fontWeight: 'bold'
 },
 });
@@ -454,7 +454,7 @@ export default class Profile extends React.Component {
       headerTintColor: '#676767',
       headerTitleStyle: {
         //fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 22,
         fontFamily: 'NotoSanaTamilLight'
       },
       headerLeft: () => (
@@ -667,10 +667,10 @@ export default class Profile extends React.Component {
                     borderBottomWidth: 1,
                     borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
                 }}
-                  onPress={() => this.showIngridients()}
+                  //onPress={() => this.showIngridients()}
                 >
                   <Text style={styles.tabsText}>
-                    Нежелательные ингридиенты
+                    {/* Нежелательные ингридиенты */}
                   </Text>
                 </TouchableOpacity>
               </View>
