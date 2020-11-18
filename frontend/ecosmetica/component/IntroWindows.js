@@ -5,14 +5,17 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    Image
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
-import ImageWindow1 from '../assets/svg/intro-window1_1.svg'
+//import ImageWindow1 from '../assets/svg/intro-window1_1.svg'
+import ImageWindow1 from '../assets/svg/intro_2.svg'
 import SadBoy from '../assets/svg/sed-girl.svg'
-import ImageWindow2 from '../assets/svg/intro-window2.svg'
-import ImageWindow3 from '../assets/svg/intro-window3_3.svg'
+//import ImageWindow3 from '../assets/svg/intro-window3_3.svg'
+import ImageWindow3 from '../assets/svg/infoimage3.svg'
+import InfoscreenImage3 from '../static/infoscreen3.jpg'
 import Logo from '../assets/svg/logo.svg'
 
 var width = Dimensions.get('window').width;
@@ -111,7 +114,8 @@ const IntroWindows = ({ navigation, hideIntroWindows, setToken }) => {
                 <View style={styles.container}>
                     <View style={styles.emptyArea} />
                     <View style={styles.imageWrap}>
-                        <SvgXml xml={ImageWindow2} />
+                        {/* <SvgXml xml={ImageWindow2} /> */}
+                        <Image source={InfoscreenImage3} style={{width: width - 60, height: 230}}/>
                     </View>
                     <View style={styles.textWrap}>
                         <Text style={styles.textInfo}>
