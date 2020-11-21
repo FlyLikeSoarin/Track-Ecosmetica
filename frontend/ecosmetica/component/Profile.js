@@ -22,6 +22,7 @@ import ProfileButton from './Button/ProfileButton'
 import BackButton from './Button/BackButton'
 import ProductList from './History/ProductList'
 import Product from './History/Product'
+import AddAvatarButton from './Profile/AddAvatarButton'
 
 import AwesomeAlert from 'react-native-awesome-alerts';
 
@@ -629,7 +630,7 @@ export default class Profile extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.imageWrap}>
-                <ProfileImageMock />
+                <AddAvatarButton />
               </View>
               <View style={styles.bigTextWrap}>
                 <Text style={styles.bigText}>{first_name} {last_name}</Text>
@@ -670,7 +671,7 @@ export default class Profile extends React.Component {
                   //onPress={() => this.showIngridients()}
                 >
                   <Text style={styles.tabsText}>
-                    {/* Нежелательные ингридиенты */}
+                    Настройки
                   </Text>
                 </TouchableOpacity>
               </View>

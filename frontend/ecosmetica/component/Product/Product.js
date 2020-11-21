@@ -16,7 +16,6 @@ import {
 import { SvgXml } from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import AwesomeAlert from 'react-native-awesome-alerts';
-
 import Heart from '../../assets/svg/heart.svg'
 //import ReviewIcon from '../../assets/svg/review.svg'
 import ReviewIcon from '../../assets/svg/comment-white-oval-bubble.svg'
@@ -24,8 +23,6 @@ import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
 //import bookmark from '../../assets/svg/bookmark.svg'
-import ImageProductMock from '../../static/bottleMock.jpg'
-
 import Score from './Score'
 import Back from '../Button/BackButton'
 import HomeButton from '../Button/HomeButton'
@@ -36,12 +33,9 @@ import UserRaiting from './UserRaiting'
 import ProfileImageMock from '../Button/ProfileImageMock';
 import InputReview from './InputReview'
 import InfoScore from './InfoScore'
-
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005';
-
 export default class Product extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -57,7 +51,6 @@ export default class Product extends React.Component {
             isFavorite: this.props.route.params.data_.favorite,
             userScore: this.props.route.params.data_.user_score,
             countScores: this.props.route.params.data_.review_count,
-
             showReviews: false,
             colorsTabsPanel: {
                 ingredientsTop: '#009E4E',
@@ -80,7 +73,6 @@ export default class Product extends React.Component {
                     "title": "",
                     "user": "name",
                 },
-
             ],
             /*reviews: []*/
             modalVisible: false,
@@ -88,22 +80,19 @@ export default class Product extends React.Component {
             username: '',
             token: null,
             id_user: null,
-            userMakedReview: false
+            userMakedReview: false,
+            prevReview: null
         }
-
         this.setReviews = this.setReviews.bind(this)
         this.hideModalScoreInfo = this.hideModalScoreInfo.bind(this)
     }
-
     async componentDidMount() {
         await Font.loadAsync({
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
         });
-
         this.state.navigation.setOptions({
             headerShown: false
         })
-
         let token = null
         try {
             token = await AsyncStorage.getItem('token');
@@ -116,7 +105,7 @@ export default class Product extends React.Component {
             })
             this.loadUserData(token)
         }
-
+        
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -134,26 +123,37 @@ export default class Product extends React.Component {
             .catch(() => {
                 console.log("fail get reviews")
             })
-
     }
-
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.id_user != this.state.id_user) {
+            this.checkUserMakedReview(this.state.reviews)
+        }
+    }
     checkUserMakedReview(reviews) {
         //console.log(reviews)
         //console.log("чек ревью", this.state.id_user)
-        if (this.state.id_user !== null) {
+        let total_score = 0
+        //if (this.state.id_user !== null) {
             const id_user = this.state.id_user
             for (var i = 0; i < reviews.length; ++i) {
                 const item = reviews[i]
                 //console.log(item)
+                total_score += item.rating
                 if (item.user == id_user) {
                     this.setState({
-                        userMakedReview: true
+                        userMakedReview: true,
+                        prevReview: item
                     })
                 }
             }
-        }
+            if (reviews.length  != 0) {
+                total_score = total_score / reviews.length
+            }
+            this.setState({
+                userScore: total_score
+            })
+        //}
     }
-
     async loadUserData(token) {
         await fetch(`${URL}/user/`, {
             method: 'GET',
@@ -176,13 +176,32 @@ export default class Product extends React.Component {
             })
             .catch(e => console.log(e))
     }
-
     async setReviews(rating, textReview) {
         let day = new Date().getDate()
         let month = new Date().getMonth()
         let year = new Date().getFullYear()
-
         let oldReviews = this.state.reviews
+        //console.log("umr", this.state.userMakedReview)
+        //console.log('prev', this.state.prevReview)
+        let old_number_reviews = this.state.countScores;
+        let old_user_score = this.state.userScore;
+        if (this.state.userMakedReview && this.state.prevReview !== null) {
+            const index = oldReviews.indexOf(this.state.prevReview)
+            console.log("id", index)
+            if (index !== -1) {
+                oldReviews.splice(index, 1)
+            }
+            const sum = old_number_reviews * old_user_score - this.state.prevReview.rating
+            old_number_reviews -= 1
+            old_user_score = sum / old_number_reviews
+            if (old_number_reviews !== 0){
+                old_user_score = sum / old_number_reviews
+            } else {
+                old_user_score = 0
+            }
+        }
+        console.log(oldReviews)
+
         let review = {
             "id": 0,
             "product": "",
@@ -193,17 +212,15 @@ export default class Product extends React.Component {
             "user_full_name": this.state.username,
             "user": this.state.id_user
         }
-        console.log(review)
+        //console.log(review)
         oldReviews = oldReviews.concat([review])
-
-        const old_number_reviews = this.state.countScores;
-        const old_user_score = this.state.userScore;
         const new_user_score = ((old_user_score * old_number_reviews) + rating) / (old_number_reviews + 1)
         this.setState({
             reviews: oldReviews,
             countScores: old_number_reviews + 1,
             userScore: new_user_score,
-            userMakedReview: true
+            userMakedReview: true,
+            prevReview: review
         })
         const token = this.state.token
         console.log(token)
@@ -236,7 +253,6 @@ export default class Product extends React.Component {
                 console.log("fail get reviews")
             })
     }
-
     showReviews() {
         this.setState({
             showReviews: true,
@@ -259,7 +275,6 @@ export default class Product extends React.Component {
             }
         })
     }
-
     async addToFavorites() {
         const prevIsFavoite = this.state.isFavorite
         this.setState({
@@ -291,42 +306,34 @@ export default class Product extends React.Component {
                 console.log("fail add to favorite")
             })
     }
-
     handleAddReview() {
-        if (this.state.token != null && !this.state.userMakedReview) {
+        if (this.state.token != null) {
             this.setState({
                 modalVisible: true,
             })
-        } else if (this.state.token === null) {
+        } else {
             this.setState({
                 showAuthError: true
             })
-        } else {
-            this.setState({
-                showAuthError2: true
-            })
         }
     }
-
     hideModalScoreInfo() {
         this.setState({
             modalScoreInfoVisible: false
         })
     }
-
-
     render() {
         let {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode, isFavorite, countScores,
-            modalScoreInfoVisible } = this.state
+            modalScoreInfoVisible, userMakedReview} = this.state
         let user_raiting = this.state.userScore;
         if (user_raiting == -1) {
             user_raiting = 0
         }
         const user_scores = this.state.userScore;
-        if(total_score<0) total_score = 0;
+        if(total_score < 0) total_score = 0;
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
@@ -339,7 +346,6 @@ export default class Product extends React.Component {
                         <Back />
                     </TouchableOpacity>
                 </View>
-
                 <View style={styles.body}>
                     <View style={styles.topInfoArea}>
                         <View style={styles.imageAndScore}>
@@ -361,7 +367,7 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.addToFavorites()}
                                 >
-                                    {!isFavorite && (<SvgXml xml={Heart} width={25} height={25} />)}
+                                    {!isFavorite && (<SvgXml xml={Heart} width={25} height={25}/>)}
                                     {isFavorite && <SvgXml xml={fillHeart} width={25} height={25}/>}
                                     <Text style={styles.addToFavoritText}>
                                         В избранное
@@ -373,16 +379,18 @@ export default class Product extends React.Component {
                                     onPress={() => this.handleAddReview()}
                                 >
                                     <SvgXml xml={ReviewIcon} width={25} height={25} fill='#FFA21F' />
-                                    <Text style={styles.addToFavoritText}>
+                                    {!userMakedReview && <Text style={styles.addToFavoritText}>
                                         Оставить отзыв
-                                    </Text>
+                                    </Text>}
+                                    {userMakedReview && <Text style={styles.addToFavoritText}>
+                                        Изменить отзыв
+                                    </Text>}
                                 </TouchableOpacity>
                             </View>
                         </View>
                         {/*<View style={styles.scoreStarArea}>
                             {StarScore(total_score, styles.scoreArea, 15)}
                         </View>*/}
-
                     </View>
                     <View style={styles.infoArea}>
                         <View style={styles.nameWrap}>
@@ -458,12 +466,10 @@ export default class Product extends React.Component {
                                         renderItem={renderItemReview}
                                     />
                                 </SafeAreaView>
-
                             </View>
                         )}
                     </View>
                 </View>
-
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => this.props.navigation.navigate('Home')}
@@ -484,7 +490,6 @@ export default class Product extends React.Component {
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
-
                 <AwesomeAlert
                     show={this.state.showAuthError}
                     showProgress={false}
@@ -502,7 +507,6 @@ export default class Product extends React.Component {
                         })
                     }}
                 />
-
                 <AwesomeAlert
                     show={this.state.showAuthError2}
                     showProgress={false}
@@ -520,7 +524,6 @@ export default class Product extends React.Component {
                         })
                     }}
                 />
-
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -536,9 +539,9 @@ export default class Product extends React.Component {
                         token={this.state.token}
                         product={this.state.product}
                         setReviews={this.setReviews}
+                        prevReview={this.state.prevReview}
                     />
                 </Modal>
-
                 <Modal
                     animationType="fade"
                     transparent={true}
@@ -555,7 +558,6 @@ export default class Product extends React.Component {
         );
     }
 }
-
 function colorScore(score) {
     if (0 <= score && score <= 4) {
         return '#FF4D00'
@@ -567,7 +569,6 @@ function colorScore(score) {
         return '#C4C4C4'
     }
 }
-
 function colorBackgroundInfo(score) {
     if (0 <= score && score <= 4) {
         return '#FFD5C2'
@@ -579,8 +580,6 @@ function colorBackgroundInfo(score) {
         return '#F1F1F1'
     }
 }
-
-
 function IngregientBlock({ item }) {
     const [showInfo, setShowInfo] = React.useState(false);
     let description = item.cosmetics_info_description;
@@ -612,7 +611,6 @@ function IngregientBlock({ item }) {
             </TouchableOpacity>
             {showInfo && (
                 <View style={{
-
                     backgroundColor: '#F1F1F1',//colorBackgroundInfo(item[1]),
                     alignSelf: 'stretch',
                     padding: 10,
@@ -635,13 +633,11 @@ function IngregientBlock({ item }) {
         </View>
     );
 }
-
 const renderItem = ({ item }) => {
     return (
         <IngregientBlock item={item} />
     );
 }
-
 const renderItemReview = ({ item }) => {
     let color_like = '#676767';
     let background_color = '#fff'
@@ -691,7 +687,6 @@ const renderItemReview = ({ item }) => {
                             flexDirection: 'row',
                             justifyContent: 'center',
                         }}
-
                     >
                         <SvgXml width="20" height="15" xml={LikeIcon} fill={color_like} />
                         <Text style={{
@@ -824,6 +819,7 @@ const styles = StyleSheet.create({
         fontFamily: 'NotoSanaTamilLight',
         fontSize: 22,
         marginLeft: 25,
+        marginRight: 10,
         color: '#4F4F4F',
         marginTop: 10
     },
