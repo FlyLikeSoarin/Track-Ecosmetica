@@ -205,19 +205,14 @@ handlerBack() {
               product: ans,
               barcode: data
             }];
-            let isDubbled=false;
             for (let i = 0; i < oldHistory.length; i++) {
                 if (newProduct[0].barcode === oldHistory[i].barcode) {
-                  //isDubbled=true;
                   oldHistory.splice(i, 1);
                   break;
                 }
             }
             let newHistory = newProduct.concat(oldHistory);
-            //if (!isDubbled) newHistory = newProduct.concat(oldHistory);
-            //console.log('newHistory', newHistory)
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
-            //console.log(newHistory)
             this.props.route.params.updateHistory(newHistory)
             //this.state.navigation.navigate('Home')
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
