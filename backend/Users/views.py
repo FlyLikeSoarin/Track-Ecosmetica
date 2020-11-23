@@ -53,11 +53,12 @@ class RetrieveUserView(APIView):
             user_queryset = User.objects.filter(username=username)
         else:
             user_queryset = User.objects.filter(username=request.user.username)
+        pk = user_queryset.first().pk
 
         serializer = ProtectedUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         del data['username']
-        user = user_queryset.update(**data).get()
+        user = user_queryset.update(**data)
 
-        return Response(ProtectedUserSerializer(user).data)
+        return Response(ProtectedUserSerializer(User.get(pk=pk)).data)
