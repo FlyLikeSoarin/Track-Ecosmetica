@@ -61,4 +61,4 @@ class RetrieveUserView(APIView):
         del data['username']
         user = user_queryset.update(**data)
 
-        return Response(ProtectedUserSerializer(User.get(pk=pk)).data)
+        return Response(ProtectedUserSerializer(User.objects.get(pk=pk)).data)
