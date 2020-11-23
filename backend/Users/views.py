@@ -35,6 +35,7 @@ class AuthView(APIView):
         return Response({'Token': str(token)})
 
 
+
 class RetrieveUserView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -46,3 +47,17 @@ class RetrieveUserView(APIView):
             user = request.user
         serializer = ProtectedUserSerializer(user)
         return Response(serializer.data)
+
+    def post(self, request, username=None):
+        if username is not None:
+            user_queryset = User.objects.filter(username=username)
+        else:
+            user_queryset = User.objects.filter(username=request.user.username)
+
+        serializer = ProtectedUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data()
+        del data['username']
+        user = user_queryset.update(**data).get()
+
+        return Response(ProtectedUserSerializer(user).data)

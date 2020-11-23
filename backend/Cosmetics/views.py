@@ -182,6 +182,7 @@ class ReviewCreateListView(APIView):
             result.append(ReviewReadSerializer(review).data)
             result[-1]['username'] = review.user.username
             result[-1]['user_full_name'] = review.user.first_name + review.user.last_name
+            result[-1]['profile_img_url'] = review.user.profile_img_url
         return Response(result)
 
     def post(self, request):
