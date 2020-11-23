@@ -56,7 +56,7 @@ class RetrieveUserView(APIView):
 
         serializer = ProtectedUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data()
+        data = serializer.validated_data
         del data['username']
         user = user_queryset.update(**data).get()
 
