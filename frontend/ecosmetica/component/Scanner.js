@@ -200,7 +200,7 @@ handlerBack() {
             this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
           } 
           else {
-            const oldHistory = (this.state.history==null)?[]:this.state.history;
+            /*const oldHistory = (this.state.history==null)?[]:this.state.history;
             const newProduct = [{
               product: ans,
               barcode: data
@@ -213,9 +213,9 @@ handlerBack() {
             }
             let newHistory = newProduct.concat(oldHistory);
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
-            this.props.route.params.updateHistory(newHistory)
+            this.props.route.params.updateHistory(newHistory)*/
             //this.state.navigation.navigate('Home')
-            this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data});
+            this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data, updateHistory: this.props.route.params.updateHistory});
           }
         }
         else {

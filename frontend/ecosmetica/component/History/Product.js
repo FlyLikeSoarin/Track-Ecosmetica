@@ -184,12 +184,14 @@ const ImageScore = ({ image, score }) => {
 }*/
 
 const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAddFovoriteShown }) => {
-  //console.log("barcode1", barcode)
+  console.log("render item", favorite)
   const barcode2 = barcode
-  const [favorite2, setFavorite2] = React.useState(favorite)
+  let [favorite2, setFavorite2] = React.useState(favorite)
+  let [updateFavoritStatus, setUpdateFavoritStatus] = React.useState(false)
+  console.log(favorite2)
   let token2 = null;
 
-  React.useEffect(() => {
+  /*React.useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
         'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
@@ -205,6 +207,39 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
     loadFont()
   }, []);
 
+  React.useEffect(() => {
+    console.log("update favorite")
+    setFavorite2(favorite)
+  }, [favorite]); */
+  const mounted = React.useRef();
+  React.useEffect(() => {
+  if (!mounted.current) {
+    async function loadFont() {
+      await Font.loadAsync({
+        'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+      });
+
+      try {
+        token2 = await AsyncStorage.getItem('token')
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    loadFont()
+    mounted.current = true;
+  } else {
+    console.log("update")
+    console.log("updateFavoritStatus", updateFavoritStatus)
+    if (favorite2 !== favorite && !updateFavoritStatus) {
+      console.log("Not equals", favorite2, favorite)
+      setFavorite2(favorite)
+      setUpdateFavoritStatus(false)
+    }
+  }
+
+});
+
   const [showAuthError, setShowAuthError] = React.useState(false)
 
   const addToFavorites = async () => {
@@ -214,23 +249,19 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
       console.log(e)
     }
     const prevIsFavoite = favorite2
-    //const isFavorite = !prevIsFavoite
-    // this.setState({
-    //     isFavorite: !prevIsFavoite
-    // })
-    console.log(token2)
     if (token2 !== null) {
       let body = {}
       if (prevIsFavoite) {
         body = {
           in_favorite: false
         }
+        setUpdateFavoritStatus(true)
         setFavorite2(false)
       } else {
+        setUpdateFavoritStatus(true)
         setFavorite2(true)
       }
 
-      console.log("body", body)
       await fetch(`${URL}/product/make_favorite/?code=${barcode2}`, {
         method: 'POST',
         headers: {
@@ -240,7 +271,6 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
         body: JSON.stringify(body)
       })
         .then((resp) => {
-          console.log(resp.status)
           return resp.json()
         })
         .then((ans) => {
@@ -267,13 +297,18 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
         {/* {StarScore(metric1, styles.metrics, 20)} */}
         {isAddFovoriteShown && (
           <TouchableOpacity style={styles.addToFavoritesButton}
-            onPress={() => addToFavorites()}
+            onPress={() => {
+              addToFavorites()
+            }}
           >
             {!favorite2 && (<SvgXml xml={Heart} width={26} height={26} />)}
             {favorite2 && <SvgXml xml={fillHeart} width={26} height={26} />}
-            <Text style={styles.addToFavoritText}>
-              в избранное
-            </Text>
+            {!favorite2 && <Text style={styles.addToFavoritText}>
+              Добавить в избранное
+            </Text>}
+            {favorite2 && <Text style={styles.addToFavoritText}>
+              Убрать из избранного
+            </Text>}
           </TouchableOpacity>)}
       </View>
       <View style={{ flex: 0.3 }}>

@@ -81,7 +81,8 @@ export default class Product extends React.Component {
             token: null,
             id_user: null,
             userMakedReview: false,
-            prevReview: null
+            prevReview: null,
+            history: null
         }
         this.setReviews = this.setReviews.bind(this)
         this.hideModalScoreInfo = this.hideModalScoreInfo.bind(this)
@@ -99,6 +100,12 @@ export default class Product extends React.Component {
         } catch (e) {
             console.log(e)
         }
+        try{
+            let history = await AsyncStorage.getItem('history');
+            this.setState({history: JSON.parse(history)})
+          } catch (e) {
+            console.log(e)
+          }
         if (token !== null) {
             this.setState({
                 token: token,
@@ -322,6 +329,31 @@ export default class Product extends React.Component {
             modalScoreInfoVisible: false
         })
     }
+
+    goHome() {
+        const oldHistory = (this.state.history==null)?[]:this.state.history;
+        const newProduct = [{
+            product: {
+                name: this.state.name,
+                brand_name: this.state.brand,
+                favorite: this.state.isFavorite,
+                total_score: this.state.total_score,
+                img_url: this.state.img_url
+            },
+            barcode: this.state.barcode
+        }];
+        for (let i = 0; i < oldHistory.length; i++) {
+            if (newProduct[0].barcode === oldHistory[i].barcode) {
+                oldHistory.splice(i, 1);
+                break;
+            }
+        }
+        let newHistory = newProduct.concat(oldHistory);
+        AsyncStorage.setItem('history', JSON.stringify(newHistory))
+        this.props.route.params.updateHistory(newHistory)
+        this.props.navigation.navigate('Home')
+    }
+
     render() {
         let {
             img_url, brand, name,
@@ -369,9 +401,12 @@ export default class Product extends React.Component {
                                 >
                                     {!isFavorite && (<SvgXml xml={Heart} width={25} height={25}/>)}
                                     {isFavorite && <SvgXml xml={fillHeart} width={25} height={25}/>}
-                                    <Text style={styles.addToFavoritText}>
+                                    {!isFavorite &&(<Text style={styles.addToFavoritText}>
                                         В избранное
-                                    </Text>
+                                    </Text>)}
+                                    {isFavorite &&(<Text style={styles.addToFavoritText}>
+                                        Удалить из избранного
+                                    </Text>)}
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.addReviewArea}>
@@ -472,7 +507,7 @@ export default class Product extends React.Component {
                 </View>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Home')}
+                        onPress={() => this.goHome()}
                     >
                         <HomeButton fill='#929292' />
                         <Text style={styles.buttonText}>Домой</Text>

@@ -17,6 +17,8 @@ import Product from './Product'
 //import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
 
+const URL = 'http://185.148.82.169:8005';
+
 const styles = StyleSheet.create({
   header: {
     flex: 1,
@@ -151,13 +153,38 @@ export default class ProductList extends React.Component {
     //this.initData = this.initData.bind(this)
   }
 
+  async openProductInfo(item) {
+    let header = null
+    let token = this.state.token
+    if (token === null) {
+      header = {
+        'Content-Type': 'application/json',
+      }
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      }
+    }
+    await fetch(`${URL}/product/?code=${item.barcode}`, {
+      method: 'GET',
+      headers: header
+    })
+    .then((resp) => {
+      return resp.json()
+    })
+    .then((ans) => {
+      this.props.navigation.navigate('Product', { data_: ans, barcode: item.barcode, updateHistory: this.props.updateHistory })
+    })
+  }
+
 
   renderItem = ({ item }) => {
     console.log("//////////////////////////")
     console.log(item)
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Product', { data_: item.product, barcode: item.barcode })}
+        onPress={() => this.openProductInfo(item)}
       >
         <View>
           <Product
