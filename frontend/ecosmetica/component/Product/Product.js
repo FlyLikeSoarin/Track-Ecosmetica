@@ -168,7 +168,7 @@ export default class Product extends React.Component {
             .then((ans) => {
                 console.log('user')
                 console.log(ans)
-                const username = ans.first_name + ' ' + ans.last_name
+                const username = ans.first_name + " " + ans.last_name
                 this.setState({
                     username: username,
                     id_user: ans.id
@@ -647,6 +647,8 @@ const renderItemReview = ({ item }) => {
     }*/
     let date = item.timestamp;
     date = date.slice(0, 10)
+    const url = item.profile_img_url
+
     return (
         <View style={styles.reviewBlock}>
             <View style={styles.wrapRevewText}>
@@ -665,7 +667,8 @@ const renderItemReview = ({ item }) => {
                 />
                 <View style={styles.userInfoAndLikes}>
                     <View style={styles.userInfoArea}>
-                        <SvgXml width="30" height="30" xml={profileImageMock} />
+                        { (url === "") && <SvgXml width="30" height="30" xml={profileImageMock} />}
+                        { (url !== "") && <Image style={{width: 30, height: 30, borderRadius: 100}} source={{ uri: `${url}` }}/>}
                         <View style={styles.nameAndDateArea}>
                             <Text style={styles.userNameText}>
                                 {item.user_full_name}

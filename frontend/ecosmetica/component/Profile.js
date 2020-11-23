@@ -304,6 +304,7 @@ export default class Profile extends React.Component {
       iconLogoutColor: '#ffffff',
       first_name: 'Имя',
       last_name: 'Фамилия',
+      url_avatar: null,
 
       showIngridients: false,
       ingridients: ['igrd1', 'ingd2', 'ingrd3'],
@@ -482,7 +483,11 @@ export default class Profile extends React.Component {
 
   async componentDidUpdate(prevProps, prevState) {
     console.log('profileDidUpdate')
-    if (prevState.token !== this.state.token) {
+    if (prevState.token !== this.state.token || prevState.url_avatar !== this.state.url_avatar) {
+      if (prevState.url_avatar !== this.state.url_avatar){
+        const url = this.state.url_avatar
+        this.setState({url_avatar: url})
+      }
       this.loadUserInfo() 
     }
   }
@@ -510,7 +515,7 @@ export default class Profile extends React.Component {
     .then((ans) => {
       console.log('user')
       console.log(ans)
-      this.setState({first_name: ans.first_name, last_name: ans.last_name})
+      this.setState({first_name: ans.first_name, last_name: ans.last_name, url_avatar: ans.profile_img_url})
       const username = ans.first_name + ' ' + ans.last_name
       try {
         AsyncStorage.removeItem('username');
@@ -630,7 +635,7 @@ export default class Profile extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.imageWrap}>
-                <AddAvatarButton />
+                <AddAvatarButton token={this.state.token} url_avatar={this.state.url_avatar}/>
               </View>
               <View style={styles.bigTextWrap}>
                 <Text style={styles.bigText}>{first_name} {last_name}</Text>

@@ -17,6 +17,8 @@ const ALBUM_ID = '275980882'
 const GROUP_ID = '199800692'
 const ACCESS_USER_TOKEN = '0022f51f57789b918c35ca1f6e3853b8ec6f6b79bdfca2b821dde1d21a84f0802620d8f504b508baf6e82'
 
+const URL_SERVER = 'http://185.148.82.169:8005'
+
 export default class AddAvatarButton extends React.Component {
     constructor(props) {
         super(props);
@@ -28,9 +30,21 @@ export default class AddAvatarButton extends React.Component {
             aid: null,
             hash: null,
             photoisLoaded: false,
-            photo_url: null,
+            photo_url: this.props.url_avatar,
+            token: this.props.token
         }
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log('product list updating', this.props.url_avatar)
+        if (prevProps.photo_url !== this.props.url_avatar) {
+          /*this.setState({
+            photo_url: this.props.url_avatar,
+          })*/
+        }
+        //console.log(this.state.data)
+      } 
+
     async makePhoto() {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -121,19 +135,52 @@ export default class AddAvatarButton extends React.Component {
         .then((ans) => {
             //console.log(ans)
             uri_image = ans.response[0].sizes[2].url
+            this.addToServer(uri_image)
+            this.setState({photo_url: uri_image})
         })
         //this.props.setUrl(uri_image)
-        this.setState({photo_url: uri_image})
+    }
+
+    async addToServer(uri) {
+        if (this.state.token !== null) {
+        await fetch(`${URL_SERVER}/user/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${this.state.token}`,
+            },
+            body: JSON.stringify({
+                "profile_img_url": uri,
+                "username": "qwerty"
+            })
+          })
+            .then((resp) => {
+              return resp.json()
+            })
+            .then((ans) => {
+              console.log(ans)
+            })
+            .catch(e=>console.log(e))
+        }
     }
 
     render() {
         //const {submited} = this.props
-        //console.log(this.state.photoisLoaded)
+        console.log("url", this.state.photo_url)
+        console.log("url from props", this.state.photo_url)
+        let url;
+        if (this.state.photo_url === "" || this.state.photo_url === null) {
+            url = this.props.url_avatar
+        } else {
+            url = this.state.photo_url
+        }
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
-                    {(this.state.photo_url === null) && <SvgXml width="100" height="100" xml={profileImageMock} />}
-                    {(this.state.photo_url !== null) && <Image style={styles.image} source={{ uri: `${this.state.uri}` }}/>}
+                    {((this.state.photo_url === "" || this.state.photo_url === null) && this.props.url_avatar === null) && <SvgXml width="100" height="100" xml={profileImageMock} />}
+                    {((this.state.photo_url === "" || this.state.photo_url === null) && this.props.url_avatar !== null) && <Image style={styles.image} source={{ uri: `${this.props.url_avatar}` }}/>}
+                    {(this.state.photo_url !== "" && this.state.photo_url !== null) && <Image style={styles.image} source={{ uri: `${ this.state.photo_url }` }}/>}
+
                 </TouchableOpacity>
             </View>
         );
