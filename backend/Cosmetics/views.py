@@ -210,7 +210,10 @@ class FavoriteCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        product_ids = Favorite.objects.filter(user=request.user.id).values_list('product', flat=True)
+        product_ids = (
+            Favorite.objects.filter(user=request.user.id, in_favorite=True)
+            .values_list('product', flat=True)
+        )
         products = Product.objects.filter(name__in=list(product_ids))
         result = []
         for product in products:
