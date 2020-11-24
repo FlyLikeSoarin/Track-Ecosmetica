@@ -184,11 +184,10 @@ const ImageScore = ({ image, score }) => {
 }*/
 
 const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAddFovoriteShown }) => {
-  console.log("render item", favorite)
+
   const barcode2 = barcode
   let [favorite2, setFavorite2] = React.useState(favorite)
   let [updateFavoritStatus, setUpdateFavoritStatus] = React.useState(false)
-  console.log(favorite2)
   let token2 = null;
 
   /*React.useEffect(() => {
@@ -229,10 +228,8 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
     loadFont()
     mounted.current = true;
   } else {
-    console.log("update")
-    console.log("updateFavoritStatus", updateFavoritStatus)
+
     if (favorite2 !== favorite && !updateFavoritStatus) {
-      console.log("Not equals", favorite2, favorite)
       setFavorite2(favorite)
       setUpdateFavoritStatus(false)
     }

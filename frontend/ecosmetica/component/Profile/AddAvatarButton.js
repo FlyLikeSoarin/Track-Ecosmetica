@@ -36,7 +36,7 @@ export default class AddAvatarButton extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('product list updating', this.props.url_avatar)
+        //console.log('product list updating', this.props.url_avatar)
         if (prevProps.photo_url !== this.props.url_avatar) {
           /*this.setState({
             photo_url: this.props.url_avatar,
@@ -71,7 +71,7 @@ export default class AddAvatarButton extends React.Component {
     }
 
     async getUploadUrl(uri) {
-        console.log("getUploadUrl")
+        //console.log("getUploadUrl")
         await fetch(`${URL}/photos.getUploadServer/?album_id=${ALBUM_ID}&group_id=${GROUP_ID}&v=5.124&access_token=${ACCESS_USER_TOKEN}`, {
             method: 'GET'
         })
@@ -166,8 +166,8 @@ export default class AddAvatarButton extends React.Component {
 
     render() {
         //const {submited} = this.props
-        console.log("url", this.state.photo_url)
-        console.log("url from props", this.state.photo_url)
+        //console.log("url", this.state.photo_url)
+        //console.log("url from props", this.state.photo_url)
         let url;
         if (this.state.photo_url === "" || this.state.photo_url === null) {
             url = this.props.url_avatar

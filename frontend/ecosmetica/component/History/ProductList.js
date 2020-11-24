@@ -180,8 +180,8 @@ export default class ProductList extends React.Component {
 
 
   renderItem = ({ item }) => {
-    console.log("//////////////////////////")
-    console.log(item)
+    //console.log("//////////////////////////")
+    //console.log(item)
     return (
       <TouchableOpacity
         onPress={() => this.openProductInfo(item)}
