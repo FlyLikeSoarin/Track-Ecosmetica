@@ -270,7 +270,7 @@ class AnalyzeIngredientImageView(APIView):
 
         return Response(ingredient_names)
 
-class UpdateIngredients(APIView):
+class IngredientView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
