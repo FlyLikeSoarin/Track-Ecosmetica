@@ -44,7 +44,7 @@ class Ingredient(models.Model):
     inn_name = models.TextField(db_index=True, blank=True)
     cas_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
     ec_number = models.CharField(max_length=100, db_index=True, unique=True, null=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
 
     # CasDNA information
     cos_dna_url = models.TextField(blank=True)
@@ -59,6 +59,13 @@ class Ingredient(models.Model):
     cosmetics_info_scientific_info = models.TextField(blank=True)
     cosmetics_info_resources = models.TextField(blank=True)
     cosmetics_info_description = models.TextField(blank=True)
+
+    # Final information
+    usage = models.TextField(blank=True)
+    safety = models.TextField(blank=True)
+    background = models.TextField(blank=True)
+    total_score = models.IntegerField(default=-1, blank=True)
+
     def __str__(self):
         return [i for i in [self.inci_name, self.inn_name] if i!=''][0]
 
@@ -100,21 +107,3 @@ class Favorite(models.Model):
             'added' if in_favorite else 'not added',
             str(product),
         )
-
-# class ReviewLike(models.Model):
-#     class Meta:
-#         indexes = [models.Index(fields=['user', 'review']),]
-#         constraints = [
-#             UniqueConstraint(fields=['user', 'review'], name='review_like_unique_user_review')
-#         ]
-#
-#     review = models.ForeignKey('Cosmetics.Review', on_delete=models.CASCADE)
-#     user = models.ForeignKey('Users.User', on_delete=models.CASCADE)
-#     likes = models.models.BooleanField(default=False)
-#
-#     def __str__(self):
-#         return '{} {} {} to favorite'.format(
-#             str(user),
-#             'liked' if in_favorite else 'not liked',
-#             str(review),
-#         )

@@ -269,3 +269,14 @@ class AnalyzeIngredientImageView(APIView):
             ingredients.append([ingredient, -1])
 
         return Response(ingredient_names)
+
+class UpdateIngredients(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        ingredients = json.loads(requests.data)
+        for ingredient in ingredients:
+            qs = Ingredient.objects.filter(inci_name__iexact=ingredient['inci_name'])
+            qs.update(**ingredient)
+        return Response('OK')
