@@ -174,6 +174,17 @@ export default class ProductList extends React.Component {
       return resp.json()
     })
     .then((ans) => {
+      function compare( a, b ) {
+        if ( a.score < b.score ){
+          return 1;
+        }
+        if ( a.score > b.score ){
+          return -1;
+        }
+        return 0;
+      }
+
+      ans.ingredients.sort(compare)
       this.props.navigation.navigate('Product', { data_: ans, barcode: item.barcode, updateHistory: this.props.updateHistory })
     })
   }

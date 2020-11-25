@@ -169,17 +169,20 @@ export default class AddAvatarButton extends React.Component {
         //console.log("url", this.state.photo_url)
         //console.log("url from props", this.state.photo_url)
         let url;
-        if (this.state.photo_url === "" || this.state.photo_url === null) {
+        if (this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined) {
             url = this.props.url_avatar
         } else {
             url = this.state.photo_url
         }
+        console.log("avatar render 2", url)
+        console.log("avatar render 2 props", this.props.url_avatar)
+        console.log("avatar render 2 state", this.state.photo_url)
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
-                    {((this.state.photo_url === "" || this.state.photo_url === null) && this.props.url_avatar === null) && <SvgXml width="100" height="100" xml={profileImageMock} />}
-                    {((this.state.photo_url === "" || this.state.photo_url === null) && this.props.url_avatar !== null) && <Image style={styles.image} source={{ uri: `${this.props.url_avatar}` }}/>}
-                    {(this.state.photo_url !== "" && this.state.photo_url !== null) && <Image style={styles.image} source={{ uri: `${ this.state.photo_url }` }}/>}
+                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined) && this.props.url_avatar === null) && <SvgXml width="100" height="100" xml={profileImageMock} />}
+                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined ) && this.props.url_avatar !== null) && <Image style={styles.image} source={{ uri: `${this.props.url_avatar}` }}/>}
+                    {(this.state.photo_url !== "" && this.state.photo_url !== null && this.state.photo_url !== undefined) && <Image style={styles.image} source={{ uri: `${ this.state.photo_url }` }}/>}
 
                 </TouchableOpacity>
             </View>

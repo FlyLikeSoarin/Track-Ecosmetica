@@ -17,7 +17,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true ,
+      "bundleIdentifier": "com.ecosmetica.ecosmetica"
+    },
+     "android": {
+      "package": "com.ecosmetica.ecosmetica",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

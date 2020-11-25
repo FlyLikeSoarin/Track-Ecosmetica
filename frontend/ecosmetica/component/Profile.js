@@ -493,6 +493,7 @@ export default class Profile extends React.Component {
   }
 
   async loadUserInfo() {
+    console.log("load user info")
     let header = null
     if (this.state.token === null) {
       header = {
@@ -594,19 +595,31 @@ export default class Profile extends React.Component {
         //onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
       >
         <View>
-          <Product
+         {/* <Product
             title={item.name}
             key={item.name}
             image={item.img_url}
             lable={item.brand_name}
             metric1={item.total_score} 
-            isAddFovoriteShown={false}/>
+         isAddFovoriteShown={true}/>*/}
+            <Product
+            title={item.name}
+            key={1}
+            image={item.img_url}
+            lable={item.brand_name}
+            metric1={item.total_score} 
+            favorite={true}
+            barcode={0}
+            token={this.state.token}
+            isAddFovoriteShown={true}
+            />
         </View>
       </TouchableOpacity>
     )
   };
 
   render() {
+    console.log("avalar render", this.state.url_avatar)
     const { first_name, last_name, ingridients, favourites } = this.state
     return (
       <SafeAreaView style={styles.containerScreen}>

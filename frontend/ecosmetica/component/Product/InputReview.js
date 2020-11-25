@@ -6,7 +6,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Image
 } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -64,7 +65,7 @@ export default class Product extends React.Component {
                 showAlertZeroRating: true
             });
         } else {
-            this.props.setReviews(this.state.rating, this.state.reviewText)
+            this.props.setReviews(this.state.rating, this.state.reviewText, this.props.user_avatar)
             this.props.hideModal();
         }
     }
@@ -121,7 +122,8 @@ export default class Product extends React.Component {
                         />
                     </View>
                     <View style={styles.inputArea}>
-                        <ProfileImageMock />
+                        {this.props.user_avatar === "" && <ProfileImageMock />}
+                        {this.props.user_avatar !== "" && <Image style={styles.image} source={{ uri: `${this.props.user_avatar}` }}/>}
                         <TextInput
                             style={styles.inputText}
                             value={reviewText}
@@ -212,4 +214,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse',
         padding: 10,
     },
+    image: {
+        width: 60,
+        height: 60,
+        borderRadius: 100
+    }
 })

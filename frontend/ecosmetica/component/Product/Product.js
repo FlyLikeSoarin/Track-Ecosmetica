@@ -33,8 +33,17 @@ import UserRaiting from './UserRaiting'
 import ProfileImageMock from '../Button/ProfileImageMock';
 import InputReview from './InputReview'
 import InfoScore from './InfoScore'
+
+
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005';
+
+
+Font.loadAsync({
+    'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf'),
+    'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamilUI-Bold.ttf')
+});
+
 export default class Product extends React.Component {
     constructor(props) {
         super(props);
@@ -78,6 +87,7 @@ export default class Product extends React.Component {
             modalVisible: false,
             modalScoreInfoVisible: false,
             username: '',
+            user_avatar: '',
             token: null,
             id_user: null,
             userMakedReview: false,
@@ -89,8 +99,15 @@ export default class Product extends React.Component {
     }
     async componentDidMount() {
         await Font.loadAsync({
-            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+            'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf'),
+            'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamilUI-Bold.ttf')
         });
+        
+          //console.log("sorted", ingredients_sorted)
+          /*this.setState({
+            ingredients: ingredients_sorted
+          })*/
+
         this.state.navigation.setOptions({
             headerShown: false
         })
@@ -178,12 +195,13 @@ export default class Product extends React.Component {
                 const username = ans.first_name + " " + ans.last_name
                 this.setState({
                     username: username,
-                    id_user: ans.id
+                    id_user: ans.id,
+                    user_avatar: ans.profile_img_url
                 })
             })
             .catch(e => console.log(e))
     }
-    async setReviews(rating, textReview) {
+    async setReviews(rating, textReview, user_avatar) {
         let day = new Date().getDate()
         let month = new Date().getMonth()
         let year = new Date().getFullYear()
@@ -194,7 +212,7 @@ export default class Product extends React.Component {
         let old_user_score = this.state.userScore;
         if (this.state.userMakedReview && this.state.prevReview !== null) {
             const index = oldReviews.indexOf(this.state.prevReview)
-            console.log("id", index)
+            //console.log("id", index)
             if (index !== -1) {
                 oldReviews.splice(index, 1)
             }
@@ -207,7 +225,7 @@ export default class Product extends React.Component {
                 old_user_score = 0
             }
         }
-        console.log(oldReviews)
+        //console.log(oldReviews)
 
         let review = {
             "id": 0,
@@ -217,7 +235,8 @@ export default class Product extends React.Component {
             "timestamp": year + '-' + month + '-' + day + 'T12:24:27.550687Z', //"2020-11-13T12:24:27.550687Z",
             "title": "",
             "user_full_name": this.state.username,
-            "user": this.state.id_user
+            "user": this.state.id_user,
+            "profile_img_url": user_avatar
         }
         //console.log(review)
         oldReviews = oldReviews.concat([review])
@@ -575,6 +594,7 @@ export default class Product extends React.Component {
                         product={this.state.product}
                         setReviews={this.setReviews}
                         prevReview={this.state.prevReview}
+                        user_avatar={this.state.user_avatar}
                     />
                 </Modal>
                 <Modal
@@ -629,7 +649,7 @@ function IngregientBlock({ item }) {
             >
                 <View style={
                     {
-                        backgroundColor: '#fff', //colorScore(item[1]),
+                        backgroundColor: colorScore(item.score),
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -637,7 +657,7 @@ function IngregientBlock({ item }) {
                     }
                 }>
                     <Text style={styles.ingredientScoreText}>
-                        {/*item[1]*/}
+                        {item.score}
                     </Text>
                 </View>
                 <Text style={styles.ingredientText}>
@@ -651,15 +671,28 @@ function IngregientBlock({ item }) {
                     padding: 10,
                     marginTop: 5
                 }}>
+                    <View style={{flexDirection: 'column', paddingBottom: 10}}>
+
                     <Text style={styles.ingredientText}>
-                        {description}
+                    Безопасность:  {item.safety}
                     </Text>
+                    </View>
+                    <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.ingredientText}>
+                    Применение:  {item.usage}
+                    </Text>
+                    </View>
+                    <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.ingredientText}>
+                    Происхождение:  {item.background}
+                    </Text>
+                    </View>
                     {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_scientific_facts}
             </Text>*/}
-                    <Text style={styles.ingredientText}>
+                    {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_safety_info}
-                    </Text>
+        </Text>*/}
                     {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_resources}
         </Text>*/}
@@ -915,7 +948,15 @@ const styles = StyleSheet.create({
         fontFamily: 'NotoSanaTamilLight',
         fontSize: 14,
         color: '#676767',
-        paddingLeft: 10
+        paddingLeft: 10,
+        paddingBottom: 10
+    },
+    ingredientBoldText: {
+        fontFamily: 'NotoSanaTamilBold',
+        fontSize: 14,
+        color: '#676767',
+        paddingLeft: 10,
+        paddingBottom: 10,
     },
     ingredientScoreText: {
         fontSize: 15,

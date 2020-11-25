@@ -215,6 +215,16 @@ handlerBack() {
             AsyncStorage.setItem('history', JSON.stringify(newHistory))
             this.props.route.params.updateHistory(newHistory)*/
             //this.state.navigation.navigate('Home')
+            function compare( a, b ) {
+              if ( a.score < b.score ){
+                return 1;
+              }
+              if ( a.score > b.score ){
+                return -1;
+              }
+              return 0;
+            }
+            ans.ingredients.sort(compare)
             this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data, updateHistory: this.props.route.params.updateHistory});
           }
         }
