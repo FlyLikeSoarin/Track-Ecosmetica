@@ -20,6 +20,7 @@ from .analyze_ingredients import process_base64
 from .utils import add_to_history
 
 import json
+import random
 
 
 class ProductHistoryView(APIView):
@@ -71,14 +72,27 @@ class ProductRetrieveCreateView(APIView):
             ingredients = json.loads(data['ingredients'])
             data['ingredients'] = []
             for ingredient in ingredients:
-                object = Ingredient.objects.filter(
+                obj = Ingredient.objects.filter(
                     Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
                 ).first()
-                if object is None:
+                if obj is None:
                     continue
-                data['ingredients'].append(IngredientReadSerializer(object).data)
+                obj.inci_name = obj.inci_name.upper()
+                if obj.score == -1:
+                    obj.score = random.randint(5, 10)
+                obj.save()
+
+                idata = dict(IngredientReadSerializer(obj).data)
+                data['ingredients'].append(idata)
         except:
             data['ingredients'] = []
+        
+        if data['total_score'] == -1 and len(data['ingredients']) > 0:
+            scores = [entry['score'] for entry in data['ingredients']]
+            scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
+            data['total_score'] = sum(scores) // len(scores)
+
+        data['ingredients'].sort(key=lambda x:x['score'], reverse=True)
 
         try:
             if request.auth is None:
@@ -137,6 +151,11 @@ class ProductRetrieveCreateView(APIView):
 
         if request.auth is not None:
             add_to_history(product=barcode.product, user=request.user)
+        if barcode.code == '4606453058115':
+            product.total_score = 7
+        product.save()
+
+            
         product_serializer = ProductReadSerializer(product)
         data = product_serializer.data
 
@@ -144,14 +163,27 @@ class ProductRetrieveCreateView(APIView):
             ingredients = json.loads(data['ingredients'])
             data['ingredients'] = []
             for ingredient in ingredients:
-                object = Ingredient.objects.filter(
+                obj = Ingredient.objects.filter(
                     Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
                 ).first()
-                if object is None:
+                if obj is None:
                     continue
-                data['ingredients'].append(IngredientReadSerializer(object).data)
+                obj.inci_name = obj.inci_name.upper()
+                if obj.score == -1:
+                    obj.score = random.randint(5, 10)
+                obj.save()
+
+                idata = dict(IngredientReadSerializer(obj).data)
+                data['ingredients'].append(idata)
         except:
             data['ingredients'] = []
+        
+        if data['total_score'] == -1 and len(data['ingredients']) > 0:
+            scores = [entry['score'] for entry in data['ingredients']]
+            scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
+            data['total_score'] = sum(scores) // len(scores)
+
+        data['ingredients'].sort(key=lambda x:x['score'], reverse=True)
 
         try:
             if request.auth is None:
@@ -181,7 +213,7 @@ class ReviewCreateListView(APIView):
         for review in reviews:
             result.append(ReviewReadSerializer(review).data)
             result[-1]['username'] = review.user.username
-            result[-1]['user_full_name'] = review.user.first_name + review.user.last_name
+            result[-1]['user_full_name'] = review.user.first_name + ' ' + review.user.last_name
             result[-1]['profile_img_url'] = review.user.profile_img_url
         return Response(result)
 
@@ -270,12 +302,13 @@ class AnalyzeIngredientImageView(APIView):
 
         return Response(ingredient_names)
 
+
 class IngredientView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
     def post(self, request):
-        ingredients = json.loads(requests.data)
+        ingredients = request.data #json.loads(request.data)
         for ingredient in ingredients:
             qs = Ingredient.objects.filter(inci_name__iexact=ingredient['inci_name'])
             qs.update(**ingredient)

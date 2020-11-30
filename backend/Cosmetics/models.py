@@ -64,7 +64,7 @@ class Ingredient(models.Model):
     usage = models.TextField(blank=True)
     safety = models.TextField(blank=True)
     background = models.TextField(blank=True)
-    total_score = models.IntegerField(default=-1, blank=True)
+    score = models.IntegerField(default=-1, blank=True)
 
     def __str__(self):
         return [i for i in [self.inci_name, self.inn_name] if i!=''][0]
