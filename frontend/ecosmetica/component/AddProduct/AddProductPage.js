@@ -20,12 +20,9 @@ import { ImageManipulator } from 'expo-image-crop'
 
 
 import Back from '../Button/BackButton';
-import AddPhoto from './AddPhotoArea'
-import PhotoButton from './PhotoButton'
 import HomeButton from '../Button/HomeButton'
 import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
-import ShampooSvg from './ShampooSvg'
 import AddPhotoButton from './AddPhotoButton'
 
 var width = Dimensions.get('window').width;
@@ -159,7 +156,7 @@ export default class ProductNotFound extends React.Component {
                 .then((ans) => {
                     console.log(ans)
                     if (serverCode >= 200 && serverCode < 300) {
-                        this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode })
+                        this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode,  updateHistory: this.props.route.params.updateHistory })
                     } else {
                         this.setState({
                             error: true
@@ -319,7 +316,7 @@ export default class ProductNotFound extends React.Component {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.navigate('Scanner')}>
+                        onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
                         <Back />
                     </TouchableOpacity>
                     <View style={styles.title}>
@@ -339,7 +336,8 @@ export default class ProductNotFound extends React.Component {
                         <View style={styles.inputsArea}>
                             <InputScrollView
                                 ref={ref => { this.scrollView = ref }}
-                                onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                                onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+                                >
                                 <TextInput style={styles.input}
                                     value={this.state.barcode}
                                     placeholder='Штрих-код'
@@ -401,13 +399,13 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner')}
+                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}
                     >
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile', { token: this.state.token })}
+                        onPress={() => this.props.navigation.navigate('Profile', { token: this.state.token, updateHistory: this.props.route.params.updateHistory })}
                     >
                         <ProfileButton fill='#929292' />
                         <Text style={styles.buttonText}>Профиль</Text>
@@ -541,7 +539,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
-        marginBottom: 10
+        marginBottom: 10,
+        paddingTop: 5,
+        paddingBottom: 5
     },
     bodySroll: {
         flex: 2

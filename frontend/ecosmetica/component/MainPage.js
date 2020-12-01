@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, SafeAreaView, AsyncStorage } from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
@@ -14,6 +14,7 @@ import SearchButton from './Button/SearchButton'
 import LoadingScreen from './LoadingScreen'
 import ProductList from './History/ProductList'
 import IntroWindows from './IntroWindows'
+import { createIconSetFromFontello } from 'react-native-vector-icons';
 
 //import HistoryStore from './History/HistoryStore'
 
@@ -22,21 +23,21 @@ var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   header: {
-    flex: 1,
+    flex: 0.8,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     borderBottomColor: '#929292',
     borderBottomWidth: 0.5,
-    paddingTop: 10,
+    //backgroundColor: 'black'
   },
   title: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    //alignItems: "center",
-    marginLeft: 50,
-    marginBottom: 5,
+    alignContent: "center",
+    //backgroundColor: 'red'
+    //marginBottom: 5,
   },
   textEco: {
     fontSize: 24,
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'NotoSanaTamilLight',
     color: '#676767',
+    textAlign: 'center'
   },
   searchArea: {
     alignItems: "center",
@@ -169,7 +171,8 @@ export default class MainPage extends React.Component {
       count: false,
       isUpdated: false,
 
-      showIntroWindows: true
+      showIntroWindows: true,
+      isFirstVisit: 1, //true
     };
 
     this.setToken = this.setToken.bind(this);
@@ -248,7 +251,25 @@ export default class MainPage extends React.Component {
 
   async componentDidMount() {
     console.log('main did vount')
-    AsyncStorage.removeItem('history');
+   //AsyncStorage.removeItem('history');
+    let isFirstVisit = null
+    try {
+      isFirstVisit = await AsyncStorage.getItem('visitetd')
+    } catch(e) {
+      console.log(e)
+    }
+    if (isFirstVisit !== null) {
+      this.setState({
+        showIntroWindows: false
+      })
+    } else {
+      try {
+        AsyncStorage.setItem('visitetd', 'true')
+      } catch(e) {
+        console.log(e)
+      }
+    }
+    
     let token = null
     try {
       token = await AsyncStorage.getItem('token');
@@ -309,21 +330,22 @@ export default class MainPage extends React.Component {
 
   render() {
     console.log('render main page', this.state.storageHistory)
-    const { assetsLoaded, storageHistory, showIntroWindows } = this.state;
+    const { assetsLoaded, storageHistory, showIntroWindows, isFirstVisit } = this.state;
 
     if (assetsLoaded) {
       if (!showIntroWindows) {
         return (
-          <View style={styles.container}>
+          <SafeAreaView style={styles.container}>
             <View style={styles.header}>
               <View style={styles.title}>
                 <Text style={styles.textSmetica}>История</Text>
               </View>
-              <TouchableOpacity
+              {/*<TouchableOpacity*
                 style={styles.searchArea}
-                onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, clearHistory: () => this.clearHistory() })}>
-                <SearchButton />
-              </TouchableOpacity>
+                //onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, clearHistory: () => this.clearHistory() })}
+              >*/}
+                {/*<SearchButton />*/}
+              {/*</TouchableOpacity>/*}*/}
             </View>
             <View style={styles.body}>
               <ProductList
@@ -350,13 +372,13 @@ export default class MainPage extends React.Component {
                 <Text style={styles.buttonText} >Сканировать</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonArea}
-                onPress={() => this.props.navigation.navigate('Profile', { logOut: this.logOut, token: this.state.token })}
-              >
+                onPress={() => this.props.navigation.navigate('Profile', { logOut: this.logOut, token: this.state.token, updateHistory: this.updateHistory })}
+              > 
                 <ProfileButton  fill='#929292'/>
                 <Text style={styles.buttonText}>Профиль</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </SafeAreaView>
         );
       } else {
         return (

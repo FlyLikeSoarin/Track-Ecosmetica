@@ -302,8 +302,8 @@ export default class Profile extends React.Component {
       excelledIngridiends: [],
       assetsLoaded: false,
       iconLogoutColor: '#ffffff',
-      first_name: 'Имя',
-      last_name: 'Фамилия',
+      first_name: '',
+      last_name: '',
       url_avatar: null,
 
       showIngridients: false,
@@ -558,7 +558,7 @@ export default class Profile extends React.Component {
       token: null,
       iconLogoutColor: '#fff'
     })
-    this.state.navigation.navigate('Profile')
+    this.state.navigation.navigate('Profile', { updateHistory: this.props.route.params.updateHistory})
   }
 
   showIngridients() {
@@ -748,12 +748,12 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonArea}
-            onPress={() => this.props.navigation.navigate('Scanner')}>
+            onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
             <ScanButton />
             <Text style={styles.buttonText} >Сканировать</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonArea}
-            onPress={() => this.props.navigation.navigate('Profile')}>
+          <TouchableOpacity style={styles.buttonArea}>
+            {/*onPress={() => this.props.navigation.navigate('Profile')}>*/}
             <ProfileButton fill='#009E4E' />
             <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>

@@ -1,17 +1,22 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import add from '../../assets/svg/add.svg';
+
+
+var width = Dimensions.get('window').width;
+
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#009E4E',
-        width: 120,
-        height: 120,
+        width: width-0.7*width,
+        height: width-0.7*width,
         borderRadius: 30,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        margin: 5
     },
     text: {
         color: '#fff',

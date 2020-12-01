@@ -20,9 +20,6 @@ import Login from './component/Login/Login'
 import Registr from './component/Login/Registr'
 import ProductInfo from './component/History/ProductInfo'
 import Profile from './component/Profile'
-import ScannerIngredients from './component/Scanner/ScannerIngredients'
-
-import HistoryStore from './component/History/HistoryStore'
 
 
 const styles = StyleSheet.create({
@@ -36,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Search({ navigation, route }) {
+/*function Search({ navigation, route }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Search Screen</Text>
@@ -48,108 +45,12 @@ function Search({ navigation, route }) {
       <Button title='очистить историю' onPress={() => route.params.clearHistory()} />
     </View>
   );
-};
-
-function AddIngridient({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Search Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
-
-function ScannerIngredients1({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>ScannerIngredients Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-    </View>
-  );
-};
+};*/
 
 
-// function Profile({ navigation }) {
-//   const [token, setToken] = React.useState('')
-//   const showToken = async () => {
-//     try {
-//     const token = await AsyncStorage.getItem('token')
-//     console.log('set')
-//     setToken(token);
-//     }
-//     catch(e) {
-//       console.log(e)
-//     }
-//   }
-//   const logOut = async () => {
-//     await AsyncStorage.removeItem('token');
-//   }
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>{token}</Text>
-//       <Button
-//         title="Go to Home"
-//         onPress={() => navigation.navigate('Home')}
-//       //onPress={() => showToken()}
-//       />
-//       <Button
-//       title="Token"
-//       onPress={()=> showToken()}
-//       />
-//       <Button
-//       title="logout"
-//       onPress={() => logOut()}
-//       />
-//     </View>
-//   );
-// };
+
+
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-// function HomeTabs() {
-//   return (
-
-//     <NavigationContainer>
-//       <Tab.Navigator
-//         screenOptions={({ route }) => ({
-//           tabBarIcon: ({ color, size }) => {
-//             let iconName;
-//             switch (route.name) {
-//               case 'Домой': iconName ='ios-home';
-//               break
-//               case 'Сканировать': iconName = 'md-reverse-camera';
-//               break
-//               case 'Профиль': iconName = 'ios-person';
-//               break
-//             }
-//             return <Ionicons name={iconName} size={size} color={color} />;
-//           },
-//         })}
-//         tabBarOptions={{
-//           activeTintColor: '#9ae7af',
-//           inactiveTintColor: 'gray',
-//           labelStyle: {
-//             fontSize: 16,
-//           },
-//           // style: {
-//           //   backgroundColor: '#9ae7af',
-//           // },
-//         }}
-//     >
-//       <Tab.Screen name='Домой' component={ProductList} />
-//       <Tab.Screen name='Сканировать' component={ProductList} />
-//       <Tab.Screen name='Профиль' component={ProductList} />
-//     </Tab.Navigator>
-//     </NavigationContainer>
-
-// );
-// }
 
 export default class App extends React.Component {
 
@@ -176,7 +77,6 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.initAuthToken();
-    //console.log('mp', this.state.userToken);
   }
 
 
@@ -188,18 +88,14 @@ export default class App extends React.Component {
           <Stack.Screen
             name="Home"
             component={MainPage}
-            // options={{transitionSpec:{open:{animation:'timing'}}}}
           />
           <Stack.Screen name='Profile' component={Profile}  />
           <Stack.Screen name='Scanner' component={BarcodeScannerComponent} />
-          <Stack.Screen name='Search' component={Search} />
           <Stack.Screen name='Product' component={Product} />
           <Stack.Screen name='ProductNotFound' component={ProductNotFound} />
           <Stack.Screen name='AddProduct' component={AddProductPage} />
           <Stack.Screen name='Login' component={Login} />
           <Stack.Screen name='Registr' component={Registr} />
-          <Stack.Screen name='ScannerIngredients' component={ScannerIngredients} />
-          <Stack.Screen name='AddIngridient' component={AddIngridient} />
           <Stack.Screen name='ProductInfo' component={ProductInfo} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -37,7 +37,7 @@ export default class ProductNotFound extends React.Component {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.navigate('Scanner')}>
+                        onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
                         <Back />
                     </TouchableOpacity>
                 </View>
@@ -54,7 +54,7 @@ export default class ProductNotFound extends React.Component {
                         </Text>
                     </View>
                     <View style={styles.buttonAddArea}>
-                        <TouchableOpacity onPress={() => this.state.navigation.navigate('AddProduct', { data: data, type: type })}>
+                        <TouchableOpacity onPress={() => this.state.navigation.navigate('AddProduct', { data: data, type: type,  updateHistory: this.props.route.params.updateHistory })}>
                             <View style={styles.buttonAdd}>
                                 <Text style={styles.buttonAddText}>
                                     Добавить
@@ -70,13 +70,13 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner')}
+                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}
                     >
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile')}
+                        onPress={() => this.props.navigation.navigate('Profile', {updateHistory: this.props.route.params.updateHistory})}
                     >
                         <ProfileButton fill='#929292'/>
                         <Text style={styles.buttonText}>Профиль</Text>

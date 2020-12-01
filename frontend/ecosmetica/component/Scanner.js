@@ -23,11 +23,21 @@ export default class BarcodeScannerComponent extends React.Component {
       data: null,
       token: null,
       fallServer: false,
-      history: [],
+      history:[],
     };
   }
 
   async componentDidMount() {
+    let history = null
+    try {
+      history = await AsyncStorage.getItem('history');
+      //console.log('get history from async in scanner', history)
+    } catch (e) {
+      console.log(e)
+    }
+    if (history !== null)
+      this.setState({ history: JSON.parse(history) })
+    
     this.getPermissionsAsync();
 
     this.state.navigation.setOptions({
@@ -37,7 +47,7 @@ export default class BarcodeScannerComponent extends React.Component {
     let token = null
     try {
       token = await AsyncStorage.getItem('token');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
     }
     if (token !== null) {
@@ -48,13 +58,6 @@ export default class BarcodeScannerComponent extends React.Component {
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
-    try{
-      let history = await AsyncStorage.getItem('history');
-      this.setState({history: JSON.parse(history)})
-      //console.log('get history from async in scanner', history)
-    } catch (e) {
-      console.log(e)
-    }
   }
 
   getPermissionsAsync = async () => {
@@ -64,20 +67,20 @@ export default class BarcodeScannerComponent extends React.Component {
 
   showAlertServer = () => {
     this.setState({
-        fallServer: true
+      fallServer: true
     });
-}
+  }
 
-hideAlertServer = () => {
+  hideAlertServer = () => {
     this.setState({
-        fallServer: false
+      fallServer: false
     });
-}
+  }
 
-handlerBack() {
-  //this.props.route.params.updateHistory()
-  this.state.navigation.navigate('Home')
-}
+  handlerBack() {
+    //this.props.route.params.updateHistory()
+    this.state.navigation.navigate('Home')
+  }
 
   render() {
     const { hasCameraPermission, scanned, scannedQRCode, fallServer } = this.state;
@@ -99,10 +102,10 @@ handlerBack() {
         <BarCodeScanner onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned} style={StyleSheet.absoluteFillObject} />
 
         <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={()=>this.handlerBack()}
-            //onPress={() => this.state.navigation.navigate('Home') }
-            >
+          <TouchableOpacity
+            onPress={() => this.handlerBack()}
+          //onPress={() => this.state.navigation.navigate('Home') }
+          >
             <Back />
           </TouchableOpacity>
         </View>
@@ -113,20 +116,20 @@ handlerBack() {
           {scannedQRCode && <Text style={styles.alert}>Данный формат не поддерживается</Text>}
         </View>
         <AwesomeAlert
-                            show={fallServer}
-                            showProgress={false}
-                            title="Сервер недоступен"
-                            message="Повторите поытку через некоторе время"
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showCancelButton={false}
-                            showConfirmButton={true}
-                            confirmText="OK"
-                            confirmButtonColor="#009E4E"
-                            onConfirmPressed={() => {
-                                this.hideAlertServer();
-                            }}
-                        />
+          show={fallServer}
+          showProgress={false}
+          title="Сервер недоступен"
+          message="Повторите поытку через некоторе время"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={false}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor="#009E4E"
+          onConfirmPressed={() => {
+            this.hideAlertServer();
+          }}
+        />
       </SafeAreaView>
     );
   }
@@ -154,22 +157,22 @@ handlerBack() {
     console.log('scanner')
     console.log(data)
     await fetch(`${URL}/product/?code=${data}`, {
-        method: 'GET',
-        headers: header
-      })
+      method: 'GET',
+      headers: header
+    })
       .then((resp) => {
         /*console.log(resp)
         console.log(resp.status)
         console.log(token)*/
         console.log(resp.status)
         /*console.log(resp)*/
-        if(resp.status === 200) {
+        if (resp.status === 200) {
           return resp.json()
         }
-        if(500 <= resp.status && resp.status <= 526 ){
+        if (500 <= resp.status && resp.status <= 526) {
           //serverError = true
         }
-        if(400 <= resp.status && resp.status <= 499) {
+        if (400 <= resp.status && resp.status <= 499) {
           notFound = true
         }
       })
@@ -198,36 +201,36 @@ handlerBack() {
                 brand: null
               }
             }
-            this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
-          } 
+            this.state.navigation.navigate('ProductNotFound', { type: type, data: product, updateHistory: this.props.route.params.updateHistory });
+          }
           else {
-            function compare( a, b ) {
-              if ( a.score < b.score ){
+            function compare(a, b) {
+              if (a.score < b.score) {
                 return 1;
               }
-              if ( a.score > b.score ){
+              if (a.score > b.score) {
                 return -1;
               }
               return 0;
             }
             ans.ingredients.sort(compare)
-            this.state.navigation.navigate('Product', {type: type, data_: ans, barcode: data, updateHistory: this.props.route.params.updateHistory});
+            this.state.navigation.navigate('Product', { type: type, data_: ans, barcode: data, updateHistory: this.props.route.params.updateHistory });
           }
         }
         else {
           this.setState({
             scannedQRCode: true
           })
-          setTimeout(() => this.setState({scannedQRCode: false}), 3000)
+          setTimeout(() => this.setState({ scannedQRCode: false }), 3000)
         }
         setTimeout(() => this.setState({
           scanned: false
         }), 5000)
       })
-      /*.catch((err) => {
-        this.showAlertServer()
-      }) */
-    }
+    /*.catch((err) => {
+      this.showAlertServer()
+    }) */
+  }
 };
 
 const styles = StyleSheet.create({

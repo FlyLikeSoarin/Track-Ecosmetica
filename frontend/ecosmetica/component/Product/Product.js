@@ -152,6 +152,22 @@ export default class Product extends React.Component {
         if(prevState.id_user != this.state.id_user) {
             this.checkUserMakedReview(this.state.reviews)
         }
+        if (prevProps.route.params.data_ != this.props.route.params.data_) {
+            this.setState({
+                navigation: this.props.navigation,
+                type: this.props.route.params.type,
+                barcode: this.props.route.params.barcode,
+                name: this.props.route.params.data_.name,
+                img_url: this.props.route.params.data_.img_url,
+                brand: this.props.route.params.data_.brand_name,
+                total_score: this.props.route.params.data_.total_score,
+                ingredients: this.props.route.params.data_.ingredients,
+                product: this.props.route.params.data_,
+                isFavorite: this.props.route.params.data_.favorite,
+                userScore: this.props.route.params.data_.user_score,
+                countScores: this.props.route.params.data_.review_count,
+            })
+        }
     }
     checkUserMakedReview(reviews) {
         //console.log(reviews)
@@ -349,7 +365,7 @@ export default class Product extends React.Component {
         })
     }
 
-    goHome() {
+    reloadHistory() {
         const oldHistory = (this.state.history==null)?[]:this.state.history;
         const newProduct = [{
             product: {
@@ -370,6 +386,9 @@ export default class Product extends React.Component {
         let newHistory = newProduct.concat(oldHistory);
         AsyncStorage.setItem('history', JSON.stringify(newHistory))
         this.props.route.params.updateHistory(newHistory)
+    }
+    goHome() {
+        this.reloadHistory()
         this.props.navigation.navigate('Home')
     }
 
@@ -393,7 +412,7 @@ export default class Product extends React.Component {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.goBack()}>
+                        onPress={() => this.goHome()}>
                         <Back />
                     </TouchableOpacity>
                 </View>
@@ -532,13 +551,18 @@ export default class Product extends React.Component {
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner')}
-                    >
+                        onPress={() => {
+                            this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})
+                            this.reloadHistory();
+                    }}>
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile', { logOut: () => { console.log('logout') }, token: this.state.token })}
+                        onPress={() => {
+                            this.props.navigation.navigate('Profile', { logOut: () => { console.log('logout') }, token: this.state.token, updateHistory: this.props.route.params.updateHistory })
+                            this.reloadHistory();
+                        }}
                     >
                         <ProfileButton fill='#929292' />
                         <Text style={styles.buttonText}>Профиль</Text>
@@ -645,7 +669,7 @@ function IngregientBlock({ item }) {
     return (
         <View style={styles.wrapIngredientBlock}>
             <TouchableOpacity style={styles.ingredientBlock}
-                onPress={() => { setShowInfo(!showInfo) }}
+                onPress={() => { if (item.score !== 0) setShowInfo(!showInfo) }}
             >
                 <View style={
                     {

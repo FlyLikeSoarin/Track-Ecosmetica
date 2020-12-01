@@ -180,8 +180,8 @@ export default class AddAvatarButton extends React.Component {
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>
-                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined) && this.props.url_avatar === null) && <SvgXml width="100" height="100" xml={profileImageMock} />}
-                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined ) && this.props.url_avatar !== null) && <Image style={styles.image} source={{ uri: `${this.props.url_avatar}` }}/>}
+                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined) && (this.props.url_avatar === null || this.props.url_avatar === "")) && <SvgXml width="100" height="100" xml={profileImageMock} />}
+                    {((this.state.photo_url === "" || this.state.photo_url === null || this.state.photo_url === undefined ) && (this.props.url_avatar !== null && this.props.url_avatar !== "")) && <Image style={styles.image} source={{ uri: `${this.props.url_avatar}` }}/>}
                     {(this.state.photo_url !== "" && this.state.photo_url !== null && this.state.photo_url !== undefined) && <Image style={styles.image} source={{ uri: `${ this.state.photo_url }` }}/>}
 
                 </TouchableOpacity>

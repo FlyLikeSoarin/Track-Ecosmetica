@@ -11,7 +11,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 
 import CrossButton from '../Button/CrossButton'
-import ImageWindow3 from '../../assets/svg/intro-window3_3.svg'
+import ImageWindow3 from '../../assets/svg/infoimage3.svg'
 
 var width = Dimensions.get('window').width;
 
@@ -79,7 +79,7 @@ export default function InfoSore(props) {
                     <View style={styles.textInfoArea}>
                         <Text style={styles.textInfo}>
                             Каждый продукт имеет рейтинг, основанный
-                            на безопасности и экологичности
+                            на безопасности
                             его состава.
                         </Text>
                     </View>
