@@ -176,8 +176,9 @@ handlerBack() {
       .then((ans) => {
         console.log(ans)
         if (type !== 'org.iso.QRCode') {
-          if (!notFound && ans.ingredients === "") {
+          if (!notFound && ans.ingredients.length === 0) {
             notFoundOnEWG = true
+            console.log("not found on ewg")
           }
           if (serverError) {
             this.showAlertServer()
@@ -200,21 +201,6 @@ handlerBack() {
             this.state.navigation.navigate('ProductNotFound', {type: type, data: product});
           } 
           else {
-            /*const oldHistory = (this.state.history==null)?[]:this.state.history;
-            const newProduct = [{
-              product: ans,
-              barcode: data
-            }];
-            for (let i = 0; i < oldHistory.length; i++) {
-                if (newProduct[0].barcode === oldHistory[i].barcode) {
-                  oldHistory.splice(i, 1);
-                  break;
-                }
-            }
-            let newHistory = newProduct.concat(oldHistory);
-            AsyncStorage.setItem('history', JSON.stringify(newHistory))
-            this.props.route.params.updateHistory(newHistory)*/
-            //this.state.navigation.navigate('Home')
             function compare( a, b ) {
               if ( a.score < b.score ){
                 return 1;

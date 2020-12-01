@@ -153,6 +153,7 @@ export default class ProductNotFound extends React.Component {
                     //console.log('submit product')
                     console.log(resp.status)
                     serverCode = resp.status
+                    console.log('body', resp.body)
                     return resp.json()
                 })
                 .then((ans) => {
