@@ -1,15 +1,22 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity, AsyncStorage, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, AsyncStorage, SafeAreaView, Modal, Dimensions, TextInput } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 import BarcodeImage from './Scanner/Barcodeimage'
 import Back from './Button/BackButton'
+import Cross from './Button/CrossButton'
 
 const URL = 'http://185.148.82.169:8005';
+
+var width = Dimensions.get('window').width;
+Font.loadAsync({
+  'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+});
 
 export default class BarcodeScannerComponent extends React.Component {
 
@@ -23,8 +30,11 @@ export default class BarcodeScannerComponent extends React.Component {
       data: null,
       token: null,
       fallServer: false,
-      history:[],
+      history: [],
+      modalVisible: false
     };
+
+    this.handleBarcode = this.handleBarcode.bind(this)
   }
 
   async componentDidMount() {
@@ -37,7 +47,7 @@ export default class BarcodeScannerComponent extends React.Component {
     }
     if (history !== null)
       this.setState({ history: JSON.parse(history) })
-    
+
     this.getPermissionsAsync();
 
     this.state.navigation.setOptions({
@@ -83,7 +93,7 @@ export default class BarcodeScannerComponent extends React.Component {
   }
 
   render() {
-    const { hasCameraPermission, scanned, scannedQRCode, fallServer } = this.state;
+    const { hasCameraPermission, scanned, scannedQRCode, fallServer, modalVisible } = this.state;
 
     if (hasCameraPermission === null) {
       return <Text>Requesting for camera permission</Text>;
@@ -104,9 +114,13 @@ export default class BarcodeScannerComponent extends React.Component {
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => this.handlerBack()}
-          //onPress={() => this.state.navigation.navigate('Home') }
           >
             <Back />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconArea}
+            onPress={() => this.setState({ modalVisible: true })}
+          >
+            <Icon name="keyboard" color='#fff' size={30} />
           </TouchableOpacity>
         </View>
         <View style={styles.scanArea}>
@@ -130,8 +144,62 @@ export default class BarcodeScannerComponent extends React.Component {
             this.hideAlertServer();
           }}
         />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            console.log("close")
+          }}
+        >
+          {/*<View style={styles.container}>*/}
+          <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    style={styles.container}
+                >
+          <View style={styles.inputArea}>
+            <View style={styles.headerInput}>
+              <View style={styles.textWrap}>
+                <Text style={styles.titleText}>
+                  Введите штрих-код
+                        </Text>
+              </View>
+              <TouchableOpacity style={styles.closeButtonArea}
+                onPress={() => this.setState({ modalVisible: false })}
+              >
+                <Cross fill='#929292'/>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bodyInput}>
+              <TextInput style={styles.input}
+                value={this.state.data}
+                placeholder='Штрих-код'
+                placeholderTextColor="#8B8B8B"
+                autoCapitalize="none"
+                onChangeText={this.handleBarcode} />
+              <View style={styles.buttonArea}>
+                <TouchableOpacity style={styles.button}
+                  onPress={() => {
+                    this.handleBarCodeScanned({type: "NaN", data: this.state.data})
+                    this.setState({modalVisible: false})
+                  }
+                  }
+                >
+                  <Text style={styles.buttonText}> Найти </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          </KeyboardAvoidingView>
+          {/*</Modal></View>*/}
+        </Modal>
       </SafeAreaView>
     );
+  }
+  handleBarcode(text) {
+    this.setState({
+      data: text
+    })
   }
 
   handleBarCodeScanned = async ({ type, data }) => {
@@ -237,7 +305,12 @@ const styles = StyleSheet.create({
   header: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, .5)',
-    paddingTop: 30
+    paddingTop: 30,
+    flexDirection: "row",
+    justifyContent: 'space-between'
+  },
+  iconArea: {
+    marginRight: 20
   },
   scanArea: {
     flex: 2,
@@ -264,5 +337,71 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
-  }
+  },
+  /*****modal */
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.8)'
+},
+  inputArea: {
+    backgroundColor: '#fff',
+    width: width - 100,
+   //height: width - 100,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  headerInput: {
+    flexDirection: 'row',
+  },
+  textWrap: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: 'center'
+  },
+  titleText: {
+    fontFamily: 'NotoSanaTamilLight',
+    fontSize: 18,
+    color: '#929292',
+  },
+  closeButtonArea: {
+    padding: 10
+  },
+  bodyInput: {
+    alignItems: 'stretch',
+    padding: 10
+  },
+  input: {
+        backgroundColor: '#E5E5E5',
+        //margin: 5,
+        marginLeft: 70,
+        //marginLeft: 25,
+        padding: 10,
+        minHeight: 40,
+        borderRadius: 10,
+        flexDirection: 'row',
+        width: width - 120,
+    },
+  buttonArea: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10
+  },
+  button: {
+    backgroundColor: '#009E4E',
+    height: 40,
+    width: width - 120,
+        alignItems: 'center',
+        borderRadius: 10,
+        justifyContent: 'center',
+        marginLeft: 60,
+        marginRight: 60,
+        marginTop: 20
+  },
+  buttonText: {
+    fontFamily: 'NotoSanaTamilLight',
+    color: '#fff'
+  },
 });
