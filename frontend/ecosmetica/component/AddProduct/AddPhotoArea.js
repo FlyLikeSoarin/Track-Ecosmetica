@@ -35,7 +35,7 @@ export default function AddPhoto() {
     })
     return (
         <View style={styles.container}>
-            <SvgXml width="60" height="60" xml={add} />
+            <SvgXml width={width-0.85*width} height={width-0.85*width} xml={add} />
             <Text style={styles.text}>
                 Загрузить фото
             </Text>
