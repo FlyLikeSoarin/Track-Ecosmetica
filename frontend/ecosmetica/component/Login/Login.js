@@ -38,6 +38,7 @@ export default class Login extends React.Component {
             failedLogin: false, // неверный логин или пароль
             fallServer: false, // проблемы на сервере
             emptyInput: false, // попытка отправить пустую строку как логин или пароль
+            buttonPressed: false
         };
         this.handlerLogin = this.handlerLogin.bind(this);
         this.handlerEmail = this.handlerEmail.bind(this);
@@ -124,51 +125,60 @@ export default class Login extends React.Component {
     async handlerLogin() {
         var success = false;
         var token = null
-        if (this.state.email !== '' && this.state.password != '') {
-            await fetch(`${URL}/auth/?username=${this.state.email}&password=${this.state.password}`, {
-                method: 'GET'
-            })
-                .then((response) => {
-                    console.log(response.status)
-                    if (response.status === 200) {
-                        success = true
-                    }
-                    if (response.status >= 400 && response.status <= 499) {
-                        //alert("Логин или пароль введен неверно.")
-                        this.showAlertLogin()
-                    }
-                    if (500 <= response.status & response.status <= 526) {
-                        //alert("Сервер недоступен.")
+        // если нажали кнопку первый раз
+        if (!this.state.buttonPressed) {
+            // берем мьютекс на нажатие
+            this.setState({buttonPressed: true})
+
+            if (this.state.email !== '' && this.state.password != '') {
+                await fetch(`${URL}/auth/?username=${this.state.email}&password=${this.state.password}`, {
+                    method: 'GET'
+                })
+                    .then((response) => {
+                        console.log(response.status)
+                        if (response.status === 200) {
+                            success = true
+                        }
+                        if (response.status >= 400 && response.status <= 499) {
+                            //alert("Логин или пароль введен неверно.")
+                            this.showAlertLogin()
+                        }
+                        if (500 <= response.status & response.status <= 526) {
+                            //alert("Сервер недоступен.")
+                            this.showAlertServer()
+                        }
+                        return response.json()
+                    })
+                    .then((ans) => {
+                        console.log(ans)
+                        this.setState({buttonPressed: false})
+                        if (success) {
+                            token = ans.Token;
+                            //console.log(token)
+                            this.setState({
+                                email: '',
+                                password: '',
+                            })
+                            this.state.navigation.navigate('Profile')
+                        } else {
+                            console.log("can't login")
+                        }
+                    })
+                    .catch((err) => {
                         this.showAlertServer()
-                    }
-                    return response.json()
-                })
-                .then((ans) => {
-                    console.log(ans)
-                    if (success) {
-                        token = ans.Token;
-                        //console.log(token)
-                        this.setState({
-                            email: '',
-                            password: '',
-                        })
-                        this.state.navigation.navigate('Profile')
-                    } else {
-                        console.log("can't login")
-                    }
-                })
-                .catch((err) => {
-                    this.showAlertServer()
-                })
-            if (token !== null) {
-                this.props.route.params.setToken(token)
-                await AsyncStorage.setItem('token', token);
-                console.log("token")
-                console.log(token)
+                    })
+                if (token !== null) {
+                    this.props.route.params.setToken(token)
+                    await AsyncStorage.setItem('token', token);
+                    console.log("token")
+                    console.log(token)
+                }
+            } else {
+                this.alertEmptyInput()
+                this.setState({buttonPressed: false})
             }
-        } else {
-            this.alertEmptyInput()
         }
+
     }
 
     changeIcon() {

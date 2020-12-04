@@ -11,7 +11,8 @@ import {
     AsyncStorage,
     Platform,
     KeyboardAvoidingView,
-    SafeAreaView
+    SafeAreaView,
+    ScrollView
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
@@ -49,7 +50,8 @@ export default class ProductNotFound extends React.Component {
             fallServer: false,
             error: false,
             error_code: null,
-            text_not_detected: false
+            text_not_detected: false,
+            bottonPressed: false
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -124,60 +126,64 @@ export default class ProductNotFound extends React.Component {
     }
 
     async handleSubmit() {
-        const token = this.state.token
+        if (!this.state.bottonPressed) {
+            this.setState({ bottonPressed: true })
+            const token = this.state.token
 
-        const a = this.state.ingredients.split(', ')
-        const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
-        console.log(this.state.url_loaded_photo)
-        let serverCode;
-        if (this.state.url_loaded_photo != '' || this.state.uri === '') {
-            await fetch(`${URL}/product/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    //'Authorization': `Token ${token}`,
-                },
-                body: JSON.stringify({
-                    code: this.state.barcode,
-                    name: this.state.name,
-                    brand_name: this.state.brand,
-                    ingredients: array_ingredients,
+            const a = this.state.ingredients.split(', ')
+            const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
+            console.log(this.state.url_loaded_photo)
+            let serverCode;
+            if (this.state.url_loaded_photo != '' || this.state.uri === '') {
+                await fetch(`${URL}/product/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        //'Authorization': `Token ${token}`,
+                    },
+                    body: JSON.stringify({
+                        code: this.state.barcode,
+                        name: this.state.name,
+                        brand_name: this.state.brand,
+                        ingredients: array_ingredients,
+                        description: '',
+                        img_url: this.state.url_loaded_photo,
+                    })
+                })
+                    .then((resp) => {
+                        //console.log('submit product')
+                        console.log(resp.status)
+                        serverCode = resp.status
+                        console.log('body', resp.body)
+                        return resp.json()
+                    })
+                    .then((ans) => {
+                        console.log(ans)
+                        this.setState({ bottonPressed: false })
+                        if (serverCode >= 200 && serverCode < 300) {
+                            this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode, updateHistory: this.props.route.params.updateHistory })
+                        } else {
+                            this.setState({
+                                error: true
+                            })
+                        }
+                    })
+                    .catch((e) => {
+                        console.log(e)
+                        this.setState({ fallServer: true })
+                    })
+                /*this.setState({
+                    barcode: '',
+                    name: '',
+                    brand: '',
+                    ingredients: '',
                     description: '',
-                    img_url: this.state.url_loaded_photo,
-                })
-            })
-                .then((resp) => {
-                    //console.log('submit product')
-                    console.log(resp.status)
-                    serverCode = resp.status
-                    console.log('body', resp.body)
-                    return resp.json()
-                })
-                .then((ans) => {
-                    console.log(ans)
-                    if (serverCode >= 200 && serverCode < 300) {
-                        this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode,  updateHistory: this.props.route.params.updateHistory })
-                    } else {
-                        this.setState({
-                            error: true
-                        })
-                    }
-                })
-                .catch((e) => {
-                    console.log(e)
-                    this.setState({ fallServer: true })
-                })
-            this.setState({
-                barcode: '',
-                name: '',
-                brand: '',
-                ingredients: '',
-                description: '',
-                url_loaded_photo: '',
-                submited: true
-            })
-        } else {
-
+                    url_loaded_photo: '',
+                    submited: true
+                })*/
+            } else {
+                this.setState({ bottonPressed: false })
+            }
         }
     }
 
@@ -191,7 +197,7 @@ export default class ProductNotFound extends React.Component {
                 let result = await ImagePicker.launchCameraAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.All,
                     allowsEditing: false,
-                    aspect: [1, 3],
+                    //aspect: [1, 3],
                     quality: 1,
                     base64: true
                 });
@@ -316,7 +322,7 @@ export default class ProductNotFound extends React.Component {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
+                        onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })}>
                         <Back />
                     </TouchableOpacity>
                     <View style={styles.title}>
@@ -329,68 +335,71 @@ export default class ProductNotFound extends React.Component {
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={styles.body}
                 >
-                    <View style={styles.imageArea}>
-                        <AddPhotoButton setUrl={this.setUrl} submited={submited} />
-                    </View>
-                    <View style={styles.bodySroll}>
-                        <View style={styles.inputsArea}>
-                            <InputScrollView
-                                ref={ref => { this.scrollView = ref }}
-                                onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+                    <ScrollView style={styles.scrollView}>
+                        <View style={styles.imageArea}>
+                            <AddPhotoButton setUrl={this.setUrl} submited={submited} />
+                        </View>
+                        <View style={styles.bodySroll}>
+                            <View style={styles.inputsArea}>
+                                <InputScrollView
+                                    ref={ref => { this.scrollView = ref }}
+                                    onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
                                 >
-                                <TextInput style={styles.input}
-                                    value={this.state.barcode}
-                                    placeholder='Штрих-код'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleBarcode}
-                                />
-                                <TextInput style={styles.input}
-                                    value={this.state.brand}
-                                    placeholder='Бренд'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleBrand} />
-                                <TextInput style={styles.input}
-                                    value={this.state.name}
-                                    placeholder='Название'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    onChangeText={this.handleName} />
-                                <View style={styles.input}>
-                                    <TextInput style={styles.inputIngredients}
-                                        value={this.state.ingredients}
-                                        placeholder='Состав'
+                                    <TextInput style={styles.input}
+                                        value={this.state.barcode}
+                                        placeholder='Штрих-код'
                                         placeholderTextColor="#8B8B8B"
                                         autoCapitalize="none"
-                                        onChangeText={this.hamdelIngredients}
-                                        multiline={true}
-                                        onChange={() => this.scrollView.scrollToEnd({ animated: true })}
+                                        onChangeText={this.handleBarcode}
                                     />
-                                    <TouchableOpacity onPress={() => this.takePhoto()} style={styles.buttonScanArea}>
-                                        <Icon_photo name='photo-camera' color='gray' size={20} />
-                                        <Text style={styles.buttonText}>
-                                            Сканировать
+                                    <TextInput style={styles.input}
+                                        value={this.state.brand}
+                                        placeholder='Бренд'
+                                        placeholderTextColor="#8B8B8B"
+                                        autoCapitalize="none"
+                                        onChangeText={this.handleBrand} />
+                                    <TextInput style={styles.input}
+                                        value={this.state.name}
+                                        placeholder='Название'
+                                        placeholderTextColor="#8B8B8B"
+                                        autoCapitalize="none"
+                                        onChangeText={this.handleName} />
+                                    <View style={styles.input}>
+                                        <TextInput style={styles.inputIngredients}
+                                            value={this.state.ingredients}
+                                            placeholder='Состав'
+                                            placeholderTextColor="#8B8B8B"
+                                            autoCapitalize="none"
+                                            onChangeText={this.hamdelIngredients}
+                                            multiline={true}
+                                            onChange={() => this.scrollView.scrollToEnd({ animated: true })}
+
+                                        />
+                                        <TouchableOpacity onPress={() => this.takePhoto()} style={styles.buttonScanArea}>
+                                            <Icon_photo name='photo-camera' color='gray' size={20} />
+                                            <Text style={styles.buttonText}>
+                                                Сканировать
                                             </Text>
-                                        <Text style={styles.buttonText}>
-                                            состав
+                                            <Text style={styles.buttonText}>
+                                                состав
                                             </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </InputScrollView>
+                            </View>
+                            <View style={styles.buttonAddArea}>
+                                <View style={styles.buttonAdd}>
+                                    <TouchableOpacity
+                                        style={styles.touchArea}
+                                        onPress={() => this.handleSubmit()}>
+                                        <Text style={styles.buttonAddText}>
+                                            Добавить
+                                    </Text>
                                     </TouchableOpacity>
                                 </View>
-                            </InputScrollView>
-                        </View>
-                        <View style={styles.buttonAddArea}>
-                            <View style={styles.buttonAdd}>
-                                <TouchableOpacity
-                                    style={styles.touchArea}
-                                    onPress={() => this.handleSubmit()}>
-                                    <Text style={styles.buttonAddText}>
-                                        Добавить
-                                    </Text>
-                                </TouchableOpacity>
                             </View>
                         </View>
-                    </View>
+                    </ScrollView>
                 </KeyboardAvoidingView>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
@@ -399,7 +408,7 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}
+                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })}
                     >
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
@@ -491,6 +500,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-end',
         backgroundColor: 'white',
+        marginTop: Platform.OS === "android" ? 20 : 0
     },
     header: {
         flex: 1,
@@ -499,13 +509,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
-        //paddingTop: 10,
+        paddingTop: Platform.OS === 'android' ? 15 : 0,
     },
     body: {
         flex: 10,
         flexDirection: 'column',
         justifyContent: 'flex-start',
 
+    },
+    scrollView: {
+        flex: 10,
     },
     bottom: {
         flex: 1,
@@ -514,7 +527,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
         borderTopColor: '#929292',
-        borderTopWidth: 0.5
+        borderTopWidth: 0.5,
     },
     /* header */
     backButton: {
@@ -555,6 +568,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'stretch',
+        paddingTop: 50
     },
     /**  inputsArea **/
     input: {

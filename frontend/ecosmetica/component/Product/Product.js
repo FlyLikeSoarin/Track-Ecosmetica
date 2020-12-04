@@ -11,7 +11,8 @@ import {
     Image,
     FlatList,
     SafeAreaView,
-    Modal
+    Modal,
+    ScrollView
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
@@ -102,11 +103,11 @@ export default class Product extends React.Component {
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf'),
             'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamilUI-Bold.ttf')
         });
-        
-          //console.log("sorted", ingredients_sorted)
-          /*this.setState({
-            ingredients: ingredients_sorted
-          })*/
+
+        //console.log("sorted", ingredients_sorted)
+        /*this.setState({
+          ingredients: ingredients_sorted
+        })*/
 
         this.state.navigation.setOptions({
             headerShown: false
@@ -117,19 +118,19 @@ export default class Product extends React.Component {
         } catch (e) {
             console.log(e)
         }
-        try{
+        try {
             let history = await AsyncStorage.getItem('history');
-            this.setState({history: JSON.parse(history)})
-          } catch (e) {
+            this.setState({ history: JSON.parse(history) })
+        } catch (e) {
             console.log(e)
-          }
+        }
         if (token !== null) {
             this.setState({
                 token: token,
             })
             this.loadUserData(token)
         }
-        
+
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -148,8 +149,8 @@ export default class Product extends React.Component {
                 console.log("fail get reviews")
             })
     }
-    componentDidUpdate(prevProps, prevState){
-        if(prevState.id_user != this.state.id_user) {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.id_user != this.state.id_user) {
             this.checkUserMakedReview(this.state.reviews)
         }
         if (prevProps.route.params.data_ != this.props.route.params.data_) {
@@ -174,24 +175,24 @@ export default class Product extends React.Component {
         //console.log("чек ревью", this.state.id_user)
         let total_score = 0
         //if (this.state.id_user !== null) {
-            const id_user = this.state.id_user
-            for (var i = 0; i < reviews.length; ++i) {
-                const item = reviews[i]
-                //console.log(item)
-                total_score += item.rating
-                if (item.user == id_user) {
-                    this.setState({
-                        userMakedReview: true,
-                        prevReview: item
-                    })
-                }
+        const id_user = this.state.id_user
+        for (var i = 0; i < reviews.length; ++i) {
+            const item = reviews[i]
+            //console.log(item)
+            total_score += item.rating
+            if (item.user == id_user) {
+                this.setState({
+                    userMakedReview: true,
+                    prevReview: item
+                })
             }
-            if (reviews.length  != 0) {
-                total_score = total_score / reviews.length
-            }
-            this.setState({
-                userScore: total_score
-            })
+        }
+        if (reviews.length != 0) {
+            total_score = total_score / reviews.length
+        }
+        this.setState({
+            userScore: total_score
+        })
         //}
     }
     async loadUserData(token) {
@@ -235,7 +236,7 @@ export default class Product extends React.Component {
             const sum = old_number_reviews * old_user_score - this.state.prevReview.rating
             old_number_reviews -= 1
             old_user_score = sum / old_number_reviews
-            if (old_number_reviews !== 0){
+            if (old_number_reviews !== 0) {
                 old_user_score = sum / old_number_reviews
             } else {
                 old_user_score = 0
@@ -366,7 +367,7 @@ export default class Product extends React.Component {
     }
 
     reloadHistory() {
-        const oldHistory = (this.state.history==null)?[]:this.state.history;
+        const oldHistory = (this.state.history == null) ? [] : this.state.history;
         const newProduct = [{
             product: {
                 name: this.state.name,
@@ -397,13 +398,13 @@ export default class Product extends React.Component {
             img_url, brand, name,
             total_score, ingredients, reviews,
             modalVisible, token, barcode, isFavorite, countScores,
-            modalScoreInfoVisible, userMakedReview} = this.state
+            modalScoreInfoVisible, userMakedReview } = this.state
         let user_raiting = this.state.userScore;
         if (user_raiting == -1) {
             user_raiting = 0
         }
         const user_scores = this.state.userScore;
-        if(total_score < 0) total_score = 0;
+        if (total_score < 0) total_score = 0;
         if (img_url == "") {
             img_url = 'https://static.ewg.org/skindeep/img/ewg_missing_product.png'
         }
@@ -437,13 +438,13 @@ export default class Product extends React.Component {
                                 <TouchableOpacity style={styles.addToFavoritesButton}
                                     onPress={() => this.addToFavorites()}
                                 >
-                                    {!isFavorite && (<SvgXml xml={Heart} width={25} height={25}/>)}
-                                    {isFavorite && <SvgXml xml={fillHeart} width={25} height={25}/>}
-                                    {!isFavorite &&(<Text style={styles.addToFavoritText}>
+                                    {!isFavorite && (<SvgXml xml={Heart} width={25} height={25} />)}
+                                    {isFavorite && <SvgXml xml={fillHeart} width={25} height={25} />}
+                                    {!isFavorite && (<Text style={styles.addToFavoritText}>
                                         В избранное
                                     </Text>)}
-                                    {isFavorite &&(<Text style={styles.addToFavoritText}>
-                                        Удалить из избранного
+                                    {isFavorite && (<Text style={styles.addToFavoritText}>
+                                        Удалить
                                     </Text>)}
                                 </TouchableOpacity>
                             </View>
@@ -465,83 +466,85 @@ export default class Product extends React.Component {
                             {StarScore(total_score, styles.scoreArea, 15)}
                         </View>*/}
                     </View>
-                    <View style={styles.infoArea}>
-                        <View style={styles.nameWrap}>
-                            <Text style={styles.nameText}>
-                                {name}
-                            </Text>
-                            <Text style={styles.brandText}>
-                                {brand}
-                            </Text>
-                        </View>
-                        <View style={styles.tabsArea}>
-                            <TouchableOpacity style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderTopWidth: 3,
-                                borderTopColor: this.state.colorsTabsPanel.ingredientsTop,
-                                backgroundColor: this.state.colorsTabsPanel.ingredientsBackground,
-                                borderBottomRightRadius: 10,
-                                borderBottomWidth: 1,
-                                borderBottomColor: this.state.colorsTabsPanel.ingredientsBackground
-                            }}
-                                onPress={() => this.hideReviews()}
-                            >
-                                <Text style={styles.tabsText}>
-                                    Ингредиенты
+                    <ScrollView style={styles.scrollView} >
+                        <View style={styles.infoArea}>
+                            <View style={styles.nameWrap}>
+                                <Text style={styles.nameText}>
+                                    {name}
                                 </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderTopWidth: 3,
-                                borderTopColor: this.state.colorsTabsPanel.reviewsTop,
-                                backgroundColor: this.state.colorsTabsPanel.reviewsBackground,
-                                borderBottomLeftRadius: 10,
-                                borderBottomWidth: 1,
-                                borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
-                            }}
-                                onPress={() => this.showReviews()}
-                            >
-                                <Text style={styles.tabsText}>
-                                    Отзывы
+                                <Text style={styles.brandText}>
+                                    {brand}
                                 </Text>
-                            </TouchableOpacity>
-                        </View>
-                        {!this.state.showReviews && (
-                            <View style={styles.ingregients}>
-                                <SafeAreaView style={styles.scroll}>
-                                    <FlatList
-                                        style={styles.innerScroll}
-                                        data={ingredients}
-                                        key={item => { item[0] }}
-                                        renderItem={renderItem}
-                                    />
-                                </SafeAreaView>
                             </View>
-                        )}
-                        {this.state.showReviews && (
-                            <View style={styles.reviews}>
-                                {reviews.length === 0 && (
-                                    <View style={styles.wrapEmptyReviewText}>
-                                        <Text style={styles.emptyReviewsText}>
-                                            Отзывы отсутствуют
+                            <View style={styles.tabsArea}>
+                                <TouchableOpacity style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderTopWidth: 3,
+                                    borderTopColor: this.state.colorsTabsPanel.ingredientsTop,
+                                    backgroundColor: this.state.colorsTabsPanel.ingredientsBackground,
+                                    borderBottomRightRadius: 10,
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: this.state.colorsTabsPanel.ingredientsBackground
+                                }}
+                                    onPress={() => this.hideReviews()}
+                                >
+                                    <Text style={styles.tabsText}>
+                                        Ингредиенты
+                                </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderTopWidth: 3,
+                                    borderTopColor: this.state.colorsTabsPanel.reviewsTop,
+                                    backgroundColor: this.state.colorsTabsPanel.reviewsBackground,
+                                    borderBottomLeftRadius: 10,
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
+                                }}
+                                    onPress={() => this.showReviews()}
+                                >
+                                    <Text style={styles.tabsText}>
+                                        Отзывы
+                                </Text>
+                                </TouchableOpacity>
+                            </View>
+                            {!this.state.showReviews && (
+                                <View style={styles.ingregients}>
+                                    <SafeAreaView style={styles.scroll}>
+                                        <FlatList
+                                            style={styles.innerScroll}
+                                            data={ingredients}
+                                            key={item => { item[0] }}
+                                            renderItem={renderItem}
+                                        />
+                                    </SafeAreaView>
+                                </View>
+                            )}
+                            {this.state.showReviews && (
+                                <View style={styles.reviews}>
+                                    {reviews.length === 0 && (
+                                        <View style={styles.wrapEmptyReviewText}>
+                                            <Text style={styles.emptyReviewsText}>
+                                                Отзывы отсутствуют
                                         </Text>
-                                    </View>
-                                )}
-                                <SafeAreaView style={styles.scroll}>
-                                    <FlatList
-                                        style={styles.innerScroll}
-                                        data={reviews}
-                                        key={item => { item.id }}
-                                        renderItem={renderItemReview}
-                                    />
-                                </SafeAreaView>
-                            </View>
-                        )}
-                    </View>
+                                        </View>
+                                    )}
+                                    <SafeAreaView style={styles.scroll}>
+                                        <FlatList
+                                            style={styles.innerScroll}
+                                            data={reviews}
+                                            key={item => { item.id }}
+                                            renderItem={renderItemReview}
+                                        />
+                                    </SafeAreaView>
+                                </View>
+                            )}
+                        </View>
+                    </ScrollView>
                 </View>
                 <View style={styles.bottom}>
                     <TouchableOpacity style={styles.buttonArea}
@@ -552,9 +555,9 @@ export default class Product extends React.Component {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
                         onPress={() => {
-                            this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})
+                            this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })
                             this.reloadHistory();
-                    }}>
+                        }}>
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
@@ -695,21 +698,21 @@ function IngregientBlock({ item }) {
                     padding: 10,
                     marginTop: 5
                 }}>
-                    <View style={{flexDirection: 'column', paddingBottom: 10}}>
+                    <View style={{ flexDirection: 'column', paddingBottom: 10 }}>
 
-                    <Text style={styles.ingredientText}>
-                    Безопасность:  {item.safety}
-                    </Text>
+                        <Text style={styles.ingredientText}>
+                            Безопасность:  {item.safety}
+                        </Text>
                     </View>
-                    <View style={{flexDirection: 'column'}}>
-                    <Text style={styles.ingredientText}>
-                    Применение:  {item.usage}
-                    </Text>
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.ingredientText}>
+                            Применение:  {item.usage}
+                        </Text>
                     </View>
-                    <View style={{flexDirection: 'column'}}>
-                    <Text style={styles.ingredientText}>
-                    Происхождение:  {item.background}
-                    </Text>
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.ingredientText}>
+                            Происхождение:  {item.background}
+                        </Text>
                     </View>
                     {/*<Text style={styles.ingredientText}>
                         {item.cosmetics_info_scientific_facts}
@@ -759,8 +762,8 @@ const renderItemReview = ({ item }) => {
                 />
                 <View style={styles.userInfoAndLikes}>
                     <View style={styles.userInfoArea}>
-                        { (url === "") && <SvgXml width="30" height="30" xml={profileImageMock} />}
-                        { (url !== "") && <Image style={{width: 30, height: 30, borderRadius: 100}} source={{ uri: `${url}` }}/>}
+                        {(url === "") && <SvgXml width="30" height="30" xml={profileImageMock} />}
+                        {(url !== "") && <Image style={{ width: 30, height: 30, borderRadius: 100 }} source={{ uri: `${url}` }} />}
                         <View style={styles.nameAndDateArea}>
                             <Text style={styles.userNameText}>
                                 {item.user_full_name}
@@ -836,7 +839,7 @@ const styles = StyleSheet.create({
     },
     /*body*/
     topInfoArea: {
-        flex: 1.2,
+        flex: 0.5,
         alignItems: 'stretch',
         justifyContent: 'center',
         borderBottomColor: '#929292',
@@ -895,8 +898,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
     },
     image: {
-        height: 140,
-        width: 140,
+        height: width - 0.7 * width,
+        width: width - 0.7 * width,
         borderRadius: 20,
     },
     score: {
@@ -907,8 +910,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     infoArea: {
-        flex: 2,
+
         alignItems: 'stretch',
+    },
+    scrollView: {
+        flex: 2
     },
     nameText: {
         fontFamily: 'NotoSanaTamilLight',
@@ -956,6 +962,7 @@ const styles = StyleSheet.create({
     },
     scroll: {
         alignItems: 'stretch',
+        paddingBottom: 0
     },
     innerScroll: {
         marginBottom: 100

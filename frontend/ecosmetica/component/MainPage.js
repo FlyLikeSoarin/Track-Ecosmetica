@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, SafeAreaView, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, SafeAreaView, AsyncStorage, Platform } from 'react-native';
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#929292',
     borderBottomWidth: 0.5,
     //backgroundColor: 'black'
+    paddingTop: Platform.OS ==='android' ? 20: 0
   },
   title: {
     flex: 1,

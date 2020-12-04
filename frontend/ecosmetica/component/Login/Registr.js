@@ -43,6 +43,8 @@ export default class Registr extends React.Component {
             icon: 'ios-eye-off',
             secure: true,
             showLengthAlert: false,
+
+            bottonPressed: false
         };
 
         this.handlerEmail = this.handlerEmail.bind(this)
@@ -121,66 +123,73 @@ export default class Registr extends React.Component {
     async handlerRegister() {
         var success = false
         var token = null
-        if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password && this.state.password.length >= 5) {
-            await fetch(`${URL}/auth/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: this.state.email,
-                    password: this.state.password,
-                    email: this.state.email,
-                    first_name: this.state.first_name,
-                    last_name: this.state.last_name
+        if (!this.state.bottonPressed) {
+            this.setState({ buttonPressed: true })
+            if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password && this.state.password.length >= 5) {
+                await fetch(`${URL}/auth/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: this.state.email,
+                        password: this.state.password,
+                        email: this.state.email,
+                        first_name: this.state.first_name,
+                        last_name: this.state.last_name
+                    })
                 })
-            })
-                .then((response) => {
-                    console.log(response.status)
-                    if (response.status === 200) {
-                        success = true
-                    }
-                    if (400 <= response.status && response.status <= 499) {
-                        this.showAlertUserExists()
-                    }
-                    if (500 <= response.status && response.status <= 526) {
+                    .then((response) => {
+                        console.log(response.status)
+                        if (response.status === 200) {
+                            success = true
+                        }
+                        if (400 <= response.status && response.status <= 499) {
+                            this.showAlertUserExists()
+                        }
+                        if (500 <= response.status && response.status <= 526) {
+                            this.showAlertServer()
+                        }
+                        return response.json()
+                    })
+                    .then((ans) => {
+                        this.setState({buttonPressed: false})
+                        if (success) {
+                            token = ans.Token;
+
+                            //console.log(ans.Token)
+                            this.state.navigation.navigate('Profile', { logOut: () => console.log("заглушка выхода на стр регистрации"), token: token })
+                            this.setState({
+                                email: '',
+                                password: '',
+                                repeated_password: '',
+                                first_name: '',
+                                last_name: '',
+                            })
+                        } else {
+                            console.log('fail')
+                        }
+                    })
+                    .catch((err) => {
                         this.showAlertServer()
-                    }
-                    return response.json()
-                })
-                .then((ans) => {
-                    if (success) {
-                        token = ans.Token;
-                        
-                        //console.log(ans.Token)
-                        this.state.navigation.navigate('Profile', { logOut: () => console.log("заглушка выхода на стр регистрации"), token: token })
-                        this.setState({
-                            email: '',
-                            password: '',
-                            repeated_password: '',
-                            first_name: '',
-                            last_name: '',
-                        })
-                    } else {
-                        console.log('fail')
-                    }
-                })
-                .catch((err) => {
-                    this.showAlertServer()
-                })
-            if (token !== null) {
-                this.props.route.params.setToken(token)
-                await AsyncStorage.setItem('token', token);
-                //await AsyncStorage.setItem('id_user', id_user)
-            }
-        } else {
-            if (this.state.password !== this.state.repeated_password) {
-                this.showAlertDifferentPasswords();
-            } else if (this.state.password.length < 5) {
-                this.showAlertLengthPassword()
-            }
-            else {
-                this.showAlertSubmitEmpty()
+                    })
+                if (token !== null) {
+                    this.props.route.params.setToken(token)
+                    await AsyncStorage.setItem('token', token);
+                    //await AsyncStorage.setItem('id_user', id_user)
+                }
+            } else {
+                if (this.state.password !== this.state.repeated_password) {
+                    this.showAlertDifferentPasswords();
+                    this.setState({buttonPressed: false})
+                } else if (this.state.password.length < 5) {
+                    this.showAlertLengthPassword()
+                    this.setState({buttonPressed: false})
+                }
+                else {
+                    this.showAlertSubmitEmpty()
+                    this.setState({buttonPressed: false})
+                }
             }
         }
     }
