@@ -204,7 +204,7 @@ class EcogolikProductParser(HTMLParser):
                         img_url = attrs_dict['src']
                         rating_start = img_url.find('/app/images/rating_on_')
                         prefix_len = len('/app/images/rating_on_')
-                        self.product['total_score'] = 2 * int(img_url[rating_start + prefix_len:][:1])
+                        self.product['score'] = 2 * int(img_url[rating_start + prefix_len:][:1])
             if 'class' in parent_attrs_dict:
                 if parent_tag == 'div' and 'ingredient-info__category' in parent_attrs_dict['class']:
                     if tag == 'span':
