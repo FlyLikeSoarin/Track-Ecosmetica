@@ -245,6 +245,7 @@ def update_ingredient(ingredient, chosen_ingredient=None, only_ecogolik=True):
         chosen_ingredient = parser.product
 
     if only_ecogolik:
+        time.sleep(random.uniform(attempts_pause_time, attempts_pause_time * 2))
         return chosen_ingredient
 
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'}
