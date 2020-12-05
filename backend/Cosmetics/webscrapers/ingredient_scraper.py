@@ -12,9 +12,22 @@ from collections import defaultdict
 
 # Settings
 max_attempts = 10
+
 attempts_pause_time = 2.500
+
 cos_dna_search_url = 'http://www.cosdna.com/eng/stuff.php?q={query}'
+
 cosmetics_info_ingredient_url = 'https://www.cosmeticsinfo.org/ingredient/{ingredient}'
+
+ecogolik_search_url = 'https://ecogolik.ru/search/index.php?q={query}'
+
+ecogolik_product_url = 'https://ecogolik.ru{href}'
+
+ecogolik_category_to_field = {
+    'Происхождение': 'background',
+    'Применение': 'usage',
+    'Опасность': 'safety',
+}
 
 
 class CosDNASearchParser(HTMLParser):
@@ -34,7 +47,6 @@ class CosDNASearchParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         self.tag_stack.append((tag, attrs))
         attrs_dict = {key: value for key, value in attrs}
-        print(attrs_dict)
         if 'class' in attrs_dict and 'href' in attrs_dict:
             if tag == 'a' and 'd-block' in attrs_dict['class']:
                 self.products.append({
@@ -128,13 +140,113 @@ class CosmeticsInfoProductParser(HTMLParser):
             self.product['cosmetics_info_' + self.next_data] += sep + data
 
 
-def update_ingredient(ingredient, chosen_ingredient=None):
+class EcogolikSearchParser(HTMLParser):
+    def __init__(self, ingredient_name):
+        super().__init__()
+        self.tag_stack = list()
+        self.next_data = None
+        self.data = ''
+        self.ingredient_name = ingredient_name.lower().strip()
+        self.href = None
+        self.candidte_href = None
+
+    def handle_starttag(self, tag, attrs):
+        self.tag_stack.append((tag, attrs))
+        attrs_dict = {key: value for key, value in attrs}
+
+        if len(self.tag_stack) >= 2:
+            parent_tag = self.tag_stack[-2][0]
+            parent_attrs_dict = {key: value for key, value in self.tag_stack[-2][1]}
+            if 'class' in parent_attrs_dict and 'href' in attrs_dict:
+                if parent_tag == 'div' and 'search-item__title' in parent_attrs_dict['class']:
+                    if tag == 'a' and 'search-item__link' in attrs_dict['class']:
+                        href = attrs_dict['href']
+                        prefix = '/sostav_kosmetika/'
+                        if prefix in href:
+                            self.candidte_href = href
+                            self.next_data = 'search_title'
+
+    def handle_endtag(self, tag):
+        if self.next_data is not None and tag == 'a':
+            letters = ' abcdefghijklmnopqrstuvwxyz'
+            self.data = ''.join([c for c in self.data.lower() if c in letters]).strip()
+            if self.data == self.ingredient_name:
+                self.href = self.candidte_href
+            self.next_data = None
+            self.data = ''
+        self.tag_stack.pop()
+
+    def handle_data(self, data):
+        if self.next_data is not None:
+            self.data += data
+
+
+class EcogolikProductParser(HTMLParser):
+    def __init__(self, product={}):
+        super().__init__()
+        self.tag_stack = list()
+        self.next_data = None
+        self.category_name = None
+        self.product = defaultdict(lambda: '')
+        for key, value in product.items():
+            self.product[key] = value
+
+    def handle_starttag(self, tag, attrs):
+        self.tag_stack.append((tag, attrs))
+        attrs_dict = {key: value for key, value in attrs}
+
+        if len(self.tag_stack) >= 2:
+            parent_tag = self.tag_stack[-2][0]
+            parent_attrs_dict = {key: value for key, value in self.tag_stack[-2][1]}
+            if 'class' in parent_attrs_dict and 'src' in attrs_dict:
+                if parent_tag == 'div' and 'rating-apple' in parent_attrs_dict['class']:
+                    if tag == 'img':
+                        img_url = attrs_dict['src']
+                        rating_start = img_url.find('/app/images/rating_on_')
+                        prefix_len = len('/app/images/rating_on_')
+                        self.product['total_score'] = 2 * int(img_url[rating_start + prefix_len:][:1])
+            if 'class' in parent_attrs_dict:
+                if parent_tag == 'div' and 'ingredient-info__category' in parent_attrs_dict['class']:
+                    if tag == 'span':
+                        self.next_data = 'category_name'
+                    if tag == 'p':
+                        self.next_data = 'category_text'
+
+    def handle_endtag(self, tag):
+        self.tag_stack.pop()
+
+    def handle_data(self, data):
+        if self.next_data is not None:
+            if self.next_data == 'category_name':
+                self.category_name = data
+            elif self.next_data == 'category_text':
+                self.product[ecogolik_category_to_field[self.category_name]] = data
+                self.category_name = None
+            self.next_data = None
+
+
+def update_ingredient(ingredient, chosen_ingredient=None, only_ecogolik=True):
     try:
         ingredient_name = str(ingredient)
     except IndexError:
         return ingredient
-
     chosen_ingredient = {}
+
+    r = requests.get(ecogolik_search_url.format(query=ingredient_name))
+    parser = EcogolikSearchParser(ingredient_name)
+    parser.feed(r.text)
+    parser.close()
+
+    if parser.href is not None:
+        r = requests.get(ecogolik_product_url.format(href=parser.href))
+        parser = EcogolikProductParser(chosen_ingredient)
+        parser.feed(r.text)
+        parser.close()
+        chosen_ingredient = parser.product
+
+    if only_ecogolik:
+        return chosen_ingredient
+
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A'}
     r = requests.get(cos_dna_search_url.format(query=ingredient_name), headers=headers)
     if r.status_code != 200 or r.url.startswith('http://www.cosdna.com/eng/stuff.php?q='):

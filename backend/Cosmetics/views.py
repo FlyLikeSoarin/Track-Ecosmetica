@@ -86,7 +86,7 @@ class ProductRetrieveCreateView(APIView):
                 data['ingredients'].append(idata)
         except:
             data['ingredients'] = []
-        
+
         if data['total_score'] == -1 and len(data['ingredients']) > 0:
             scores = [entry['score'] for entry in data['ingredients']]
             scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
@@ -155,7 +155,7 @@ class ProductRetrieveCreateView(APIView):
             product.total_score = 7
         product.save()
 
-            
+
         product_serializer = ProductReadSerializer(product)
         data = product_serializer.data
 
@@ -177,7 +177,7 @@ class ProductRetrieveCreateView(APIView):
                 data['ingredients'].append(idata)
         except:
             data['ingredients'] = []
-        
+
         if data['total_score'] == -1 and len(data['ingredients']) > 0:
             scores = [entry['score'] for entry in data['ingredients']]
             scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
@@ -247,10 +247,16 @@ class FavoriteCreateView(APIView):
             .values_list('product', flat=True)
         )
         products = Product.objects.filter(name__in=list(product_ids))
+        barcodes = Barcode.objects.filter(product__in=list(product_ids))
         result = []
         for product in products:
             product_serializer = ProductReadSerializer(product)
             data = product_serializer.data
+            try:
+                barcode = barcodes.filter(product=product).first()
+                data['barcode'] = barcodes
+            except:
+                pass
             try:
                 data['ingredients'] = json.loads(data['ingredients'])
             except:

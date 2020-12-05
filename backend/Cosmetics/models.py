@@ -70,7 +70,6 @@ class Ingredient(models.Model):
         return [i for i in [self.inci_name, self.inn_name] if i!=''][0]
 
 
-
 class History(models.Model):
     product = models.ForeignKey('Cosmetics.Product', on_delete=models.CASCADE)
     user = models.ForeignKey('Users.User', on_delete=models.CASCADE, null=True)
