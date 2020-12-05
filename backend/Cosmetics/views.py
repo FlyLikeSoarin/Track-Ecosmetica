@@ -119,7 +119,7 @@ class ProductRetrieveCreateView(APIView):
         try:
             barcode = Barcode.objects.get(code=data['code'], code_format=data['code_format'])
             product = barcode.product
-            product.name = data['name']
+            # product.name = data['name']
             product.brand_name = data['brand_name']
             product.description = data['description']
             product.ingredients = data['ingredients']
