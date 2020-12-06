@@ -9,8 +9,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(f'Fetching ingredients')
         ingredients = Ingredient.objects.all().order_by('-inci_name')
-        offset = 0
-        no_info = 0
+        offset = 4800
+        no_info = 4060
         for ingredient in ingredients[offset:]:
             self.stdout.write(f' > Fetching {str(ingredient)} offset {offset}')
             result = update_ingredient(ingredient)

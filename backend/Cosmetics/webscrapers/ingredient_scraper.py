@@ -13,7 +13,7 @@ from collections import defaultdict
 # Settings
 max_attempts = 10
 
-attempts_pause_time = 2.500
+attempts_pause_time = 3.000
 
 cos_dna_search_url = 'http://www.cosdna.com/eng/stuff.php?q={query}'
 
