@@ -278,7 +278,7 @@ class FavoriteCreateView(APIView):
                         score_sum += obj.score * 2
                         score_count += 1
 
-                data['total_score'] = score_sum / score_count
+                data['total_score'] = int(score_sum / score_count)
             except:
                 pass
 
