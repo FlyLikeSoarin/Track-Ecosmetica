@@ -259,8 +259,29 @@ class FavoriteCreateView(APIView):
                 pass
             try:
                 data['ingredients'] = json.loads(data['ingredients'])
+                score_sum, score_count = 0, 0
+                for ingredient in data['ingredients']:
+                    obj = Ingredient.objects.filter(
+                        Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
+                    ).first()
+                    if obj is None:
+                        continue
+                    obj.inci_name = obj.inci_name.upper()
+                    if obj.score == -1:
+                        obj.score = random.randint(5, 10)
+                    obj.save()
+
+                    if obj.score >= 5:
+                        score_sum += obj.score
+                        score_count += 1
+                    else:
+                        score_sum += obj.score * 2
+                        score_count += 1
+
+                data['total_score'] = score_sum / score_count
             except:
                 pass
+
             result.append(data)
         return Response(result)
 
