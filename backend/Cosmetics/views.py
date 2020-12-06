@@ -71,6 +71,7 @@ class ProductRetrieveCreateView(APIView):
         try:
             ingredients = json.loads(data['ingredients'])
             data['ingredients'] = []
+            score_sum, score_count = 0, 0
             for ingredient in ingredients:
                 obj = Ingredient.objects.filter(
                     Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
@@ -78,19 +79,25 @@ class ProductRetrieveCreateView(APIView):
                 if obj is None:
                     continue
                 obj.inci_name = obj.inci_name.upper()
-                if obj.score == -1:
-                    obj.score = random.randint(5, 10)
-                obj.save()
+
+                if obj.safety == '':
+                    obj.score = -1;
+                    obj.save()
+                elif obje.score > 0:
+                    if obj.score >= 5:
+                        score_sum += obj.score
+                        score_count += 1
+                    else:
+                        score_sum += obj.score * 2
+                        score_count += 1
 
                 idata = dict(IngredientReadSerializer(obj).data)
+                idata['score'] = 0 if idata['score'] <= 0 else idata['score']
                 data['ingredients'].append(idata)
+
+            data['total_score'] = int(score_sum / score_count)
         except:
             data['ingredients'] = []
-
-        if data['total_score'] == -1 and len(data['ingredients']) > 0:
-            scores = [entry['score'] for entry in data['ingredients']]
-            scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
-            data['total_score'] = sum(scores) // len(scores)
 
         data['ingredients'].sort(key=lambda x:x['score'], reverse=True)
 
@@ -162,6 +169,7 @@ class ProductRetrieveCreateView(APIView):
         try:
             ingredients = json.loads(data['ingredients'])
             data['ingredients'] = []
+            score_sum, score_count = 0, 0
             for ingredient in ingredients:
                 obj = Ingredient.objects.filter(
                     Q(inci_name__iexact = ingredient) | Q(inn_name__iexact = ingredient)
@@ -169,19 +177,25 @@ class ProductRetrieveCreateView(APIView):
                 if obj is None:
                     continue
                 obj.inci_name = obj.inci_name.upper()
-                if obj.score == -1:
-                    obj.score = random.randint(5, 10)
-                obj.save()
+
+                if obj.safety == '':
+                    obj.score = -1;
+                    obj.save()
+                elif obje.score > 0:
+                    if obj.score >= 5:
+                        score_sum += obj.score
+                        score_count += 1
+                    else:
+                        score_sum += obj.score * 2
+                        score_count += 1
 
                 idata = dict(IngredientReadSerializer(obj).data)
+                idata['score'] = 0 if idata['score'] <= 0 else idata['score']
                 data['ingredients'].append(idata)
+
+            data['total_score'] = int(score_sum / score_count)
         except:
             data['ingredients'] = []
-
-        if data['total_score'] == -1 and len(data['ingredients']) > 0:
-            scores = [entry['score'] for entry in data['ingredients']]
-            scores = [x for x in scores if x < 5] * 2 + [x for x in scores if x >= 5]
-            data['total_score'] = sum(scores) // len(scores)
 
         data['ingredients'].sort(key=lambda x:x['score'], reverse=True)
 
@@ -267,16 +281,17 @@ class FavoriteCreateView(APIView):
                     if obj is None:
                         continue
                     obj.inci_name = obj.inci_name.upper()
-                    if obj.score == -1:
-                        obj.score = random.randint(5, 10)
-                    obj.save()
 
-                    if obj.score >= 5:
-                        score_sum += obj.score
-                        score_count += 1
-                    else:
-                        score_sum += obj.score * 2
-                        score_count += 1
+                    if obj.safety == '':
+                        obj.score = -1;
+                        obj.save()
+                    elif obje.score > 0:
+                        if obj.score >= 5:
+                            score_sum += obj.score
+                            score_count += 1
+                        else:
+                            score_sum += obj.score * 2
+                            score_count += 1
 
                 data['total_score'] = int(score_sum / score_count)
             except:
