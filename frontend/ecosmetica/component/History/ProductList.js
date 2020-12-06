@@ -147,7 +147,7 @@ export default class ProductList extends React.Component {
       assetsLoaded: false,
       isGet: false,
       data: this.props.data,
-      isEmptyList: true,
+      isEmptyList: this.props.data === null || this.props.data === [],
       token: this.props.token,
     }
     //this.initData = this.initData.bind(this)
@@ -248,11 +248,11 @@ export default class ProductList extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    //console.log('product list updating')
+    console.log('product list updating')
     if (prevProps.data !== this.props.data) {
       this.setState({
         data: this.props.data,
-        isEmptyList: this.props.data.length == 0,
+        isEmptyList: this.props.data.length === 0,
         token: this.props.token
       })
     }
@@ -265,7 +265,7 @@ export default class ProductList extends React.Component {
 
   render() {
 
-    //if (assetsLoaded) {
+    console.log('render history', this.state.isEmptyList)
       return (
         <View style={styles.container}>
           <View style={styles.body}>
