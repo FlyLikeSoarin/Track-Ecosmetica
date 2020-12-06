@@ -319,35 +319,41 @@ export default class Product extends React.Component {
         })
     }
     async addToFavorites() {
-        const prevIsFavoite = this.state.isFavorite
-        this.setState({
-            isFavorite: !prevIsFavoite
-        })
-        let body = {}
-        if (prevIsFavoite) {
-            body = {
-                in_favorite: false
+        if (this.state.token != null) {
+            const prevIsFavoite = this.state.isFavorite
+            this.setState({
+                isFavorite: !prevIsFavoite
+            })
+            let body = {}
+            if (prevIsFavoite) {
+                body = {
+                    in_favorite: false
+                }
             }
+            console.log('barcode', this.state.barcode)
+            await fetch(`${URL}/product/make_favorite/?code=${this.state.barcode}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.state.token}`,
+                },
+                body: JSON.stringify(body)
+            })
+                .then((resp) => {
+                    console.log(resp.status)
+                    return resp.json()
+                })
+                .then((ans) => {
+                    console.log(ans)
+                })
+                .catch(() => {
+                    console.log("fail add to favorite")
+                })
+        } else {
+            this.setState({
+                showAuthError: true
+            })
         }
-        console.log('barcode', this.state.barcode)
-        await fetch(`${URL}/product/make_favorite/?code=${this.state.barcode}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${this.state.token}`,
-            },
-            body: JSON.stringify(body)
-        })
-            .then((resp) => {
-                console.log(resp.status)
-                return resp.json()
-            })
-            .then((ans) => {
-                console.log(ans)
-            })
-            .catch(() => {
-                console.log("fail add to favorite")
-            })
     }
     handleAddReview() {
         if (this.state.token != null) {
@@ -574,8 +580,8 @@ export default class Product extends React.Component {
                 <AwesomeAlert
                     show={this.state.showAuthError}
                     showProgress={false}
-                    title="Ошибка авторизации"
-                    message="Отзывы могут оставлять только авторизованные пользователи"
+                    title="Вы не авторизованны"
+                    message="Опция доступна только авторизованным пользователям"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={false}

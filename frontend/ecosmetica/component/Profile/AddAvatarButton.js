@@ -174,9 +174,9 @@ export default class AddAvatarButton extends React.Component {
         } else {
             url = this.state.photo_url
         }
-        console.log("avatar render 2", url)
-        console.log("avatar render 2 props", this.props.url_avatar)
-        console.log("avatar render 2 state", this.state.photo_url)
+        //console.log("avatar render 2", url)
+        //console.log("avatar render 2 props", this.props.url_avatar)
+        //console.log("avatar render 2 state", this.state.photo_url)
         return (
             <View>
                 <TouchableOpacity onPress={() => this.makePhoto()}>

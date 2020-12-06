@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "ecosmetica",
+    "name": "Ecosmetica",
     "slug": "ecosmetica",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo1024.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

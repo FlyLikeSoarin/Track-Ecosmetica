@@ -210,73 +210,73 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-tabsArea: {
-  flexDirection: 'row',
-  height: 40,
-  //flex: 1,
-},
-ingregients: {
-  flex:2,
-  flexDirection:'column',
-  marginTop: 10,
-},
-scroll: {
+  tabsArea: {
+    flexDirection: 'row',
+    height: 40,
+    //flex: 1,
+  },
+  ingregients: {
+    flex: 2,
+    flexDirection: 'column',
+    marginTop: 10,
+  },
+  scroll: {
     alignItems: 'stretch',
-},
-innerScroll: {
+  },
+  innerScroll: {
     marginBottom: 100
-},
-ingredientBlock: {
+  },
+  ingredientBlock: {
     borderBottomWidth: 0.5,
     borderColor: '#929292',
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
-},
-ingredientText: {
+  },
+  ingredientText: {
     flex: 16,
     fontFamily: 'NotoSanaTamilLight',
     fontSize: 15,
     color: '#676767',
     paddingLeft: 10
-},
-ingredientScoreText: {
+  },
+  ingredientScoreText: {
     fontSize: 15,
     //color: '#fff',
     fontFamily: 'NotoSanaTamilLight',
-},
-favouritesWrap:{
-  flex:1,
-  flexDirection: 'column',
-},
-listWrap: {
-  flex: 1,
-  flexDirection: 'column',
-},
-buttonTextTarget: {
-  color: '#009E4E',
-  fontSize: 10,
-  fontFamily: 'NotoSanaTamilLight',
-  textAlign: 'center',
-  justifyContent: 'center',
-},
-emptyReviewsText: {
-  color: '#979797',
-  fontSize: 18,
-  fontFamily: 'NotoSanaTamilLight',
-},
-wrapEmptyReviewText: {
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: 40,
-  //marginTop: 100,
-},
-tabsText: {
-  color: '#4F4F4F',
-  fontFamily: 'NotoSanaTamilLight',
-  fontSize: 16,
-  fontWeight: 'bold'
-},
+  },
+  favouritesWrap: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  listWrap: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  buttonTextTarget: {
+    color: '#009E4E',
+    fontSize: 10,
+    fontFamily: 'NotoSanaTamilLight',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  emptyReviewsText: {
+    color: '#979797',
+    fontSize: 18,
+    fontFamily: 'NotoSanaTamilLight',
+  },
+  wrapEmptyReviewText: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+    //marginTop: 100,
+  },
+  tabsText: {
+    color: '#4F4F4F',
+    fontFamily: 'NotoSanaTamilLight',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
 });
 
 
@@ -314,43 +314,43 @@ export default class Profile extends React.Component {
         ingredientsBackground: '#fff',
         reviewsTop: '#929292',
         reviewsBackground: '#F1F1F1'
-    },
+      },
 
       token: this.props.route.params.token,
       favourites: [
-       /* {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },
-        {
-          "name": "Aussie aussome volume",
-          "brand_name": "Aussie",
-          "img_url": 'https://reactjs.org/logo-og.png',
-          "description": "",
-          "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-          "eco_score": 10,
-          "safety_score": 10,
-          "zoo_score": 2,
-          "total_score": 6
-        },*/
+        /* {
+           "name": "Aussie aussome volume",
+           "brand_name": "Aussie",
+           "img_url": 'https://reactjs.org/logo-og.png',
+           "description": "",
+           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+           "eco_score": 10,
+           "safety_score": 10,
+           "zoo_score": 2,
+           "total_score": 6
+         },
+         {
+           "name": "Aussie aussome volume",
+           "brand_name": "Aussie",
+           "img_url": 'https://reactjs.org/logo-og.png',
+           "description": "",
+           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+           "eco_score": 10,
+           "safety_score": 10,
+           "zoo_score": 2,
+           "total_score": 6
+         },
+         {
+           "name": "Aussie aussome volume",
+           "brand_name": "Aussie",
+           "img_url": 'https://reactjs.org/logo-og.png',
+           "description": "",
+           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
+           "eco_score": 10,
+           "safety_score": 10,
+           "zoo_score": 2,
+           "total_score": 6
+         },*/
       ],
       isUpdated: false,
       isInputIngsShown: false,
@@ -384,6 +384,7 @@ export default class Profile extends React.Component {
   }
 
   async loadFavorites(token) {
+    console.log("//////////token///////////", token)
     await fetch(`${URL}/product/make_favorite/`, {
       method: 'GET',
       headers: {
@@ -391,41 +392,47 @@ export default class Profile extends React.Component {
         'Authorization': `Token ${token}`,
       }
     })
-    .then((resp) => {
-      console.log(resp.status)
-      return resp.json()
-    })
-    .then((ans) => {
-      console.log(ans)
-      this.setState({
-        favourites: ans
+      .then((resp) => {
+        console.log('favorite', resp.status)
+        console.log('favorite body', resp.body)
+        return resp.json()
       })
-    })
+      .then((ans) => {
+        console.log('favorite ans', ans)
+        this.setState({
+          favourites: ans
+        })
+      })
   }
 
   async componentDidMount() {
-    console.log('cmponentDodMount')
+    console.log('cmponentDidMount')
     console.log(this.state.token)
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
-    let token = null
-    try {
-      token = await AsyncStorage.getItem('token');
-      console.log('Profile', token)
-    } catch(e) {
-      console.log(e)
-    }
-    if (token !== null) {
-      this.setState({
-        token: token,
-        iconLogoutColor: '#C4C4C4'
-      })
-      this.loadFavorites(token)
-    }
 
-    this.loadUserInfo() 
+    if (this.state.token === null) {
+      let token = null
+      try {
+        console.log("try get token")
+        token = await AsyncStorage.getItem('token');
+        console.log('Profile', token)
+      } catch (e) {
+        console.log(e)
+      }
+      if (token !== null) {
+        this.setState({
+          token: token,
+          iconLogoutColor: '#C4C4C4'
+        })
+      }
+    }
+    this.loadFavorites(this.state.token)
+
+
+    this.loadUserInfo()
 
     // await fetch(`${URL}product/history/`, {
     //   method: 'GET',
@@ -472,7 +479,7 @@ export default class Profile extends React.Component {
         </TouchableOpacity>
       )
     });
-    
+
     setTimeout(() => {
       this.setState({ assetsLoaded: true });
       //console.log('profile')
@@ -484,11 +491,11 @@ export default class Profile extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     console.log('profileDidUpdate')
     if (prevState.token !== this.state.token || prevState.url_avatar !== this.state.url_avatar) {
-      if (prevState.url_avatar !== this.state.url_avatar){
+      if (prevState.url_avatar !== this.state.url_avatar) {
         const url = this.state.url_avatar
-        this.setState({url_avatar: url})
+        this.setState({ url_avatar: url })
       }
-      this.loadUserInfo() 
+      this.loadUserInfo()
     }
   }
 
@@ -506,30 +513,30 @@ export default class Profile extends React.Component {
       }
     }
 
-  await fetch(`${URL}/user/`, {
-    method: 'GET',
-    headers: header
-  })
-    .then((resp) => {
-      return resp.json()
+    await fetch(`${URL}/user/`, {
+      method: 'GET',
+      headers: header
     })
-    .then((ans) => {
-      console.log('user')
-      console.log(ans)
-      this.setState({first_name: ans.first_name, last_name: ans.last_name, url_avatar: ans.profile_img_url})
-      const username = ans.first_name + ' ' + ans.last_name
-      try {
-        AsyncStorage.removeItem('username');
-      } catch(e) {
-        console.log(e)
-      }
-      try {
-        AsyncStorage.setItem('username', username)
-      } catch(e) {
-        console.log(e)
-      }
-    })
-    .catch(e=>console.log(e))
+      .then((resp) => {
+        return resp.json()
+      })
+      .then((ans) => {
+        console.log('user')
+        console.log(ans)
+        this.setState({ first_name: ans.first_name, last_name: ans.last_name, url_avatar: ans.profile_img_url })
+        const username = ans.first_name + ' ' + ans.last_name
+        try {
+          AsyncStorage.removeItem('username');
+        } catch (e) {
+          console.log(e)
+        }
+        try {
+          AsyncStorage.setItem('username', username)
+        } catch (e) {
+          console.log(e)
+        }
+      })
+      .catch(e => console.log(e))
   }
 
 
@@ -558,29 +565,29 @@ export default class Profile extends React.Component {
       token: null,
       iconLogoutColor: '#fff'
     })
-    this.state.navigation.navigate('Profile', { updateHistory: this.props.route.params.updateHistory})
+    this.state.navigation.navigate('Profile', { updateHistory: this.props.route.params.updateHistory })
   }
 
   showIngridients() {
     this.setState({
       showIngridients: true,
-        colorsTabsPanel: {
-            ingredientsTop: '#929292',
-            ingredientsBackground: '#F1F1F1',
-            reviewsTop: '#009E4E',
-            reviewsBackground: '#fff'
-        }
+      colorsTabsPanel: {
+        ingredientsTop: '#929292',
+        ingredientsBackground: '#F1F1F1',
+        reviewsTop: '#009E4E',
+        reviewsBackground: '#fff'
+      }
     })
   }
   hideIngridients() {
     this.setState({
       showIngridients: false,
-        colorsTabsPanel: {
-            ingredientsTop: '#009E4E',
-            ingredientsBackground: '#fff',
-            reviewsTop: '#929292',
-            reviewsBackground: '#F1F1F1'
-        }
+      colorsTabsPanel: {
+        ingredientsTop: '#009E4E',
+        ingredientsBackground: '#fff',
+        reviewsTop: '#929292',
+        reviewsBackground: '#F1F1F1'
+      }
     })
   }
 
@@ -589,30 +596,64 @@ export default class Profile extends React.Component {
     this.setState({ isUpdated: !isUpd })
   }
 
+  async handleMoveToProduct(barcode) {
+    await fetch(`${URL}/product/?code=${barcode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${this.state.token}`,
+      }
+    })
+    .then((resp) => {
+      console.log(resp.status)
+      if (resp.status === 200) {
+        return resp.json()
+      }
+    })
+    .then((ans) => {
+      function compare(a, b) {
+        if (a.score < b.score) {
+          return 1;
+        }
+        if (a.score > b.score) {
+          return -1;
+        }
+        return 0;
+      }
+      ans.ingredients.sort(compare)
+      this.state.navigation.navigate('Product', { type: "type", data_: ans, barcode: barcode, updateHistory: () => console.log("") });
+    })
+    .catch((e) => {
+
+    })
+
+    this.props.navigation.navigate('Product', { data_: item, barcode: item.barcode })
+  }
+
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        //onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
+         onPress={() => this.handleMoveToProduct(item.barcode)}
       >
         <View>
-         {/* <Product
+          {/* <Product
             title={item.name}
             key={item.name}
             image={item.img_url}
             lable={item.brand_name}
             metric1={item.total_score} 
          isAddFovoriteShown={true}/>*/}
-            <Product
+          <Product
             title={item.name}
             key={1}
             image={item.img_url}
             lable={item.brand_name}
-            metric1={item.total_score} 
+            metric1={item.total_score}
             favorite={true}
-            barcode={0}
+            barcode={item.barcode}
             token={this.state.token}
             isAddFovoriteShown={true}
-            />
+          />
         </View>
       </TouchableOpacity>
     )
@@ -648,7 +689,7 @@ export default class Profile extends React.Component {
           <View style={styles.container}>
             <View style={styles.header}>
               <View style={styles.imageWrap}>
-                <AddAvatarButton token={this.state.token} url_avatar={this.state.url_avatar}/>
+                <AddAvatarButton token={this.state.token} url_avatar={this.state.url_avatar} />
               </View>
               <View style={styles.bigTextWrap}>
                 <Text style={styles.bigText}>{first_name} {last_name}</Text>
@@ -656,7 +697,7 @@ export default class Profile extends React.Component {
             </View>
             <View style={styles.bodyProfile}>
               <View style={styles.tabsArea}>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={{
                     flex: 1,
                     alignItems: 'center',
@@ -668,13 +709,13 @@ export default class Profile extends React.Component {
                     borderBottomWidth: 1,
                     borderBottomColor: this.state.colorsTabsPanel.ingredientsBackground
                   }}
-                    onPress={() => this.hideIngridients()}
+                  onPress={() => this.hideIngridients()}
                 >
                   <Text style={styles.tabsText}>
                     Избранное
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                {/*<TouchableOpacity
                   style={{
                     flex: 1,
                     alignItems: 'center',
@@ -685,20 +726,20 @@ export default class Profile extends React.Component {
                     borderBottomLeftRadius: 10,
                     borderBottomWidth: 1,
                     borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
-                }}
-                  //onPress={() => this.showIngridients()}
+                  }}
+                //onPress={() => this.showIngridients()}
                 >
                   <Text style={styles.tabsText}>
                     Настройки
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity>*/}
               </View>
-                {!this.state.showIngridients && (
+              {!this.state.showIngridients && (
                 <View style={styles.ingregients}>
                   {favourites.length === 0 && (
                     <View style={styles.wrapEmptyReviewText}>
                       <Text style={styles.emptyReviewsText}>
-                      Отсканируйте штрих-код продукта, чтобы добавить его в избранное
+                        Отсканируйте штрих-код продукта, чтобы добавить его в избранное
                       </Text>
                     </View>
                   )}
@@ -706,41 +747,41 @@ export default class Profile extends React.Component {
                     <FlatList
                       data={favourites}
                       renderItem={this.renderItem}
-                      keyExtractor={(item, index) => { return(item.name+index) }}
-                    />                   
+                      keyExtractor={(item, index) => { return (item.name + index) }}
+                    />
                   </SafeAreaView>
                 </View>
-                )}
-                        {this.state.showIngridients && (
-                            <View style={styles.reviews}>
-                                {ingridients.length === 0 && (
-                                    <View style={styles.wrapEmptyReviewText}>
-                                        <Text style={styles.emptyReviewsText}>
-                                        Нажмите на кнопку, чтобы выбрать нежелательные ингридиенты
+              )}
+              {this.state.showIngridients && (
+                <View style={styles.reviews}>
+                  {ingridients.length === 0 && (
+                    <View style={styles.wrapEmptyReviewText}>
+                      <Text style={styles.emptyReviewsText}>
+                        Нажмите на кнопку, чтобы выбрать нежелательные ингридиенты
                                         </Text>
-                                    </View>
-                                )}
-                                <SafeAreaView style={styles.scroll}>
-                                    <FlatList
-                                        style={styles.innerScroll}
-                                        data={ingridients}
-                                        key={item => { item.text }}
-                                        renderItem={renderItemIngridient}
-                                    />
-                                  <View style={styles.infoWrap}>
-                                    {this.state.isInputIngsShown&&<TextInput></TextInput>}
-                                    <ButtonTemplate
-                                      title='Исключить ингридиент'
-                                      style={styles.buttonAddBefore}
-                                      styleText={styles.buttonTextBefore}
-                                      onPress={() => this.setState({isInputIngsShown: true})} />
-                                  </View>
-                                </SafeAreaView>
-                            </View>
-                        )}
+                    </View>
+                  )}
+                  <SafeAreaView style={styles.scroll}>
+                    <FlatList
+                      style={styles.innerScroll}
+                      data={ingridients}
+                      key={item => { item.text }}
+                      renderItem={renderItemIngridient}
+                    />
+                    <View style={styles.infoWrap}>
+                      {this.state.isInputIngsShown && <TextInput></TextInput>}
+                      <ButtonTemplate
+                        title='Исключить ингридиент'
+                        style={styles.buttonAddBefore}
+                        styleText={styles.buttonTextBefore}
+                        onPress={() => this.setState({ isInputIngsShown: true })} />
+                    </View>
+                  </SafeAreaView>
+                </View>
+              )}
             </View>
-        </View>)}
-        {/*FOOTER*/ }
+          </View>)}
+        {/*FOOTER*/}
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Home')}>
@@ -748,7 +789,7 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonText}>Домой</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonArea}
-            onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
+            onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })}>
             <ScanButton />
             <Text style={styles.buttonText} >Сканировать</Text>
           </TouchableOpacity>
@@ -758,11 +799,12 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>
         </View>
-    </SafeAreaView>
-  )}
+      </SafeAreaView>
+    )
+  }
 }
 
-const renderItemIngridient=({item}) => {
+const renderItemIngridient = ({ item }) => {
   return (
     <View style={styles.ingredientBlock}>
       <Text style={styles.ingredientText}>

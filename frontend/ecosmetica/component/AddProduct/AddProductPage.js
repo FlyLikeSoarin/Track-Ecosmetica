@@ -51,7 +51,8 @@ export default class ProductNotFound extends React.Component {
             error: false,
             error_code: null,
             text_not_detected: false,
-            bottonPressed: false
+            bottonPressed: false,
+            showLenAlert: false
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -126,63 +127,69 @@ export default class ProductNotFound extends React.Component {
     }
 
     async handleSubmit() {
-        if (!this.state.bottonPressed) {
-            this.setState({ bottonPressed: true })
-            const token = this.state.token
+        if (this.state.name.length > 100) {
+            this.setState({
+                showLenAlert: true
+            })
+        } else {
+            if (!this.state.bottonPressed) {
+                this.setState({ bottonPressed: true })
+                const token = this.state.token
 
-            const a = this.state.ingredients.split(', ')
-            const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
-            console.log(this.state.url_loaded_photo)
-            let serverCode;
-            if (this.state.url_loaded_photo != '' || this.state.uri === '') {
-                await fetch(`${URL}/product/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        //'Authorization': `Token ${token}`,
-                    },
-                    body: JSON.stringify({
-                        code: this.state.barcode,
-                        name: this.state.name,
-                        brand_name: this.state.brand,
-                        ingredients: array_ingredients,
+                const a = this.state.ingredients.split(', ')
+                const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
+                console.log(this.state.url_loaded_photo)
+                let serverCode;
+                if (this.state.url_loaded_photo != '' || this.state.uri === '') {
+                    await fetch(`${URL}/product/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            //'Authorization': `Token ${token}`,
+                        },
+                        body: JSON.stringify({
+                            code: this.state.barcode,
+                            name: this.state.name,
+                            brand_name: this.state.brand,
+                            ingredients: array_ingredients,
+                            description: '',
+                            img_url: this.state.url_loaded_photo,
+                        })
+                    })
+                        .then((resp) => {
+                            //console.log('submit product')
+                            console.log(resp.status)
+                            serverCode = resp.status
+                            console.log('body', resp.body)
+                            return resp.json()
+                        })
+                        .then((ans) => {
+                            console.log(ans)
+                            this.setState({ bottonPressed: false })
+                            if (serverCode >= 200 && serverCode < 300) {
+                                this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode, updateHistory: this.props.route.params.updateHistory })
+                            } else {
+                                this.setState({
+                                    error: true
+                                })
+                            }
+                        })
+                        .catch((e) => {
+                            console.log(e)
+                            this.setState({ fallServer: true })
+                        })
+                    /*this.setState({
+                        barcode: '',
+                        name: '',
+                        brand: '',
+                        ingredients: '',
                         description: '',
-                        img_url: this.state.url_loaded_photo,
-                    })
-                })
-                    .then((resp) => {
-                        //console.log('submit product')
-                        console.log(resp.status)
-                        serverCode = resp.status
-                        console.log('body', resp.body)
-                        return resp.json()
-                    })
-                    .then((ans) => {
-                        console.log(ans)
-                        this.setState({ bottonPressed: false })
-                        if (serverCode >= 200 && serverCode < 300) {
-                            this.state.navigation.navigate('Product', { type: this.state.type, data_: ans, barcode: this.state.barcode, updateHistory: this.props.route.params.updateHistory })
-                        } else {
-                            this.setState({
-                                error: true
-                            })
-                        }
-                    })
-                    .catch((e) => {
-                        console.log(e)
-                        this.setState({ fallServer: true })
-                    })
-                /*this.setState({
-                    barcode: '',
-                    name: '',
-                    brand: '',
-                    ingredients: '',
-                    description: '',
-                    url_loaded_photo: '',
-                    submited: true
-                })*/
-            } else {
-                this.setState({ bottonPressed: false })
+                        url_loaded_photo: '',
+                        submited: true
+                    })*/
+                } else {
+                    this.setState({ bottonPressed: false })
+                }
             }
         }
     }
@@ -440,6 +447,23 @@ export default class ProductNotFound extends React.Component {
                     confirmButtonColor="#009E4E"
                     onConfirmPressed={() => {
                         this.hideAlertDetecting();
+                    }}
+                />
+                <AwesomeAlert
+                    show={this.state.showLenAlert}
+                    showProgress={false}
+                    title="Слишком длинное название"
+                    message="Длина названия не должна превышать 100 символов"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="OK"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.setState({
+                            showLenAlert: false
+                        });
                     }}
                 />
                 <AwesomeAlert
