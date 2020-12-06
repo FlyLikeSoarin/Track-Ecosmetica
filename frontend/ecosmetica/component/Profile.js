@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSanaTamilLight',
   },
   header: {
-    flex: 0.6,
+    flex: 0.7,
     backgroundColor: '#FFFFFF',
     flexDirection: 'column',
     justifyContent: 'flex-end',
@@ -277,6 +277,64 @@ tabsText: {
   fontSize: 16,
   fontWeight: 'bold'
 },
+input: {
+  backgroundColor: '#E5E5E5',
+  margin: 10,
+  marginRight: 25,
+  marginLeft: 25,
+  padding: 10,
+  height: 40,
+  borderRadius: 10,
+},
+inputName: {
+  marginTop: 40,
+  backgroundColor: '#E5E5E5',
+  margin: 10,
+  marginRight: 25,
+  marginLeft: 25,
+  padding: 10,
+  height: 40,
+  borderRadius: 10,
+},
+passwordInput: {
+  flexDirection: 'row',
+  backgroundColor: '#E5E5E5',
+  margin: 10,
+  marginRight: 25,
+  marginLeft: 25,
+  padding: 10,
+  height: 40,
+  borderRadius: 10,
+},
+passwordInputArea: {
+  flex: 1,
+  paddingLeft: 0,
+  backgroundColor: '#E5E5E5',
+  color: '#424242',
+},
+buttonArea2: {
+  flex: 1,
+  justifyContent: 'flex-end',
+  alignItems: 'stretch',
+  backgroundColor: '#fff',
+  marginBottom: 20
+},
+bottom: {
+  backgroundColor: '#009E4E',
+  height: 40,
+  alignItems: 'center',
+  borderRadius: 25,
+  justifyContent: 'center',
+  marginLeft: 25,
+  marginRight: 25,
+},
+bottomText: {
+  color: '#fff',
+  fontFamily: 'NotoSanaTamilLight'
+},
+reviews: {
+  flex: 1,
+}
 });
 
 
@@ -304,6 +362,8 @@ export default class Profile extends React.Component {
       iconLogoutColor: '#ffffff',
       first_name: '',
       last_name: '',
+      email: '',
+      password: '',
       url_avatar: null,
 
       showIngridients: false,
@@ -355,9 +415,27 @@ export default class Profile extends React.Component {
       isUpdated: false,
       isInputIngsShown: false,
       isEmptyList: false,
+      bottonPressed: false,
     };
     this.setToken = this.setToken.bind(this);
+    this.handlerPassword = this.handlerPassword.bind(this)
+    this.handlerFirstName = this.handlerFirstName.bind(this)
+    this.handlerLastName = this.handlerLastName.bind(this)
+   //this.clearHistory = this.clearHistory.bind(this);
   }
+
+  // async clearHistory() {
+  //   console.log('clear history')
+  //   try {
+  //     await AsyncStorage.removeItem('history');
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  //   this.setState({
+  //     storageHistory: []
+  //   })
+
+  // }
 
   handleData = async () => {
     /*await fetch(`${URL}product/history/`, {
@@ -561,6 +639,25 @@ export default class Profile extends React.Component {
     this.state.navigation.navigate('Profile', { updateHistory: this.props.route.params.updateHistory})
   }
 
+  async handlerSave() {
+    if (!this.state.bottonPressed) {
+        this.setState({ buttonPressed: true })
+        await fetch(`${URL}/user/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${this.state.token}`,
+                },
+                body: JSON.stringify({
+                    first_name: this.state.first_name,
+                    last_name: this.state.last_name,
+                    username: "qwerty",
+                })
+            })
+            .then((resp)=>console.log(resp.status))
+    }
+  }
+
   showIngridients() {
     this.setState({
       showIngridients: true,
@@ -587,6 +684,22 @@ export default class Profile extends React.Component {
   handleUpdate() {
     let isUpd = this.state.isUpdated
     this.setState({ isUpdated: !isUpd })
+  }
+
+  handlerPassword(text) {
+    this.setState({
+        password: text
+    })
+}
+  handlerFirstName(text) {
+      this.setState({
+          first_name: text
+      })
+  }
+  handlerLastName(text) {
+      this.setState({
+          last_name: text
+      })
   }
 
   renderItem = ({ item }) => {
@@ -686,7 +799,7 @@ export default class Profile extends React.Component {
                     borderBottomWidth: 1,
                     borderBottomColor: this.state.colorsTabsPanel.reviewsBackground,
                 }}
-                  //onPress={() => this.showIngridients()}
+                  onPress={() => this.showIngridients()}
                 >
                   <Text style={styles.tabsText}>
                     Настройки
@@ -713,31 +826,65 @@ export default class Profile extends React.Component {
                 )}
                         {this.state.showIngridients && (
                             <View style={styles.reviews}>
-                                {ingridients.length === 0 && (
-                                    <View style={styles.wrapEmptyReviewText}>
-                                        <Text style={styles.emptyReviewsText}>
-                                        Нажмите на кнопку, чтобы выбрать нежелательные ингридиенты
+                                <SafeAreaView style={styles.scroll}>
+                                  <TextInput style={styles.inputName}
+                                  value={this.state.first_name}
+                                  onChangeText={this.handlerFirstName}
+                                  placeholder='Имя'
+                                  placeholderTextColor="#8B8B8B"
+                                  autoCapitalize="none"
+                                  />
+                                  <TextInput style={styles.input}
+                                  value={this.state.last_name}
+                                  onChangeText={this.handlerLastName}
+                                  placeholder='Фамилия'
+                                  placeholderTextColor="#8B8B8B"
+                                  autoCapitalize="none"
+                                  />
+                            {/* <View style={styles.passwordInput}>
+                                <TextInput style={styles.passwordInputArea}
+                                    value={this.state.password}
+                                    onChangeText={this.handlerPassword}
+                                    placeholder='Пароль'
+                                    placeholderTextColor="#8B8B8B"
+                                    autoCapitalize="none"
+                                    secureTextEntry={this.state.secure}
+                                /> 
+                                <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
+                            </View>*/}
+                            <View style={styles.buttonArea2}>
+                                <TouchableOpacity onPress={() => this.handlerSave()}>
+                                    <View style={styles.bottom}>
+                                        <Text style={styles.bottomText}>
+                                        Сохранить изменения
                                         </Text>
                                     </View>
-                                )}
-                                <SafeAreaView style={styles.scroll}>
-                                    <FlatList
-                                        style={styles.innerScroll}
-                                        data={ingridients}
-                                        key={item => { item.text }}
-                                        renderItem={renderItemIngridient}
-                                    />
+                                </TouchableOpacity>
+                            </View>
+                            {/* <View style={styles.buttonArea2}>
+                              <TouchableOpacity onPress={() => this.clearHistory()}>
+                                <View style={styles.bottom}>
+                                  <Text style={styles.bottomText}>
+                                  Очистить историю
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                            </View> */}
+                            </SafeAreaView>
+                          </View>)}
+                    {/* </View>
                                   <View style={styles.infoWrap}>
                                     {this.state.isInputIngsShown&&<TextInput></TextInput>}
                                     <ButtonTemplate
-                                      title='Исключить ингридиент'
+                                      title='Очистить историю'
                                       style={styles.buttonAddBefore}
                                       styleText={styles.buttonTextBefore}
                                       onPress={() => this.setState({isInputIngsShown: true})} />
-                                  </View>
-                                </SafeAreaView>
-                            </View>
-                        )}
+                                  </View> 
+                              
+                            </View> */}
+                            
+                       
             </View>
         </View>)}
         {/*FOOTER*/ }
