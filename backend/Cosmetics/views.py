@@ -254,7 +254,7 @@ class FavoriteCreateView(APIView):
             data = product_serializer.data
             try:
                 barcode = barcodes.filter(product=product).first()
-                data['barcode'] = barcodes
+                data['barcode'] = barcode.code
             except:
                 pass
             try:
