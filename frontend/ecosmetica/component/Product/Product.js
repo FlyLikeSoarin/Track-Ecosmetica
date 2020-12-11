@@ -647,7 +647,7 @@ export default class Product extends React.Component {
     }
 }
 function colorScore(score) {
-    if (0 <= score && score <= 4) {
+    if (1 <= score && score <= 4) {
         return '#FF4D00'
     } else if (5 <= score && score <= 7) {
         return '#FFA21F'
@@ -678,7 +678,7 @@ function IngregientBlock({ item }) {
     return (
         <View style={styles.wrapIngredientBlock}>
             <TouchableOpacity style={styles.ingredientBlock}
-                onPress={() => { if (item.score !== 0) setShowInfo(!showInfo) }}
+                onPress={() => {setShowInfo(!showInfo) }}
             >
                 <View style={
                     {
@@ -697,7 +697,7 @@ function IngregientBlock({ item }) {
                     {ingredient_name}
                 </Text>
             </TouchableOpacity>
-            {showInfo && (
+            {(showInfo && item.score !== 0)  && (
                 <View style={{
                     backgroundColor: '#F1F1F1',//colorBackgroundInfo(item[1]),
                     alignSelf: 'stretch',
@@ -720,15 +720,21 @@ function IngregientBlock({ item }) {
                             Происхождение:  {item.background}
                         </Text>
                     </View>
-                    {/*<Text style={styles.ingredientText}>
-                        {item.cosmetics_info_scientific_facts}
-            </Text>*/}
-                    {/*<Text style={styles.ingredientText}>
-                        {item.cosmetics_info_safety_info}
-        </Text>*/}
-                    {/*<Text style={styles.ingredientText}>
-                        {item.cosmetics_info_resources}
-        </Text>*/}
+                </View>
+            )}
+            {(showInfo && item.score === 0)  && (
+                <View style={{
+                    backgroundColor: '#F1F1F1',//colorBackgroundInfo(item[1]),
+                    alignSelf: 'stretch',
+                    padding: 10,
+                    marginTop: 5
+                }}>
+                    <View style={{ flexDirection: 'column', paddingBottom: 10 }}>
+
+                        <Text style={styles.ingredientText}>
+                            Информация об ингредиенте отсутствует.
+                        </Text>
+                    </View>
                 </View>
             )}
         </View>
