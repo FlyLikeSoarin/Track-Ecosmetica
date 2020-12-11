@@ -218,12 +218,12 @@ export default class Login extends React.Component {
                                 />
                                 <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
                             </View>
-                            {!forgotPassword && (
+                            {/*!forgotPassword && (
                                 <TouchableOpacity onPress={() => this.setState({ forgotPassword: !forgotPassword })}>
                                     <Text style={styles.text}>Забыли пароль?</Text>
                                 </TouchableOpacity>
                             )}
-                            {forgotPassword && <Text style={styles.text}>Очень жаль :(</Text>}
+                            {forgotPassword && <Text style={styles.text}>Очень жаль :(</Text>*/}
                             {/* Alerts */}
                             <AwesomeAlert
                                 show={failedLogin}

@@ -136,7 +136,7 @@ export default class Product extends React.Component {
                         />
                     </View>
                     <View style={styles.numberSymbolsArea}>
-                        <Text style={{color: '#979797'}}>
+                        <Text style={{color: '#979797', fontSize:10}}>
                             {accssedLength}
                         </Text>
                     </View>
@@ -210,9 +210,12 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top'
     },
     numberSymbolsArea: {
-        flex: 1,
+        //flex: 1,
+        height: 35,
         flexDirection: 'row-reverse',
         padding: 10,
+        //backgroundColor: 'red',
+        //marginBottom: 10
     },
     image: {
         width: 60,

@@ -59,7 +59,8 @@ export default class Product extends React.Component {
             ingredients: this.props.route.params.data_.ingredients,
             product: this.props.route.params.data_,
             isFavorite: this.props.route.params.data_.favorite,
-            userScore: this.props.route.params.data_.user_score,
+            //userScore: this.props.route.params.data_.user_score,
+            userScore: 0,
             countScores: this.props.route.params.data_.review_count,
             showReviews: false,
             colorsTabsPanel: {
@@ -99,6 +100,7 @@ export default class Product extends React.Component {
         this.hideModalScoreInfo = this.hideModalScoreInfo.bind(this)
     }
     async componentDidMount() {
+        console.log(this.props.route.params.barcode)
         await Font.loadAsync({
             'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf'),
             'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamilUI-Bold.ttf')
@@ -130,7 +132,6 @@ export default class Product extends React.Component {
             })
             this.loadUserData(token)
         }
-
         await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -143,6 +144,7 @@ export default class Product extends React.Component {
                 this.setState({
                     reviews: ans
                 })
+                console.log("from fetch")
                 this.checkUserMakedReview(ans)
             })
             .catch(() => {
@@ -150,9 +152,6 @@ export default class Product extends React.Component {
             })
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.id_user != this.state.id_user) {
-            this.checkUserMakedReview(this.state.reviews)
-        }
         if (prevProps.route.params.data_ != this.props.route.params.data_) {
             this.setState({
                 navigation: this.props.navigation,
@@ -193,6 +192,7 @@ export default class Product extends React.Component {
         this.setState({
             userScore: total_score
         })
+        console.log("checkUserMakedReview", total_score)
         //}
     }
     async loadUserData(token) {

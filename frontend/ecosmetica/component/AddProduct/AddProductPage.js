@@ -12,7 +12,8 @@ import {
     Platform,
     KeyboardAvoidingView,
     SafeAreaView,
-    ScrollView
+    ScrollView,
+    Keyboard
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon_photo from 'react-native-vector-icons/MaterialIcons'
@@ -52,7 +53,8 @@ export default class ProductNotFound extends React.Component {
             error_code: null,
             text_not_detected: false,
             bottonPressed: false,
-            showLenAlert: false
+            showLenAlert: false,
+            showPhotoLoadingAlert: false
         }
         this.handleBarcode = this.handleBarcode.bind(this)
         this.handleName = this.handleName.bind(this)
@@ -117,7 +119,6 @@ export default class ProductNotFound extends React.Component {
         this.setState({
             url_loaded_photo: url
         })
-        //console.log(this.state.url_loaded_photo)
     }
 
     hideAlertServer = () => {
@@ -322,8 +323,6 @@ export default class ProductNotFound extends React.Component {
 
     render() {
         const { uri, isVisible, ingredients_detecting, fallServer, error, error_code, submited, text_not_detected } = this.state
-        console.log('ingredients_detecting', ingredients_detecting)
-        console.log('text_not_detected', text_not_detected)
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
@@ -408,25 +407,28 @@ export default class ProductNotFound extends React.Component {
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
-                <View style={styles.bottom}>
-                    <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Home')}>
-                        <HomeButton fill='#929292' />
-                        <Text style={styles.buttonText}>Домой</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })}
-                    >
-                        <ScanButton />
-                        <Text style={styles.buttonText} >Сканировать</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile', { token: this.state.token, updateHistory: this.props.route.params.updateHistory })}
-                    >
-                        <ProfileButton fill='#929292' />
-                        <Text style={styles.buttonText}>Профиль</Text>
-                    </TouchableOpacity>
-                </View>
+                {false && (
+                    <View style={styles.bottom}>
+                        <TouchableOpacity style={styles.buttonArea}
+                            onPress={() => this.props.navigation.navigate('Home')}>
+                            <HomeButton fill='#929292' />
+                            <Text style={styles.buttonText}>Домой</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonArea}
+                            onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory })}
+                        >
+                            <ScanButton />
+                            <Text style={styles.buttonText} >Сканировать</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonArea}
+                            onPress={() => this.props.navigation.navigate('Profile', { token: this.state.token, updateHistory: this.props.route.params.updateHistory })}
+                        >
+                            <ProfileButton fill='#929292' />
+                            <Text style={styles.buttonText}>Профиль</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
                 <ImageManipulator
                     photo={{ uri }}
                     saveOptions={{ 'base64': true }}
@@ -447,6 +449,21 @@ export default class ProductNotFound extends React.Component {
                     confirmButtonColor="#009E4E"
                     onConfirmPressed={() => {
                         this.hideAlertDetecting();
+                    }}
+                />
+                <AwesomeAlert
+                    show={this.state.showPhotoLoadingAlert}
+                    showProgress={true}
+                    title=""
+                    message="Подождите, запрос обрабатывается."
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={false}
+                    showConfirmButton={true}
+                    confirmText="Закрыть"
+                    confirmButtonColor="#009E4E"
+                    onConfirmPressed={() => {
+                        this.setState({ showPhotoLoadingAlert: false });
                     }}
                 />
                 <AwesomeAlert
@@ -527,7 +544,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === "android" ? 20 : 0
     },
     header: {
-        flex: 1,
+        height: 50,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: "center",
@@ -545,7 +562,8 @@ const styles = StyleSheet.create({
         flex: 10,
     },
     bottom: {
-        flex: 1,
+        //flex: 1,
+        height: 50,
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',

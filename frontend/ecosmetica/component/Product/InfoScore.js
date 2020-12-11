@@ -16,7 +16,8 @@ import ImageWindow3 from '../../assets/svg/infoimage3.svg'
 var width = Dimensions.get('window').width;
 
 Font.loadAsync({
-    'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+    'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf'),
+    'NotoSanaTamilBold': require('../../assets/fonts/NotoSansTamilUI-Bold.ttf')
 });
 
 const styles = StyleSheet.create({
@@ -74,7 +75,7 @@ export default function InfoSore(props) {
                 </View>
                 <View style={styles.bodyInfoArea}>
                     <View style={styles.imageArea}>
-                        <SvgXml xml={ImageWindow3} width={width - 250} />
+                        <SvgXml xml={ImageWindow3} width={width - 150} />
                     </View>
                     <View style={styles.textInfoArea}>
                         <Text style={styles.textInfo}>

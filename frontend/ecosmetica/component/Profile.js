@@ -569,6 +569,11 @@ export default class Profile extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     console.log('profileDidUpdate')
     if (prevState.token !== this.state.token || prevState.url_avatar !== this.state.url_avatar) {
+      if ((this.state.token === "" || this.state.token === null || this.state.token === undefined) && this.state.iconLogoutColor === "#C4C4C4") {
+        this.setState({iconLogoutColor: '#fff'})
+      } else {
+        this.setState({iconLogoutColor: '#C4C4C4'})
+      }
       if (prevState.url_avatar !== this.state.url_avatar) {
         const url = this.state.url_avatar
         this.setState({ url_avatar: url })
