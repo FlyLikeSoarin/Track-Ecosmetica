@@ -10,7 +10,9 @@ import {
   AsyncStorage,
   Dimensions,
   TextInput,
+  Keyboard
 } from 'react-native';
+import InputScrollView from 'react-native-input-scroll-view'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
 import Star from './Button/Star'
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    marginTop: 10,
     //alignItems: 'center',
   },
   imageWrap: {
@@ -113,6 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginVertical: 10
     // marginVertical: 10,
     //paddingBottom: 5,
   },
@@ -317,7 +321,8 @@ buttonArea2: {
   justifyContent: 'flex-end',
   alignItems: 'stretch',
   backgroundColor: '#fff',
-  marginBottom: 20
+  marginBottom: 20,
+  marginTop: 20
 },
 bottom: {
   backgroundColor: '#009E4E',
@@ -378,49 +383,19 @@ export default class Profile extends React.Component {
 
       token: this.props.route.params.token,
       favourites: [
-        /* {
-           "name": "Aussie aussome volume",
-           "brand_name": "Aussie",
-           "img_url": 'https://reactjs.org/logo-og.png',
-           "description": "",
-           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-           "eco_score": 10,
-           "safety_score": 10,
-           "zoo_score": 2,
-           "total_score": 6
-         },
-         {
-           "name": "Aussie aussome volume",
-           "brand_name": "Aussie",
-           "img_url": 'https://reactjs.org/logo-og.png',
-           "description": "",
-           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-           "eco_score": 10,
-           "safety_score": 10,
-           "zoo_score": 2,
-           "total_score": 6
-         },
-         {
-           "name": "Aussie aussome volume",
-           "brand_name": "Aussie",
-           "img_url": 'https://reactjs.org/logo-og.png',
-           "description": "",
-           "ingredients": "[\"FRAGRANCE\", \"METHYLISOTHIAZOLINONE\", \"FD&C YELLOW NO. 5 (CI 19140)\", \"METHYLCHLOROISOTHIAZOLINONE\", \"COCAMIDOPROPYL BETAINE\", \"SODIUM LAURETH SULFATE\", \"SODIUM BENZOATE\", \"SODIUM LAURYL SULFATE\", \"CITRIC ACID\", \"TETRASODIUM EDTA\", \"WATER\", \"HEDYCHIUM CORONARIUM (AWAPUHI OR WHITE GINGER)\", \"PRUNUS SEROTINA (WILD CHERRY) EXTRACT\", \"HUMULUS LUPULUS (HOPS) EXTRACT\", \"SODIUM CITRATE\", \"SODIUM XYLENE SULFONATE\", \"SODIUM CHLORIDE\", \"HYDROXYPROPYL METHYLCELLULOSE\", \"D&C RED NO. 33 (CI 17200)\"]",
-           "eco_score": 10,
-           "safety_score": 10,
-           "zoo_score": 2,
-           "total_score": 6
-         },*/
       ],
       isUpdated: false,
       isInputIngsShown: false,
       isEmptyList: false,
       bottonPressed: false,
+      showFooter: true
     };
     this.setToken = this.setToken.bind(this);
     this.handlerPassword = this.handlerPassword.bind(this)
     this.handlerFirstName = this.handlerFirstName.bind(this)
     this.handlerLastName = this.handlerLastName.bind(this)
+    this._keyboardDidShow = this._keyboardDidShow.bind(this)
+    this._keyboardDidHide = this._keyboardDidHide.bind(this)
    //this.clearHistory = this.clearHistory.bind(this);
   }
 
@@ -489,6 +464,14 @@ export default class Profile extends React.Component {
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this._keyboardDidHide,
+    );
 
 
     if (this.state.token === null) {
@@ -511,24 +494,6 @@ export default class Profile extends React.Component {
 
 
     this.loadUserInfo()
-
-    // await fetch(`${URL}product/history/`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Token ${this.state.token}`,
-    //   },
-    // })
-    //   .then((resp) => {
-    //     console.log(resp.status)
-    //     return resp.json()
-    //   })
-    //   .then((data) => {
-    //     console.log(data)
-    //     this.setState({ favourites: data });
-    //   })
-    //   .catch(e=>
-    //     console.log('profile catch', e))
     this.handleData();
 
     this.state.navigation.setOptions({
@@ -564,6 +529,18 @@ export default class Profile extends React.Component {
       //console.log(this.state.token)
     }, 1500);
 
+  }
+
+  _keyboardDidShow() {
+    this.setState({
+      showFooter: false
+    })
+  }
+
+  _keyboardDidHide() {
+    this.setState({
+      showFooter: true
+    })
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -872,6 +849,10 @@ export default class Profile extends React.Component {
                         {this.state.showIngridients && (
                             <View style={styles.reviews}>
                                 <SafeAreaView style={styles.scroll}>
+                                <InputScrollView
+                                    ref={ref => { this.scrollView = ref }}
+                                    onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+                                >
                                   <TextInput style={styles.inputName}
                                   value={this.state.first_name}
                                   onChangeText={this.handlerFirstName}
@@ -886,6 +867,7 @@ export default class Profile extends React.Component {
                                   placeholderTextColor="#8B8B8B"
                                   autoCapitalize="none"
                                   />
+                                 
                             {/* <View style={styles.passwordInput}>
                                 <TextInput style={styles.passwordInputArea}
                                     value={this.state.password}
@@ -906,6 +888,7 @@ export default class Profile extends React.Component {
                                     </View>
                                 </TouchableOpacity>
                             </View>
+                            </InputScrollView>
                             {/* <View style={styles.buttonArea2}>
                               <TouchableOpacity onPress={() => this.clearHistory()}>
                                 <View style={styles.bottom}>
@@ -933,6 +916,7 @@ export default class Profile extends React.Component {
             </View>
           </View>)}
         {/*FOOTER*/}
+        { this.state.showFooter && (
         <View style={styles.buttonMenuContainer}>
           <TouchableOpacity style={styles.buttonArea}
             onPress={() => this.props.navigation.navigate('Home')}>
@@ -950,6 +934,7 @@ export default class Profile extends React.Component {
             <Text style={styles.buttonTextTarget}>Профиль</Text>
           </TouchableOpacity>
         </View>
+        )}
       </SafeAreaView>
     )
   }
