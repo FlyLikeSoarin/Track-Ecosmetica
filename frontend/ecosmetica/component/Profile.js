@@ -10,7 +10,8 @@ import {
   AsyncStorage,
   Dimensions,
   TextInput,
-  Keyboard
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import InputScrollView from 'react-native-input-scroll-view'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -27,6 +28,7 @@ import Product from './History/Product'
 import AddAvatarButton from './Profile/AddAvatarButton'
 
 import AwesomeAlert from 'react-native-awesome-alerts';
+import LoadingScreen from './LoadingScreen';
 
 var width = Dimensions.get('window').width;
 const URL = 'http://185.148.82.169:8005'
@@ -339,6 +341,10 @@ bottomText: {
 },
 reviews: {
   flex: 1,
+},
+loading: {
+  flex: 1,
+  justifyContent: 'center',
 }
 });
 
@@ -370,6 +376,7 @@ export default class Profile extends React.Component {
       email: '',
       password: '',
       url_avatar: null,
+      assetsLoaded: false,
 
       showIngridients: false,
       ingridients: ['igrd1', 'ingd2', 'ingrd3'],
@@ -456,7 +463,26 @@ export default class Profile extends React.Component {
           favourites: ans
         })
       })
+      setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
+
+  async loadTocken() {if (this.state.token === null) {
+    let token = null
+    try {
+      console.log("try get token")
+      token = await AsyncStorage.getItem('token');
+      console.log('Profile', token)
+    } catch (e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      this.setState({
+        token: token,
+        iconLogoutColor: '#C4C4C4'
+      })
+    }
+  }
+}
 
   async componentDidMount() {
     console.log('cmponentDidMount')
@@ -473,28 +499,30 @@ export default class Profile extends React.Component {
       this._keyboardDidHide,
     );
 
+    
+  //   if (this.state.token === null) {
+  //     let token = null
+  //     try {
+  //       console.log("try get token")
+  //       token = await AsyncStorage.getItem('token');
+  //       console.log('Profile', token)
+  //     } catch (e) {
+  //       console.log(e)
+  //     }
+  //     if (token !== null) {
+  //       this.setState({
+  //         token: token,
+  //         iconLogoutColor: '#C4C4C4'
+  //       })
+  //     }
+  //   }
+    //await this.handleData();
+    await this.loadTocken();
+    await this.loadFavorites(this.state.token)
 
-    if (this.state.token === null) {
-      let token = null
-      try {
-        console.log("try get token")
-        token = await AsyncStorage.getItem('token');
-        console.log('Profile', token)
-      } catch (e) {
-        console.log(e)
-      }
-      if (token !== null) {
-        this.setState({
-          token: token,
-          iconLogoutColor: '#C4C4C4'
-        })
-      }
-    }
-    this.loadFavorites(this.state.token)
 
-
-    this.loadUserInfo()
-    this.handleData();
+    await this.loadUserInfo()
+    
 
     this.state.navigation.setOptions({
       headerTitle: 'Профиль',
@@ -523,11 +551,11 @@ export default class Profile extends React.Component {
       )
     });
 
-    setTimeout(() => {
-      this.setState({ assetsLoaded: true });
-      //console.log('profile')
-      //console.log(this.state.token)
-    }, 1500);
+    // setTimeout(() => {
+    //   this.setState({ assetsLoaded: true });
+    //   //console.log('profile')
+    //   //console.log(this.state.token)
+    // }, 1500);
 
   }
 
@@ -755,7 +783,8 @@ export default class Profile extends React.Component {
 
   render() {
     console.log("avalar render", this.state.url_avatar)
-    const { first_name, last_name, ingridients, favourites } = this.state
+    const { assetsLoaded, first_name, last_name, ingridients, favourites } = this.state
+    
     return (
       <SafeAreaView style={styles.containerScreen}>
         {this.state.token === null && (
@@ -828,7 +857,7 @@ export default class Profile extends React.Component {
                   </Text>
                 </TouchableOpacity>
               </View>
-              {!this.state.showIngridients && (
+              {!this.state.showIngridients && assetsLoaded &&(
                 <View style={styles.ingregients}>
                   {favourites.length === 0 && (
                     <View style={styles.wrapEmptyReviewText}>
@@ -846,6 +875,10 @@ export default class Profile extends React.Component {
                   </SafeAreaView>
                 </View>
                 )}
+                {!this.state.showIngridients && !assetsLoaded &&(
+                  <View style={styles.loading}>
+                    <ActivityIndicator/>
+                  </View>)}
                         {this.state.showIngridients && (
                             <View style={styles.reviews}>
                                 <SafeAreaView style={styles.scroll}>
@@ -939,6 +972,7 @@ export default class Profile extends React.Component {
     )
   }
 }
+
 
 const renderItemIngridient = ({ item }) => {
   return (
