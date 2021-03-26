@@ -18,11 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ProfileImageMock from './Button/ProfileImageMock';
 import Star from './Button/Star'
 
-/*Buttons*/
-import HomeButton from './Button/HomeButton'
-import ScanButton from './Button/ScanButton'
-import ProfileButton from './Button/ProfileButton'
-import BackButton from './Button/BackButton'
+import { HomeButton, ScanButton, ProfileButton, BackButton } from './Button'
 import ProductList from './History/ProductList'
 import Product from './History/Product'
 import AddAvatarButton from './Profile/AddAvatarButton'
@@ -466,24 +462,6 @@ export default class Profile extends React.Component {
       this._keyboardDidHide,
     );
 
-    
-  //   if (this.state.token === null) {
-  //     let token = null
-  //     try {
-  //       console.log("try get token")
-  //       token = await AsyncStorage.getItem('token');
-  //       console.log('Profile', token)
-  //     } catch (e) {
-  //       console.log(e)
-  //     }
-  //     if (token !== null) {
-  //       this.setState({
-  //         token: token,
-  //         iconLogoutColor: '#C4C4C4'
-  //       })
-  //     }
-  //   }
-    //await this.handleData();
     await this.loadTocken();
     await this.loadFavorites(this.state.token)
 
@@ -517,12 +495,6 @@ export default class Profile extends React.Component {
         </TouchableOpacity>
       )
     });
-
-    // setTimeout(() => {
-    //   this.setState({ assetsLoaded: true });
-    //   //console.log('profile')
-    //   //console.log(this.state.token)
-    // }, 1500);
 
   }
 
@@ -860,18 +832,6 @@ export default class Profile extends React.Component {
                                   placeholderTextColor="#8B8B8B"
                                   autoCapitalize="none"
                                   />
-                                 
-                            {/* <View style={styles.passwordInput}>
-                                <TextInput style={styles.passwordInputArea}
-                                    value={this.state.password}
-                                    onChangeText={this.handlerPassword}
-                                    placeholder='Пароль'
-                                    placeholderTextColor="#8B8B8B"
-                                    autoCapitalize="none"
-                                    secureTextEntry={this.state.secure}
-                                /> 
-                                <Icon style={styles.eyeIcon} name={this.state.icon} size={20} color="gray" onPress={() => this.changeIcon()} />
-                            </View>*/}
                             <View style={styles.buttonArea2}>
                                 <TouchableOpacity onPress={() => this.handlerSave()}>
                                     <View style={styles.bottom}>
@@ -882,30 +842,8 @@ export default class Profile extends React.Component {
                                 </TouchableOpacity>
                             </View>
                             </InputScrollView>
-                            {/* <View style={styles.buttonArea2}>
-                              <TouchableOpacity onPress={() => this.clearHistory()}>
-                                <View style={styles.bottom}>
-                                  <Text style={styles.bottomText}>
-                                  Очистить историю
-                                  </Text>
-                                </View>
-                              </TouchableOpacity>
-                            </View> */}
                             </SafeAreaView>
-                          </View>)}
-                    {/* </View>
-                                  <View style={styles.infoWrap}>
-                                    {this.state.isInputIngsShown&&<TextInput></TextInput>}
-                                    <ButtonTemplate
-                                      title='Очистить историю'
-                                      style={styles.buttonAddBefore}
-                                      styleText={styles.buttonTextBefore}
-                                      onPress={() => this.setState({isInputIngsShown: true})} />
-                                  </View> 
-                              
-                            </View> */}
-                            
-                       
+                          </View>)}           
             </View>
           </View>)}
         {/*FOOTER*/}

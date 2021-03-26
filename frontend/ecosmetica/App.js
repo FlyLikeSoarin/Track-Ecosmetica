@@ -16,8 +16,7 @@ import BarcodeScannerComponent from './component/Scanner';
 import ProductNotFound from './component/ProductNotFound/ProductNotFound'
 import AddProductPage from './component/AddProduct/AddProductPage'
 import Product from './component/Product/Product'
-import Login from './component/Login/Login'
-import Registr from './component/Login/Registr'
+import { Login, Registr } from './component/Login'
 import ProductInfo from './component/History/ProductInfo'
 import Profile from './component/Profile'
 
@@ -32,22 +31,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-
-/*function Search({ navigation, route }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Search Screen</Text>
-      <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
-      />
-      <Button title='logout' onPress={() => route.params.logOut()} />
-      <Button title='очистить историю' onPress={() => route.params.clearHistory()} />
-    </View>
-  );
-};*/
-
-
 
 
 const Stack = createStackNavigator();

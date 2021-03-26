@@ -1,20 +1,22 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
 import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, SafeAreaView, AsyncStorage, Platform } from 'react-native';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
 
 import Home from '../assets/svg/home.svg';
-/*Buttons*/
-import HomeButton from './Button/HomeButton'
-import ScanButton from './Button/ScanButton'
-import ProfileButton from './Button/ProfileButton'
-import SearchButton from './Button/SearchButton'
+import {
+  HomeButton,
+  ScanButton,
+  ProfileButton,
+  SearchButton,
+} from './Button';
 import LoadingScreen from './LoadingScreen'
 import ProductList from './History/ProductList'
 import IntroWindows from './IntroWindows'
-import { createIconSetFromFontello } from 'react-native-vector-icons';
 
 import config from '../config'
 
@@ -28,7 +30,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomColor: '#929292',
     borderBottomWidth: 0.5,
-    //backgroundColor: 'black'
     paddingTop: Platform.OS ==='android' ? 20: 0
   },
   title: {
@@ -36,8 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: "center",
-    //backgroundColor: 'red'
-    //marginBottom: 5,
   },
   textEco: {
     fontSize: 24,
@@ -113,32 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-  // registrButton: {
-  //   backgroundColor: '#009E4E',
-  //   width: width - 60,
-  //   height: 40,
-  //   alignItems: 'center',
-  //   borderRadius: 10,
-  //   justifyContent: 'center',
-  //   margin: 5
-  // },
-  // logInButton: {
-  //   backgroundColor: '#E5E5E5',
-  //   width: width - 60,
-  //   height: 40,
-  //   alignItems: 'center',
-  //   borderRadius: 10,
-  //   justifyContent: 'center',
-  //   margin: 5
-  // },
-  // registrText: {
-  //   color: '#fff',
-  //   fontFamily: 'NotoSanaTamilLight',
-  // },
-  // logInText: {
-  //   color: '#009E4E',
-  //   fontFamily: 'NotoSanaTamilLight',
-  // },
   body: {
     flex: 10
   }
@@ -178,7 +151,6 @@ export default class MainPage extends React.Component {
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this);
     this.handleData = this.handleData.bind(this);
-    //this.initHistory = this.initHistory.bind(this);
     this.updateHistory = this.updateHistory.bind(this);
     this.clearHistory = this.clearHistory.bind(this)
   }
@@ -223,11 +195,6 @@ export default class MainPage extends React.Component {
         }
         this.setState({ data: data });
       })
-    // .then((data) => {
-
-    // })
-    // this.setState({ isDataLoaded: true });
-    //this.initHistory();
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
@@ -235,7 +202,6 @@ export default class MainPage extends React.Component {
 
   async loadHistory() {
     let history = null
-    //await AsyncStorage.removeItem('history')
     try {
       await AsyncStorage.getItem('history').then(
         (resp) => {
@@ -250,8 +216,6 @@ export default class MainPage extends React.Component {
   }
 
   async componentDidMount() {
-    console.log('main did vount')
-   //AsyncStorage.removeItem('history');
     let isFirstVisit = null
     try {
       isFirstVisit = await AsyncStorage.getItem('visitetd')
@@ -284,8 +248,7 @@ export default class MainPage extends React.Component {
     }
 
     await this.loadHistory();
-    //sthis.handleData();
-    //   /* Загрузка шрифтов */
+    /* Загрузка шрифтов */
     await Font.loadAsync({
       'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
@@ -320,13 +283,6 @@ export default class MainPage extends React.Component {
     let isUpd = this.state.isUpdated
     this.setState({ isUpdated: !isUpd })
   }
-  componentDidUpdate(prevProps, prevState) {
-    /*if (prevState.token !== this.state.token) {
-      this.setState({
-        token: this.state.token
-      })
-    }*/
-  }
 
   render() {
     console.log('render main page', this.state.storageHistory)
@@ -340,12 +296,6 @@ export default class MainPage extends React.Component {
               <View style={styles.title}>
                 <Text style={styles.textSmetica}>История</Text>
               </View>
-              {/*<TouchableOpacity*
-                style={styles.searchArea}
-                //onPress={() => this.state.navigation.navigate('Search', { logOut: this.logOut, clearHistory: () => this.clearHistory() })}
-              >*/}
-                {/*<SearchButton />*/}
-              {/*</TouchableOpacity>/*}*/}
             </View>
             <View style={styles.body}>
               <ProductList

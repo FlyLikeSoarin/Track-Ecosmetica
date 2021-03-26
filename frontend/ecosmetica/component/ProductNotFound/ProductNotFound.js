@@ -2,11 +2,8 @@ import * as React from 'react';
 import * as Font from 'expo-font';
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
-import Back from '../Button/BackButton';
 import Balm from './Balm';
-import HomeButton from '../Button/HomeButton'
-import ScanButton from '../Button/ScanButton'
-import ProfileButton from '../Button/ProfileButton'
+import { HomeButton, ScanButton, ProfileButton, BackButton } from '../Button'
 import ShampooSvg from './ShampooSvg'
 
 
@@ -38,7 +35,7 @@ export default class ProductNotFound extends React.Component {
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
-                        <Back />
+                        <BackButton />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.body}>
