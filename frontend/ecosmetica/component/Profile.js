@@ -30,8 +30,9 @@ import AddAvatarButton from './Profile/AddAvatarButton'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import LoadingScreen from './LoadingScreen';
 
+import config from '../config';
+
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005'
 
 
 const styles = StyleSheet.create({
@@ -403,49 +404,15 @@ export default class Profile extends React.Component {
     this.handlerLastName = this.handlerLastName.bind(this)
     this._keyboardDidShow = this._keyboardDidShow.bind(this)
     this._keyboardDidHide = this._keyboardDidHide.bind(this)
-   //this.clearHistory = this.clearHistory.bind(this);
   }
 
-  // async clearHistory() {
-  //   console.log('clear history')
-  //   try {
-  //     await AsyncStorage.removeItem('history');
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  //   this.setState({
-  //     storageHistory: []
-  //   })
-
-  // }
 
   handleData = async () => {
-    /*await fetch(`${URL}product/history/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${this.state.token}`,
-      },
-    })
-      .then((resp) => {
-        console.log(resp.status)
-        return resp.json()
-      })
-      .then((data) => {
-        console.log(data)
-        if (data.length !== 0) {
-          this.setState({
-            isEmptyList: false
-          });
-        }
-        this.setState({ favourites: data });
-      })*/
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
   async loadFavorites(token) {
-    console.log("//////////token///////////", token)
-    await fetch(`${URL}/product/make_favorite/`, {
+    await fetch(`${config.SERVER_URL}/product/make_favorite/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -601,7 +568,7 @@ export default class Profile extends React.Component {
       }
     }
 
-    await fetch(`${URL}/user/`, {
+    await fetch(`${config.SERVER_URL}/user/`, {
       method: 'GET',
       headers: header
     })
@@ -659,7 +626,7 @@ export default class Profile extends React.Component {
   async handlerSave() {
     if (!this.state.bottonPressed) {
         this.setState({ buttonPressed: true })
-        await fetch(`${URL}/user/`, {
+        await fetch(`${config.SERVER_URL}/user/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -704,7 +671,7 @@ export default class Profile extends React.Component {
   }
 
   async handleMoveToProduct(barcode) {
-    await fetch(`${URL}/product/?code=${barcode}`, {
+    await fetch(`${config.SERVER_URL}/product/?code=${barcode}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -758,13 +725,6 @@ export default class Profile extends React.Component {
          onPress={() => this.handleMoveToProduct(item.barcode)}
       >
         <View>
-          {/* <Product
-            title={item.name}
-            key={item.name}
-            image={item.img_url}
-            lable={item.brand_name}
-            metric1={item.total_score} 
-         isAddFovoriteShown={true}/>*/}
           <Product
             title={item.name}
             key={1}

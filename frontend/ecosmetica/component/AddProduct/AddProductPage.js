@@ -27,8 +27,9 @@ import ScanButton from '../Button/ScanButton'
 import ProfileButton from '../Button/ProfileButton'
 import AddPhotoButton from './AddPhotoButton'
 
+import config from '../../config'
+
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005'
 
 export default class ProductNotFound extends React.Component {
     constructor(props) {
@@ -139,14 +140,12 @@ export default class ProductNotFound extends React.Component {
 
                 const a = this.state.ingredients.split(', ')
                 const array_ingredients = this.state.ingredients === "" ? '[]' : JSON.stringify(a.slice(0, a.length - 1))
-                console.log(this.state.url_loaded_photo)
                 let serverCode;
                 if (this.state.url_loaded_photo != '' || this.state.uri === '') {
-                    await fetch(`${URL}/product/`, {
+                    await fetch(`${config.SERVER_URL}/product/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            //'Authorization': `Token ${token}`,
                         },
                         body: JSON.stringify({
                             code: this.state.barcode,
@@ -179,15 +178,6 @@ export default class ProductNotFound extends React.Component {
                             console.log(e)
                             this.setState({ fallServer: true })
                         })
-                    /*this.setState({
-                        barcode: '',
-                        name: '',
-                        brand: '',
-                        ingredients: '',
-                        description: '',
-                        url_loaded_photo: '',
-                        submited: true
-                    })*/
                 } else {
                     this.setState({ bottonPressed: false })
                 }
@@ -240,7 +230,7 @@ export default class ProductNotFound extends React.Component {
             }
         }
         let ans_str = '';
-        await fetch(`${URL}/product/analyze_image/`, {
+        await fetch(`${config.SERVER_URL}/product/analyze_image/`, {
             method: 'POST',
             headers: header,
             body: JSON.stringify({

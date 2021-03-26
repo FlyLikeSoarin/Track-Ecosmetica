@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
-//import ImageWindow1 from '../assets/svg/intro-window1_1.svg'
 import ImageWindow1 from '../assets/svg/intro_2.svg'
 import SadBoy from '../assets/svg/sed-girl.svg'
-//import ImageWindow3 from '../assets/svg/intro-window3_3.svg'
 import ImageWindow3 from '../assets/svg/infoimage3.svg'
 import InfoscreenImage3 from '../static/infoscreen3.jpg'
 import Logo from '../assets/svg/logo.svg'

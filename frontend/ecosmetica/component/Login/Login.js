@@ -18,8 +18,9 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 /*Buttons*/
 import BackButton from '../Button/BackButton'
 
+import config from '../../config'
+
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005'
 
 
 export default class Login extends React.Component {
@@ -131,7 +132,7 @@ export default class Login extends React.Component {
             this.setState({buttonPressed: true})
 
             if (this.state.email !== '' && this.state.password != '') {
-                await fetch(`${URL}/auth/?username=${this.state.email}&password=${this.state.password}`, {
+                await fetch(`${config.SERVER_URL}/auth/?username=${this.state.email}&password=${this.state.password}`, {
                     method: 'GET'
                 })
                     .then((response) => {

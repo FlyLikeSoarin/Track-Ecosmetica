@@ -20,8 +20,9 @@ import InputScrollView from 'react-native-input-scroll-view'
 /*Buttons*/
 import BackButton from '../Button/BackButton'
 
+import config from '../../config'
+
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005'
 
 export default class Registr extends React.Component {
 
@@ -126,7 +127,7 @@ export default class Registr extends React.Component {
         if (!this.state.bottonPressed) {
             this.setState({ buttonPressed: true })
             if (this.state.email !== '' && this.state.password !== '' && this.state.repeated_password !== '' && this.state.password === this.state.repeated_password && this.state.password.length >= 5) {
-                await fetch(`${URL}/auth/`, {
+                await fetch(`${config.SERVER_URL}/auth/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

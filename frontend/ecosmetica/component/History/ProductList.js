@@ -14,10 +14,10 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Product from './Product'
-//import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
 
-const URL = 'http://185.148.82.169:8005';
+import config from '../../config'
+
 
 const styles = StyleSheet.create({
   header: {
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
   }
 });
 
-//const URL = 'http://185.148.82.169:8005/';
 
 const ItemList = ({ data, renderItem, isEmpty, navigation, updateHistory }) => {
   if (isEmpty)
@@ -166,7 +165,7 @@ export default class ProductList extends React.Component {
         'Authorization': `Token ${token}`,
       }
     }
-    await fetch(`${URL}/product/?code=${item.barcode}`, {
+    await fetch(`${config.SERVER_URL}/product/?code=${item.barcode}`, {
       method: 'GET',
       headers: header
     })
@@ -214,41 +213,13 @@ export default class ProductList extends React.Component {
     )
   };
 
-  // handleData = async () => {
-  //   await fetch(`${URL}product/history/`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Token ${this.state.token}`,
-  //     },
-  //   })
-  //     .then((resp) => {
-  //       //console.log(resp.status)
-  //       return resp.json()
-  //     })
-  //     .then((data) => {
-  //       //console.log(data)
-  //       if (data.length !== 0) {
-  //         this.setState({
-  //           isEmptyList: false
-  //         })
-  //       }
-  //       this.setState({ data: data });
-  //     })
-  //   this.setState({ isGet: true });
-  //   setTimeout(() => this.setState({ assetsLoaded: true }), 500)
-  // }
-
   async componentDidMount() {
-    //console.log('product list did mount')
-
     await Font.loadAsync({
       'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('product list updating')
     if (prevProps.data !== this.props.data) {
       this.setState({
         data: this.props.data,
@@ -256,7 +227,6 @@ export default class ProductList extends React.Component {
         token: this.props.token
       })
     }
-    //console.log(this.state.data)
   } 
   handleUpdate() {
     let isUpd = this.state.isUpdated
@@ -264,12 +234,9 @@ export default class ProductList extends React.Component {
   }
 
   render() {
-
-    console.log('render history', this.state.isEmptyList)
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            {/*this.state.isEmptyList && <EmtyHistory navigation={this.state.navigation}/>*/}
           <ItemList 
             data={this.state.data} 
             renderItem={this.renderItem} 
@@ -279,14 +246,6 @@ export default class ProductList extends React.Component {
           </View>
         </View>
       );
-    // } else {
-    //   return (
-    //     <View style={styles.loading}>
-    //       <ActivityIndicator />
-    //       <StatusBar barStyle="default" />
-    //     </View>
-    //   )
-    // }
   }
 
 }

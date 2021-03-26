@@ -21,8 +21,6 @@ Font.loadAsync({
 });
 
 
-const URL = 'http://185.148.82.169:8005';
-
 export default class Product extends React.Component {
     /*props: hideModal, token, barcode, product, setReviews, prevReview*/
     constructor(props) {
@@ -210,12 +208,9 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top'
     },
     numberSymbolsArea: {
-        //flex: 1,
         height: 35,
         flexDirection: 'row-reverse',
         padding: 10,
-        //backgroundColor: 'red',
-        //marginBottom: 10
     },
     image: {
         width: 60,

@@ -39,7 +39,6 @@ export default function UserRaiting(props){
     console.log("score", score)
     const round_score = Number((score).toFixed(1)); 
     const number_scores = props.number;
-    //console.log(props)
     
     return(
         <View style={styles.container}>

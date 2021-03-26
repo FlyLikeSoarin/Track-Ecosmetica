@@ -11,7 +11,7 @@ import BarcodeImage from './Scanner/Barcodeimage'
 import Back from './Button/BackButton'
 import Cross from './Button/CrossButton'
 
-const URL = 'http://185.148.82.169:8005';
+import config from '../config';
 
 var width = Dimensions.get('window').width;
 Font.loadAsync({
@@ -223,8 +223,8 @@ export default class BarcodeScannerComponent extends React.Component {
       }
     }
     console.log('scanner')
-    console.log(data)
-    await fetch(`${URL}/product/?code=${data}`, {
+    console.log(config.SERVER_URL)
+    await fetch(`${config.SERVER_URL}/product/?code=${data}`, {
       method: 'GET',
       headers: header
     })

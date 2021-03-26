@@ -17,7 +17,7 @@ import Bookmark from '../../assets/svg/bookmark_6.svg';
 import Heart from '../../assets/svg/heart.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
 
-const URL = 'http://185.148.82.169:8005'
+import config from '../../config'
 
 const styles = StyleSheet.create({
   product: {
@@ -147,41 +147,6 @@ const ImageScore = ({ image, score }) => {
   )
 }
 
-/*const addToFavorites = async ({ barcode, favorite, token }) => {
-  const prevIsFavoite = favorite
-  //const isFavorite = !prevIsFavoite
-  // this.setState({
-  //     isFavorite: !prevIsFavoite
-  // })
-  if (token !== null) {
-    let body = {}
-    if (prevIsFavoite) {
-      body = {
-        in_favorite: false
-      }
-    }
-    await fetch(`${URL}/product/make_favorite/?code=${barcode}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-      body: body
-    })
-      .then((resp) => {
-        console.log(resp.status)
-        return resp.json()
-      })
-      .then((ans) => {
-        console.log(ans)
-      })
-      .catch(() => {
-        console.log("fail add to favorite")
-      })
-  } else {
-    setShowAuthError(true)
-  }
-}*/
 
 const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAddFovoriteShown }) => {
 
@@ -190,26 +155,6 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
   let [updateFavoritStatus, setUpdateFavoritStatus] = React.useState(false)
   let token2 = null;
 
-  /*React.useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
-      });
-
-      try {
-        token2 = await AsyncStorage.getItem('token')
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
-    loadFont()
-  }, []);
-
-  React.useEffect(() => {
-    console.log("update favorite")
-    setFavorite2(favorite)
-  }, [favorite]); */
   const mounted = React.useRef();
   React.useEffect(() => {
   if (!mounted.current) {
@@ -259,7 +204,7 @@ const Product = ({ title, image, lable, metric1, favorite, barcode, token, isAdd
         setFavorite2(true)
       }
 
-      await fetch(`${URL}/product/make_favorite/?code=${barcode2}`, {
+      await fetch(`${config.SERVER_URL}/product/make_favorite/?code=${barcode2}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

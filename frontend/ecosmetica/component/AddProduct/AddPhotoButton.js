@@ -20,11 +20,7 @@ import add from '../../assets/svg/add.svg';
 import ScanButton from '../Button/ScanButton'
 import AddPhoto from './AddPhotoArea'
 
-const ACCESS_TOKEN = '9b4729d0e104113795bcf445d07eaf7c3bf06e5dda86d7f25e89fa3bfdfd29648f8f53d163ce1f80664a0'
-const URL = 'https://api.vk.com/method'
-const ALBUM_ID = '275534485'
-const GROUP_ID = '199800692'
-const ACCESS_USER_TOKEN = '0022f51f57789b918c35ca1f6e3853b8ec6f6b79bdfca2b821dde1d21a84f0802620d8f504b508baf6e82'
+import config from '../../config'
 
 var width = Dimensions.get('window').width;
 
@@ -103,31 +99,22 @@ export default class AddPhotoButton extends React.Component {
     }
 
     async getUploadUrl(uri) {
-        console.log("getUploadUrl")
-        await fetch(`${URL}/photos.getUploadServer/?album_id=${ALBUM_ID}&group_id=${GROUP_ID}&v=5.124&access_token=${ACCESS_USER_TOKEN}`, {
+        await fetch(`${config.SERVER_URL}/photos.getUploadServer/?album_id=${config.ALBUM_ID}&group_id=${config.GROUP_ID}&v=5.124&access_token=${config.ACCESS_USER_TOKEN}`, {
             method: 'GET'
         })
-            .then((resp) => {
-                return resp.json()
-            })
-            .then((ans) => {
-                console.log(ans)
-                this.setState({ upload_url: ans.response.upload_url })
-                this.uploadToVK(ans.response.upload_url, uri)
-            })
+        .then((resp) => {
+            return resp.json()
+        })
+        .then((ans) => {
+            this.setState({ upload_url: ans.response.upload_url })
+            this.uploadToVK(ans.response.upload_url, uri)
+        })
     }
 
     async uploadToVK(upload_url, uri) {
-        //console.log("uploadToVK")
-        //console.log(upload_url)
-        //console.log(uri)
         let filename = uri.split('/').pop();
-
         let match = /\.(\w+)$/.exec(filename);
         let type = match ? `image/${match[1]}` : `image`;
-
-        /*const response = await fetch(uri);
-        const blob = await response.blob();*/
 
         let formData = new FormData();
         formData.append('file1', { uri: uri, name: filename, type })
@@ -143,7 +130,6 @@ export default class AddPhotoButton extends React.Component {
                 return resp.json();
             })
             .then((ans) => {
-                //console.log(ans);
                 this.setState({
                     server: ans.server,
                     photos_list: ans.photos_list,
@@ -155,17 +141,15 @@ export default class AddPhotoButton extends React.Component {
     }
 
     async savePhoto() {
-        //console.log("savrPhoto")
         let uri_image = '';
         const { server, aid, photos_list, hash } = this.state
-        await fetch(`${URL}/photos.save/?server=${server}&aid=${aid}&photos_list=${photos_list}&hash=${hash}&access_token=${ACCESS_USER_TOKEN}&album_id=${ALBUM_ID}&group_id=${GROUP_ID}&v=5.124`, {
+        await fetch(`${config.SERVER_URL}/photos.save/?server=${server}&aid=${aid}&photos_list=${photos_list}&hash=${hash}&access_token=${config.ACCESS_USER_TOKEN}&album_id=${config.ALBUM_ID}&group_id=${config.GROUP_ID}&v=5.124`, {
             method: 'GET'
         })
             .then((resp) => {
                 return resp.json()
             })
             .then((ans) => {
-                //console.log(ans)
                 uri_image = ans.response[0].sizes[2].url
             })
         this.props.setUrl(uri_image)
@@ -174,7 +158,6 @@ export default class AddPhotoButton extends React.Component {
 
     render() {
         const { submited } = this.props
-        //console.log(this.state.photoisLoaded)
         return (
             <View>
                 <TouchableOpacity onPress={() => this.setState({modalVisible: true})}>

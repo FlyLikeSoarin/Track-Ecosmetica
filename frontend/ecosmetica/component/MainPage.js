@@ -16,9 +16,8 @@ import ProductList from './History/ProductList'
 import IntroWindows from './IntroWindows'
 import { createIconSetFromFontello } from 'react-native-vector-icons';
 
-//import HistoryStore from './History/HistoryStore'
+import config from '../config'
 
-const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -204,7 +203,7 @@ export default class MainPage extends React.Component {
   }
 
   handleData = async () => {
-    await fetch(`${URL}product/history/`, {
+    await fetch(`${config.SERVER_URL}product/history/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -18,12 +18,10 @@ import { SvgXml } from 'react-native-svg';
 import StarRating from 'react-native-star-rating';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Heart from '../../assets/svg/heart.svg'
-//import ReviewIcon from '../../assets/svg/review.svg'
 import ReviewIcon from '../../assets/svg/comment-white-oval-bubble.svg'
 import { profileImageMock } from '../../assets/svg/profile-image.svg';
 import LikeIcon from '../../assets/svg/like.svg'
 import fillHeart from '../../assets/svg/fill-heart.svg'
-//import bookmark from '../../assets/svg/bookmark.svg'
 import Score from './Score'
 import Back from '../Button/BackButton'
 import HomeButton from '../Button/HomeButton'
@@ -35,9 +33,10 @@ import ProfileImageMock from '../Button/ProfileImageMock';
 import InputReview from './InputReview'
 import InfoScore from './InfoScore'
 
+import config from '../../config'
+
 
 var width = Dimensions.get('window').width;
-const URL = 'http://185.148.82.169:8005';
 
 
 Font.loadAsync({
@@ -132,7 +131,7 @@ export default class Product extends React.Component {
             })
             this.loadUserData(token)
         }
-        await fetch(`${URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
+        await fetch(`${config.SERVER_URL}/product/review/?code=${this.state.barcode}&product=${this.state.name}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         })
@@ -196,7 +195,7 @@ export default class Product extends React.Component {
         //}
     }
     async loadUserData(token) {
-        await fetch(`${URL}/user/`, {
+        await fetch(`${config.SERVER_URL}/user/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -273,7 +272,7 @@ export default class Product extends React.Component {
             rating: rating
         }))
         console.log("barcode", this.state.barcode)
-        await fetch(`${URL}/product/review/?code=${this.state.barcode}`, {
+        await fetch(`${config.SERVER_URL}/product/review/?code=${this.state.barcode}`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -331,7 +330,7 @@ export default class Product extends React.Component {
                 }
             }
             console.log('barcode', this.state.barcode)
-            await fetch(`${URL}/product/make_favorite/?code=${this.state.barcode}`, {
+            await fetch(`${config.SERVER_URL}/product/make_favorite/?code=${this.state.barcode}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
