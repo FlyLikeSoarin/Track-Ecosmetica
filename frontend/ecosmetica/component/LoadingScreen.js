@@ -1,31 +1,35 @@
 import * as React from 'react';
+import * as Font from 'expo-font';
 import { useLayoutEffect } from 'react';
 import { 
   Text,
   View, 
   StyleSheet, 
 } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+
+import Logo from '../assets/svg/logo.svg'
 
 const LoadingScreen = ({navigation}) => {
+
+    React.useEffect(() => {
+        Font.loadAsync({
+            'NotoSansTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+        });
+    })
     useLayoutEffect(() => {        
         navigation.setOptions({headerShown: false})
     }, [navigation])
     return(
         <View style={styles.body}>
-            <View style={styles.bigTextWrap}>
-              <Text style={styles.bigTextStart}>Eco</Text>
-              <Text style={styles.bigTextEnd}>smetica</Text>
-            </View>
-            <View style={styles.textFakeWrap}>
-              <Text style={styles.textFake}>Eco</Text>
-            </View>
+            <SvgXml xml={Logo} />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: '#C4C4C4',
+        backgroundColor: '#fff',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
@@ -40,10 +44,12 @@ const styles = StyleSheet.create({
     bigTextStart: {
         color: '#009E4E',
         fontSize: 40,
+        fontFamily: 'NotoSansTamilLight'
     },
     bigTextEnd: {
-        color: '#FFFFFF',
+        color: '#000',
         fontSize: 40,
+        fontFamily: 'NotoSansTamilLight'
     },
     textFakeWrap: {
         flex: 1,

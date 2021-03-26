@@ -5,16 +5,17 @@ import Cross from '../../assets/svg/cross-sign.svg';
 
 const styles = StyleSheet.create({
     cross: {
-        marginLeft: 30,
-        marginTop: 40,
-        marginRight: 30,
     }
 })
 
-export default function CrossButton(){
-    return(
+export default function CrossButton(props) {
+    let colorFill = props.fill;
+    if (colorFill === null) {
+        colorFill = '#fff'
+    }
+    return (
         <View style={styles.cross}>
-            <SvgXml width="30" height="30" xml={Cross} />
+            <SvgXml width="25" height="25" xml={Cross} fill={colorFill} />
         </View>
     )
 } 

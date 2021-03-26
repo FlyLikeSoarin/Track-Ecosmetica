@@ -1,26 +1,47 @@
 import * as React from 'react';
-import { View, StyleSheet} from 'react-native';
+import * as Font from 'expo-font';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import add from '../../assets/svg/add.svg';
 
+
+var width = Dimensions.get('window').width;
+
+
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
-        top: 25,
-        right:25,
-        backgroundColor: '#C1E1A0',
-        width: 120,
-        height: 120,
+        backgroundColor: '#009E4E',
+        width: width-0.7*width,
+        height: width-0.7*width,
         borderRadius: 30,
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'center',
+        margin: 5
+    },
+    text: {
+        color: '#fff',
+        fontSize: 10,
+        fontFamily: 'NotoSanaTamilExtraLight',
+        textAlign: 'center',
+        justifyContent: 'center',
     }
 })
 
-export default function AddPhoto(){
-    return(
+export default function AddPhoto() {
+    React.useEffect(() => {
+        Font.loadAsync({
+            'NotoSanaTamilExtraLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
+        });
+    })
+    return (
         <View style={styles.container}>
-            <SvgXml width="80" height="80" xml={add} />
+            <SvgXml width={width-0.85*width} height={width-0.85*width} xml={add} />
+            <Text style={styles.text}>
+                Загрузить фото
+            </Text>
+            <Text style={styles.text}>
+                продукта
+            </Text>
         </View>
     )
 } 

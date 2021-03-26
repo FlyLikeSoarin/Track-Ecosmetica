@@ -1,12 +1,9 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
-import Back from '../Button/BackButton';
 import Balm from './Balm';
-import HomeButton from '../Button/HomeButton'
-import ScanButton from '../Button/ScanButton'
-import ProfileButton from '../Button/ProfileButton'
+import { HomeButton, ScanButton, ProfileButton, BackButton } from '../Button'
 import ShampooSvg from './ShampooSvg'
 
 
@@ -33,12 +30,12 @@ export default class ProductNotFound extends React.Component {
     render() {
         const { type, data } = this.state
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => this.state.navigation.navigate('Scanner')}>
-                        <Back />
+                        onPress={() => this.state.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}>
+                        <BackButton />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.body}>
@@ -50,15 +47,15 @@ export default class ProductNotFound extends React.Component {
                             Штрих-код не найден
                         </Text>
                         <Text style={styles.smallText}>
-                            Помогите нам добавить этот продукт в нашу базу
+                            Добавьте этот продукт в нашу базу, чтобы получить информацию об ингридиентах в его составе
                         </Text>
                     </View>
                     <View style={styles.buttonAddArea}>
-                        <TouchableOpacity onPress={() => this.state.navigation.navigate('AddProduct', { data: data, type: type })}>
+                        <TouchableOpacity onPress={() => this.state.navigation.navigate('AddProduct', { data: data, type: type,  updateHistory: this.props.route.params.updateHistory })}>
                             <View style={styles.buttonAdd}>
                                 <Text style={styles.buttonAddText}>
                                     Добавить
-                            </Text>
+                                </Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -70,19 +67,19 @@ export default class ProductNotFound extends React.Component {
                         <Text style={styles.buttonText}>Домой</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Scanner')}
+                        onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.props.route.params.updateHistory})}
                     >
                         <ScanButton />
                         <Text style={styles.buttonText} >Сканировать</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonArea}
-                        onPress={() => this.props.navigation.navigate('Profile')}
+                        onPress={() => this.props.navigation.navigate('Profile', {updateHistory: this.props.route.params.updateHistory})}
                     >
-                        <ProfileButton />
+                        <ProfileButton fill='#929292'/>
                         <Text style={styles.buttonText}>Профиль</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }
@@ -122,14 +119,14 @@ const styles = StyleSheet.create({
     },
     /* body */
     imageArea: {
-        flex: 1,
+        flex: 1.6,
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor: '#929292',
         borderBottomWidth: 0.5,
     },
     infoArea: {
-        flex: 1,
+        flex: 1.8,
         padding: 25,
         paddingRight: 80,
         alignItems: 'center'
@@ -143,23 +140,23 @@ const styles = StyleSheet.create({
     bigText: {
         color: '#929292',
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 40,
+        fontSize: 24,
     },
     smallText: {
-        marginTop: 40,
+        marginTop: 20,
         color: '#929292',
         fontFamily: 'NotoSanaTamilLight',
-        fontSize: 20,
+        fontSize: 16,
     },
     /**  buttonAddArea **/
     buttonAdd: {
         backgroundColor: '#009E4E',
         height: 40,
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 25,
         justifyContent: 'center',
-        marginLeft: 90,
-        marginRight: 90
+        marginLeft: 60,
+        marginRight: 60
     },
     buttonAddText: {
         color: '#fff',

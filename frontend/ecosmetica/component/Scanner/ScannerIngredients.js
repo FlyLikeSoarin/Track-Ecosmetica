@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Image, View, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import Constants from 'expo-constants';
 
 export default function ImagePickerExample() {
   const [image, setImage] = useState(null);
@@ -18,6 +17,7 @@ export default function ImagePickerExample() {
   }, []);
 
   const pickImage = async () => {
+      
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -27,6 +27,9 @@ export default function ImagePickerExample() {
     });
 
     console.log(result);
+
+    let img = new FormData()
+    img.append('file', { uri: result.uri})
 
     if (!result.cancelled) {
       setImage(result.uri);

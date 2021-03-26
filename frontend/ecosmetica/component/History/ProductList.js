@@ -14,8 +14,10 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Product from './Product'
-//import DATA from '../static/BackendDataSimulator'
 import EmtyHistory from './EmptyHistory'
+
+import config from '../../config'
+
 
 const styles = StyleSheet.create({
   header: {
@@ -119,11 +121,10 @@ const styles = StyleSheet.create({
   }
 });
 
-const URL = 'http://185.148.82.169:8005/';
 
-const ItemList = ({ data, renderItem, isEmpty, navigation }) => {
+const ItemList = ({ data, renderItem, isEmpty, navigation, updateHistory }) => {
   if (isEmpty)
-    return (<EmtyHistory navigation={navigation}/>)
+    return (<EmtyHistory navigation={navigation} updateHistory={updateHistory}/>)
   else
     return (
       <SafeAreaView style={styles.container}>
@@ -145,108 +146,106 @@ export default class ProductList extends React.Component {
       assetsLoaded: false,
       isGet: false,
       data: this.props.data,
-      isEmptyList: true,
+      isEmptyList: this.props.data === null || this.props.data === [],
       token: this.props.token,
     }
-    this.initData = this.initData.bind(this)
+    //this.initData = this.initData.bind(this)
   }
 
-  initData = () => {
-    console.log('init', this.state.data.length)
-    this.setState({isEmptyList:(this.state.data.length === 0)})
+  async openProductInfo(item) {
+    let header = null
+    let token = this.state.token
+    if (token === null) {
+      header = {
+        'Content-Type': 'application/json',
+      }
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      }
+    }
+    await fetch(`${config.SERVER_URL}/product/?code=${item.barcode}`, {
+      method: 'GET',
+      headers: header
+    })
+    .then((resp) => {
+      return resp.json()
+    })
+    .then((ans) => {
+      function compare( a, b ) {
+        if ( a.score < b.score ){
+          return 1;
+        }
+        if ( a.score > b.score ){
+          return -1;
+        }
+        return 0;
+      }
+
+      ans.ingredients.sort(compare)
+      this.props.navigation.navigate('Product', { data_: ans, barcode: item.barcode, updateHistory: this.props.updateHistory })
+    })
   }
 
-
-  //handlePress = (props) => this.props.navigation.navigate('ProductInfo', {name: props.name})
 
   renderItem = ({ item }) => {
-    //let array_ing = JSON.parse(item.ingredients)
+    //console.log("//////////////////////////")
+    //console.log(item)
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Product', { data_: item, barcode: null })}
+        onPress={() => this.openProductInfo(item)}
       >
         <View>
           <Product
-            title={item.name}
-            image={item.img_url}
-            lable={item.brand_name}
-            metric1={item.total_score} />
+            title={item.product.name}
+            key={item.barcode}
+            image={item.product.img_url}
+            lable={item.product.brand_name}
+            metric1={item.product.total_score} 
+            favorite={item.product.favorite}
+            barcode={item.barcode}
+            token={this.state.token}
+            isAddFovoriteShown={true}
+            />
         </View>
       </TouchableOpacity>
     )
   };
 
-  // handleData = async () => {
-  //   await fetch(`${URL}product/history/`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Token ${this.state.token}`,
-  //     },
-  //   })
-  //     .then((resp) => {
-  //       //console.log(resp.status)
-  //       return resp.json()
-  //     })
-  //     .then((data) => {
-  //       //console.log(data)
-  //       if (data.length !== 0) {
-  //         this.setState({
-  //           isEmptyList: false
-  //         })
-  //       }
-  //       this.setState({ data: data });
-  //     })
-  //   this.setState({ isGet: true });
-  //   setTimeout(() => this.setState({ assetsLoaded: true }), 500)
-  // }
-
   async componentDidMount() {
-
     await Font.loadAsync({
-      'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
+      'NotoSanaTamilLight': require('../../assets/fonts/NotoSansTamil-Light.ttf')
     });
-
-   this.initData();
-   console.log(this.state.isEmptyList)
-   console.log(this.state.data);
-
-    /* Кастомизация хедера */
-    /*this.state.navigation.setOptions({
-      headerShown: false
-    });*/
-    //this.handleData();
   }
 
-  // async componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.data !== this.state.data) {
-  //     this.handleData();
-  //   }
-  // } 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.data !== this.props.data) {
+      this.setState({
+        data: this.props.data,
+        isEmptyList: this.props.data.length === 0,
+        token: this.props.token
+      })
+    }
+  } 
+  handleUpdate() {
+    let isUpd = this.state.isUpdated
+    this.setState({isUpdated: !isUpd})
+  }
 
   render() {
-    //const { assetsLoaded } = this.state;
-
-    //if (assetsLoaded) {
       return (
         <View style={styles.container}>
           <View style={styles.body}>
-            <ItemList 
+          <ItemList 
             data={this.state.data} 
             renderItem={this.renderItem} 
             isEmpty={this.state.isEmptyList}
-            navigation={this.state.navigation} />
+            navigation={this.state.navigation}
+            updateHistory={this.props.updateHistory} />
           </View>
         </View>
       );
-    // } else {
-    //   return (
-    //     <View style={styles.loading}>
-    //       <ActivityIndicator />
-    //       <StatusBar barStyle="default" />
-    //     </View>
-    //   )
-    // }
   }
 
 }

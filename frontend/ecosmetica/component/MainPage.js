@@ -1,34 +1,56 @@
 import * as React from 'react';
 import * as Font from 'expo-font';
-import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, ActivityIndicator, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, Button, ImageBackground, TouchableOpacity, Dimensions, StatusBar, SafeAreaView, AsyncStorage, Platform } from 'react-native';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+
 import barchartImage from '../static/plus-positive-add-mathematical-symbol.svg';
 import backgroundImage from '../static/bottles-mock.jpg';
 import { HeaderBackground } from '@react-navigation/stack';
 
 import Home from '../assets/svg/home.svg';
-/*Buttons*/
-import HomeButton from './Button/HomeButton'
-import ScanButton from './Button/ScanButton'
-import ProfileButton from './Button/ProfileButton'
-import SearchButton from './Button/SearchButton'
+import {
+  HomeButton,
+  ScanButton,
+  ProfileButton,
+  SearchButton,
+} from './Button';
 import LoadingScreen from './LoadingScreen'
-import ProductList from './ProductList'
+import ProductList from './History/ProductList'
+import IntroWindows from './IntroWindows'
 
-import HistoryStore from './HistoryStore'
+import config from '../config'
 
-const URL = 'http://185.148.82.169:8005/';
 var width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   header: {
-    flex: 1,
-    backgroundColor: '#9ae7af',
+    flex: 0.8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: '#929292',
+    borderBottomWidth: 0.5,
+    paddingTop: Platform.OS ==='android' ? 20: 0
   },
-  headerText: {
-    color: '#ffffff',
-    fontSize: 40,
+  title: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: "center",
+  },
+  textEco: {
+    fontSize: 24,
     fontFamily: 'NotoSanaTamilLight',
-    textAlign: 'center',
+    color: '#009E4E',
+  },
+  textSmetica: {
+    fontSize: 22,
+    fontFamily: 'NotoSanaTamilLight',
+    color: '#676767',
+    textAlign: 'center'
+  },
+  searchArea: {
+    alignItems: "center",
   },
   productImage: {
     flex: 4,
@@ -74,14 +96,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#929292',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     justifyContent: 'center',
   },
   buttonTextTarget: {
     color: '#009E4E',
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'NotoSanaTamilLight',
     textAlign: 'center',
     justifyContent: 'center',
@@ -89,32 +111,6 @@ const styles = StyleSheet.create({
   buttonArea: {
     flex: 1,
     alignItems: 'center'
-  },
-  registrButton: {
-    backgroundColor: '#009E4E',
-    width: width - 60,
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 10,
-    justifyContent: 'center',
-    margin: 5
-  },
-  logInButton: {
-    backgroundColor: '#E5E5E5',
-    width: width - 60,
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 10,
-    justifyContent: 'center',
-    margin: 5
-  },
-  registrText: {
-    color: '#fff',
-    fontFamily: 'NotoSanaTamilLight',
-  },
-  logInText: {
-    color: '#009E4E',
-    fontFamily: 'NotoSanaTamilLight',
   },
   body: {
     flex: 10
@@ -125,7 +121,6 @@ export default class MainPage extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       navigation: this.props.navigation,
       assetsLoaded: false,
@@ -141,19 +136,46 @@ export default class MainPage extends React.Component {
           "safety_score": 10,
           "zoo_score": 2,
           "total_score": 6
-      },
+        },
       ],
       isDataLoaded: false,
       isEmptyList: true,
+      storageHistory: [],
+      count: false,
+      isUpdated: false,
+
+      showIntroWindows: true,
+      isFirstVisit: 1, //true
     };
 
     this.setToken = this.setToken.bind(this);
     this.logOut = this.logOut.bind(this);
-    this._isMounted = false;
+    this.handleData = this.handleData.bind(this);
+    this.updateHistory = this.updateHistory.bind(this);
+    this.clearHistory = this.clearHistory.bind(this)
+  }
+
+  updateHistory(data) {
+    console.log('update histroy')
+    console.log(data)
+    this.setState({ storageHistory: data })
+  }
+
+  async clearHistory() {
+    console.log('clear history')
+    try {
+      await AsyncStorage.removeItem('history');
+    } catch (e) {
+      console.log(e)
+    }
+    this.setState({
+      storageHistory: []
+    })
+
   }
 
   handleData = async () => {
-    await fetch(`${URL}product/history/`, {
+    await fetch(`${config.SERVER_URL}product/history/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -169,58 +191,76 @@ export default class MainPage extends React.Component {
         if (data.length !== 0) {
           this.setState({
             isEmptyList: false
-          })
+          });
         }
         this.setState({ data: data });
       })
-    this.setState({ isDataLoaded: true });
     setTimeout(() => this.setState({ assetsLoaded: true }), 500)
   }
 
+
+
+  async loadHistory() {
+    let history = null
+    try {
+      await AsyncStorage.getItem('history').then(
+        (resp) => {
+          console.log('getItem');
+          history = JSON.parse(resp);
+          this.setState({ storageHistory: history });
+        }
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   async componentDidMount() {
-      let token = null
+    let isFirstVisit = null
+    try {
+      isFirstVisit = await AsyncStorage.getItem('visitetd')
+    } catch(e) {
+      console.log(e)
+    }
+    if (isFirstVisit !== null) {
+      this.setState({
+        showIntroWindows: false
+      })
+    } else {
       try {
-        token = await AsyncStorage.getItem('token');
-      } catch (e) {
+        AsyncStorage.setItem('visitetd', 'true')
+      } catch(e) {
         console.log(e)
       }
-      if (token !== null) {
-        console.log('tocken:', token)
-        this.setState({
-          token: token
-        })
-      }
-    // if (token !== null) {
-    //   await this.handleData()
-    //   console.log('data loading')
-    // }
-  //   /* Загрузка шрифтов */
+    }
+    
+    let token = null
+    try {
+      token = await AsyncStorage.getItem('token');
+    } catch (e) {
+      console.log(e)
+    }
+    if (token !== null) {
+      console.log('tocken:', token)
+      this.setState({
+        token: token
+      })
+    }
+
+    await this.loadHistory();
+    /* Загрузка шрифтов */
     await Font.loadAsync({
+      'NotoSanaTamilMedium': require('../assets/fonts/NotoSansTamil-Medium.ttf'),
       'NotoSanaTamilLight': require('../assets/fonts/NotoSansTamil-Light.ttf')
     });
 
-  //   /* Кастомизация хедера */
-  //   this.state.navigation.setOptions({
-  //     headerTitle: 'Ecosmetica',
-  //     headerStyle: {
-  //       backgroundColor: '#fff',
-  //       borderBottomColor: '#929292',
-  //       borderBottomWidth: 0.5
-  //     },
-  //     headerTintColor: '#929292',
-  //     headerTitleStyle: {
-  //       fontSize: 24,
-  //       fontFamily: 'NotoSanaTamilLight'
-  //     },
-  //     headerRight: () => (
-  //       <TouchableOpacity onPress={() => this.state.navigation.navigate('Search', {logOut: this.logOut})}>
-  //         <SearchButton />
-  //       </TouchableOpacity>
-  //     ),
-  //   });
-    setTimeout(()=>{
-      this.setState({ assetsLoaded: true });
-    }, 1500);
+    /* Кастомизация хедера */
+    this.state.navigation.setOptions({
+      headerShown: false
+    });
+    
+    setTimeout(() => {
+      this.setState({ assetsLoaded: true })}, 1500);
   }
 
   setToken(token) {
@@ -235,81 +275,74 @@ export default class MainPage extends React.Component {
     })
     try {
       await AsyncStorage.removeItem('token');
-    } catch(e) {
+    } catch (e) {
       console.log(e)
-    } 
-  }
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.data !== this.state.data) {
-      this.handleData();
-      console.log('updated')
     }
-  } 
+  }
+  handleUpdate() {
+    let isUpd = this.state.isUpdated
+    this.setState({ isUpdated: !isUpd })
+  }
 
   render() {
-    const { assetsLoaded } = this.state;
+    console.log('render main page', this.state.storageHistory)
+    const { assetsLoaded, storageHistory, showIntroWindows, isFirstVisit } = this.state;
 
     if (assetsLoaded) {
-
-      return (
-        <View style={styles.container}>
-          {/* Body */}
-          {/* {this.state.token === null && (
-            <View style={styles.body}>
-              <View style={styles.productImage}>
-              </View>
-              <View style={styles.containerProductText}>
-                <Text style={styles.productText}>Зарегистрирутесь или войдите, чтобы видеть ранее отсканированные продукты</Text>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Registr', { setToken: this.setToken })}>
-                  <View style={styles.registrButton}>
-                    <Text style={styles.registrText}>
-                      Зарегистрироваться
-             </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('Login', { setToken: this.setToken })}>
-                  <View style={styles.logInButton}>
-                    <Text style={styles.logInText}>
-                      Войти
-            </Text>
-                  </View>
-                </TouchableOpacity>
+      if (!showIntroWindows) {
+        return (
+          <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+              <View style={styles.title}>
+                <Text style={styles.textSmetica}>История</Text>
               </View>
             </View>
-          )}
-          {this.state.token !== null && ( */}
             <View style={styles.body}>
-              <ProductList token={this.state.token} navigation={this.state.navigation} data={this.state.data}/>
-              {/* <Text>{HistoryStore.clientId}</Text> */}
-              {/* <Text>{HistoryStore.data}</Text> */}
+              <ProductList
+                token={this.state.token}
+                navigation={this.state.navigation}
+                data={this.state.storageHistory}
+                isUpdated={this.state.isUpdated}
+                handleUpdate={() => this.handleUpdate()}
+                updateHistory={this.updateHistory}
+              />
             </View>
-          {/* )} */}
 
-          {/* Footer */}
-          <View style={styles.buttonMenuContainer}>
-            <TouchableOpacity style={styles.buttonArea}>
-              <HomeButton fill='#009E4E' />
-              <Text style={styles.buttonTextTarget}>Домой</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Scanner')}
-            >
-              <ScanButton />
-              <Text style={styles.buttonText} >Сканировать</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonArea}
-              onPress={() => this.props.navigation.navigate('Profile', {logOut: this.logOut})}
-            >
-              <ProfileButton />
-              <Text style={styles.buttonText}>Профиль</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
+            {/* Footer */}
+            <View style={styles.buttonMenuContainer}>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Home')}>
+                <HomeButton fill='#009E4E' />
+                <Text style={styles.buttonTextTarget}>Домой</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Scanner', { updateHistory: this.updateHistory })}
+              >
+                <ScanButton />
+                <Text style={styles.buttonText} >Сканировать</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonArea}
+                onPress={() => this.props.navigation.navigate('Profile', { logOut: this.logOut, token: this.state.token, updateHistory: this.updateHistory })}
+              > 
+                <ProfileButton  fill='#929292'/>
+                <Text style={styles.buttonText}>Профиль</Text>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        );
+      } else {
+        return (
+          <IntroWindows
+            hideIntroWindows={() => this.setState({ showIntroWindows: false })}
+            navigation={this.state.navigation}
+            setToken={this.setToken}
+          />
+        )
+      }
     }
     else {
       return (
-        <LoadingScreen navigation={this.props.navigation}/>
+        <LoadingScreen navigation={this.props.navigation} />
       );
     }
   }
